@@ -8,10 +8,9 @@ import type { RootState } from '@/store'
 import { changeTheme } from '@/utils/settings'
 
 function BaseLayout() {
-
-  const Sider = Layout.Sider;
-  const Header = Layout.Header;
-  const Content = Layout.Content;
+  const Sider = Layout.Sider
+  const Header = Layout.Header
+  const Content = Layout.Content
 
   const { theme } = useSelector((state: RootState) => state.settings)
 
@@ -21,18 +20,18 @@ function BaseLayout() {
 
   return (
     <Layout className="h-full">
-        <Header className="h-16">
-          <NaviHeader />
-        </Header>
-        <Layout>
-          <Sider defaultCollapsed={true}>
-            <NaviSidebar />
-          </Sider>
-          <Content>
-            <Outlet></Outlet>
-          </Content>
-        </Layout>
+      <Header className="h-16">
+        <NaviHeader />
+      </Header>
+      <Layout>
+        <Sider defaultCollapsed={true}>
+          <NaviSidebar />
+        </Sider>
+        <Content>
+          <Outlet></Outlet>
+        </Content>
       </Layout>
+    </Layout>
   )
 }
 

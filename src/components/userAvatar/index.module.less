@@ -1,0 +1,28 @@
+@Base: ~'user-avatar';
+
+.@{Base} {
+    position: relative;
+    &::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        transform: translate(30%, -30%);
+        display: block;
+        width: 0.6rem;
+        height: 0.6rem;
+        border: solid 2px;
+        border-radius: 0.25rem;
+        @apply border-primary bg-teal-500;
+    }
+}
+.@{Base}--red {
+    &::after {
+        @apply bg-red-500;
+    }
+}
+.@{Base}--no-state {
+    &::after {
+        display: none;
+    }
+}

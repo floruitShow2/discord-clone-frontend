@@ -7,5 +7,12 @@ export default defineConfig({
   resolve: {
     alias: [{ find: '@', replacement: '/src' }],
     extensions: ['.ts', '.tsx', '.js']
+  },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true
+      }
+    }
   }
 })

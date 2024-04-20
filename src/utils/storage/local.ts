@@ -1,6 +1,6 @@
 import { decrypto, encrypto } from '@/utils/crypto'
 
-interface StorageData<T> {
+export interface StorageData<T> {
     value: T
     expire: number | null
 }

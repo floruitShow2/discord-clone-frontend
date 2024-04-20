@@ -7,6 +7,7 @@ import { ConfigProvider } from '@arco-design/web-react'
 import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react'
 import BaseLayout from '@/layouts/BaseLayout'
 import HomePage from '@/pages/home/index.tsx'
+import GeneralModal from '@/components/modals'
 import '@arco-design/web-react/dist/css/arco.css'
 import './index.css'
 
@@ -29,7 +30,6 @@ if (!PUBLISHABLE_KEY) {
 }
 
 const RouterComponent = () => {
-
   const navigate = useNavigate()
 
   return (
@@ -41,6 +41,7 @@ const RouterComponent = () => {
               index
               element={
                 <ProtectRoute>
+                  <GeneralModal />
                   <HomePage />
                 </ProtectRoute>
               }
