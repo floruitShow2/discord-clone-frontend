@@ -3,7 +3,7 @@ declare namespace User {
         userId: string
         username: string
         avatar: string
-        email: string
+        email?: string
         /**
          * @description 0-离线    1-在线
          */

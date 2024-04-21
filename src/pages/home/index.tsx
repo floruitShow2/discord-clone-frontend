@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { produce } from 'immer'
 import { Input } from '@arco-design/web-react'
 import { IconSearch } from '@arco-design/web-react/icon'
+import { cs } from '@/utils/property'
 import RoomCard from './components/RoomCard'
 import RoomHeader from './components/RoomHeader'
 import RoomBody from './components/RoomBody'
@@ -12,17 +14,27 @@ function HomePage() {
 
   const [activeRoom, setActiveRoom] = useState<ApiRoom.RoomEntity | null>(null)
   
-  const rooms: ApiRoom.RoomEntity[] = new Array(8).fill(0).map((item, index) => ({
+  const rooms: ApiRoom.RoomEntity[] = new Array(1).fill(0).map((item, index) => ({
+    name: '测试房间',
     userInfo: {
       userId: index + '',
       avatar: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
       username: 'Test ' + (index + 1),
       state: ([0, 1] as Array<0 | 1>)[Math.round(Math.random())]
     },
+    isPinned: true,
+    noDisturbing: false,
+    createTime: '2024年4月21日',
     lastMessage: '测试测试',
     lastUpdateTime: '12:15'
   }))
 
+  const changeRoomConfig = <K extends keyof ApiRoom.RoomEntity>(code: K, newVal: ApiRoom.RoomEntity[K]) => {
+    const newState = produce(activeRoom, draftState => {
+      if (draftState) draftState[code] = newVal
+    })
+    setActiveRoom(newState)
+  }
 
   const genRooms = () => {
     return rooms.map((room) => (
@@ -36,7 +48,12 @@ function HomePage() {
   }
 
   return (
-    <div className="w-full h-full flex items-start justify-between bg-primary">
+    <div
+      className={cs(
+        styles.home,
+        'w-full flex items-start justify-between bg-primary'
+      )}
+    >
       <aside className="w-60 h-full pt-5 border-r border-primary-b overflow-auto">
         <h4 className="px-5 text-base font-bold text-primary-l">Chats</h4>
         <span className="px-5 text-xs text-light-l">26 Messages, 3 Unread</span>
@@ -55,7 +72,7 @@ function HomePage() {
             ? (
               <>
                 <RoomHeader info={activeRoom.userInfo} />
-                <RoomBody className={styles['room-body']} info={activeRoom.userInfo} />
+                <RoomBody className={styles['room-body']} info={activeRoom} onConfigChange={changeRoomConfig} />
                 <RoomInput />
               </>
             )

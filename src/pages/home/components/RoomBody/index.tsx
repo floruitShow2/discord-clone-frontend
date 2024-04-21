@@ -1,16 +1,20 @@
 import * as React from 'react'
-import UserAvatar from '@/components/userAvatar'
-import MemeberList from '../MembersList'
-import type { BaseProps } from './index.interface'
-import { Button } from '@arco-design/web-react'
+import { Button, Modal } from '@arco-design/web-react'
 import { IconPen, IconQrcode } from '@arco-design/web-react/icon'
+import UserAvatar from '@/components/userAvatar'
+import CellGroup, { type CellConfig } from '@/components/cellGroup'
+import MemeberList from '../MembersList'
+import MessageList, { type MessageEntity } from '../MessageList'
+import type { BaseProps } from './index.interface'
+
 
 function RoomBody(props: BaseProps) {
 
     const {
         className,
         info,
-        showDetails = true
+        showDetails = true,
+        onConfigChange
     } = props
 
     const members: User.UserEntity[] = new Array(21)
@@ -24,67 +28,170 @@ function RoomBody(props: BaseProps) {
         })
     )
 
+    const genDetailsConfig = (): Array<{ group: string, configs: CellConfig[] }> => {
+        return [
+            {
+                group: '群聊信息',
+                configs: [
+                    {
+                        type: 'text',
+                        label: '群名称',
+                        description: '您暂无编辑群名称的权限，请联系管理员获取',
+                        value: info.name,
+                        allowEdit: true,
+                        onChange: (newVal: string) => {
+                            if (!newVal) return
+                            onConfigChange && onConfigChange('name', newVal)
+                        }
+                    },
+                    {
+                        type: 'text',
+                        label: '创建时间',
+                        value: info.createTime
+                    }
+                ]
+            },
+            {
+                group: '个性化设置',
+                configs: [
+                    {
+                        type: 'text',
+                        label: '我在本群的昵称',
+                        description: '由于管理员开启了内部群仅显示真名，此功能被禁用',
+                        value: '未设置'
+                    },
+                    {
+                        type: 'switch',
+                        label: '置顶会话',
+                        defaultChecked: info.isPinned,
+                        onChange: (newVal: boolean) => {
+                            onConfigChange && onConfigChange('isPinned', newVal)
+                        }
+                    },
+                    {
+                        type: 'switch',
+                        label: '消息免打扰',
+                        defaultChecked: info.noDisturbing,
+                        onChange: (newVal: boolean) => {
+                            onConfigChange && onConfigChange('noDisturbing', newVal)
+                        }
+                    }
+                ]
+            },
+            {
+                group: '其他操作',
+                configs: [
+                    {
+                        type: 'btn',
+                        label: '清空聊天记录',
+                        onBtnClick() {
+                            Modal.confirm({
+                                title: '清空聊天记录',
+                                content: '确认删除所有聊天记录吗？清空后将无法重新找回',
+                                onOk() {
+                                    console.log('ok')
+                                }
+                            })
+                        }
+                    },
+                    {
+                        type: 'btn',
+                        btnStatus: 'danger',
+                        label: '退出群聊'
+                    }
+                ]
+            }
+        ]
+    }
+
+    const messages: MessageEntity[] = [
+        {
+            type: 'text',
+            content: {
+                id: 'msg-1',
+                user: {
+                    userId: 'user-1',
+                    username: 'Meleon',
+                    avatar: 'https://avatars.githubusercontent.com/u/82753320?v=4',
+                    state: 1
+                },
+                metions: [],
+                publishTime: '4月21日 16:42',
+                text: '这是一条测试数据aaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+            }
+        },
+        {
+            type: 'text',
+            content: {
+                id: 'msg-2',
+                user: {
+                    userId: 'user-2',
+                    username: 'Alice',
+                    avatar: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
+                    state: 1
+                },
+                metions: [],
+                publishTime: '4月21日 16:48',
+                text: '这是另一条测试数据'
+            }
+        },
+        {
+            type: 'image',
+            content: {
+                id: 'msg-2',
+                user: {
+                    userId: 'user-2',
+                    username: 'Alice',
+                    avatar: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
+                    state: 1
+                },
+                metions: [],
+                publishTime: '4月21日 16:48',
+                url: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png'
+            }
+        }
+    ]
+
     return <>
         <div className={`${className} flex items-start justify-between`}>
-            <main className='flex-1 h-full bg-module'>chat body</main>
-            { showDetails && (
-                <aside className='w-80 h-full p-4 border-l border-primary-b'>
+            <main className='flex-1 h-full bg-module overflow-auto'>
+                <MessageList msgs={messages} />
+            </main>
+            {
+                showDetails && (
+                    <aside className='w-80 h-full p-4 border-l border-primary-b overflow-auto'>
 
-                    <div className='w-full mb-4 flex items-center justify-between'>
-                        <div className='flex items-center justify-start'>
-                            <UserAvatar className='mr-2' info={info} showState={false} />
-                            <div className='flex flex-col items-start justify-center'>
-                                <div className='flex items-center justify-start text-primary-l'>
-                                    <span className='mr-1 text-sm'>
-                                        {info.username}
-                                    </span>
-                                    <IconPen className='cursor-pointer hover:text-blue-500' />
+                        <div className='w-full mb-4 flex items-center justify-between'>
+                            <div className='flex items-center justify-start'>
+                                <UserAvatar className='mr-2' info={info.userInfo} showState={false} />
+                                <div className='flex flex-col items-start justify-center'>
+                                    <div className='flex items-center justify-start text-primary-l'>
+                                        <span className='mr-1 text-sm'>
+                                            {info.userInfo.username}
+                                        </span>
+                                        <IconPen className='cursor-pointer hover:text-blue-500' />
+                                    </div>
+                                    <span className='text-xs text-light-l'>Lorem ipsum dolor sit amet</span>
                                 </div>
-                                <span className='text-xs text-light-l'>Lorem ipsum dolor sit amet</span>
                             </div>
+                            <Button
+                                icon={<IconQrcode />}
+                            />
                         </div>
-                        <Button
-                            icon={<IconQrcode />}
-                        />
-                    </div>
 
-                    <MemeberList className='mb-4' members={members} />
+                        <MemeberList className='mb-4' members={members} />
 
-                    <div>
-                        <h4>群聊信息</h4>
-                        <ul>
-                            <li>
-                                <span>创建时间</span>
-                                <span>2024年4月20日</span>
-                            </li>
-                            <li></li>
-                            <li></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4>个性化设置</h4>
-                        <ul>
-                            <li>
-                                <span>我在本群的昵称</span>
-                            </li>
-                            <li>
-                                <span>置顶会话</span>
-                            </li>
-                            <li>
-                                <span>消息免打扰</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <ul>
-                            <li>清空聊天记录</li>
-                            <li>退出群聊</li>
-                        </ul>
-                    </div>
-                </aside>
-            ) }
+                        {
+                            genDetailsConfig().map(details => (
+                                <div key={details.group} className='mb-3 flex flex-col items-start justify-start'>
+                                    <h4 className='mb-2 text-xs text-light-l leading-5'>{details.group}</h4>
+                                    <CellGroup configs={details.configs} />
+                                </div>
+                            ))
+                        }
+                    </aside>
+                )
+            }
         </div>
     </>
 }

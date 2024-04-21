@@ -28,7 +28,11 @@ function UserAvatar(props: BaseProps) {
                 )
             }
         >
-            <Avatar className="bg-module rounded-md cursor-pointer transition-colors hover:bg-module-2" shape="square">
+            <Avatar
+                className="bg-module rounded-md cursor-pointer transition-colors hover:bg-module-2"
+                shape="square"
+                size={40}
+            >
                 <img src={info.avatar} alt="" />
             </Avatar>
         </div>
