@@ -4,7 +4,7 @@ import { IconPen, IconQrcode } from '@arco-design/web-react/icon'
 import UserAvatar from '@/components/userAvatar'
 import CellGroup, { type CellConfig } from '@/components/cellGroup'
 import MemeberList from '../MembersList'
-import MessageList, { type MessageEntity } from '../MessageList'
+import MessageList from '../MessageList'
 import type { BaseProps } from './index.interface'
 
 
@@ -37,11 +37,11 @@ function RoomBody(props: BaseProps) {
                         type: 'text',
                         label: '群名称',
                         description: '您暂无编辑群名称的权限，请联系管理员获取',
-                        value: info.name,
+                        value: info.roomName,
                         allowEdit: true,
                         onChange: (newVal: string) => {
                             if (!newVal) return
-                            onConfigChange && onConfigChange('name', newVal)
+                            onConfigChange && onConfigChange('roomName', newVal)
                         }
                     },
                     {
@@ -104,7 +104,7 @@ function RoomBody(props: BaseProps) {
         ]
     }
 
-    const messages: MessageEntity[] = [
+    const messages: ApiRoom.MessageEntity[] = [
         {
             type: 'text',
             content: {
@@ -138,7 +138,7 @@ function RoomBody(props: BaseProps) {
         {
             type: 'image',
             content: {
-                id: 'msg-2',
+                id: 'msg-3',
                 user: {
                     userId: 'user-2',
                     username: 'Alice',
@@ -163,11 +163,11 @@ function RoomBody(props: BaseProps) {
 
                         <div className='w-full mb-4 flex items-center justify-between'>
                             <div className='flex items-center justify-start'>
-                                <UserAvatar className='mr-2' info={info.userInfo} showState={false} />
+                                <UserAvatar className='mr-2' username={info.roomName} avatar={info.roomCover} showState={false} />
                                 <div className='flex flex-col items-start justify-center'>
                                     <div className='flex items-center justify-start text-primary-l'>
                                         <span className='mr-1 text-sm'>
-                                            {info.userInfo.username}
+                                            {info.roomName}
                                         </span>
                                         <IconPen className='cursor-pointer hover:text-blue-500' />
                                     </div>

@@ -8,7 +8,12 @@ function RoomHeader(props: BaseProps) {
     const { info } = props
 
     return <div className='w-full h-16 p-3 flex items-center justify-between border-b border-primary-b'>
-        <UserAvatar info={info} showName />
+        <UserAvatar
+            username={info.roomName}
+            avatar={info.roomCover}
+            state={0}
+            showName
+        />
 
         <div className='flex items-center justify-end'>
             <Button

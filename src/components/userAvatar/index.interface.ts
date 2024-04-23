@@ -1,7 +1,9 @@
 import { HTMLAttributes } from "react";
 
 export interface BaseProps extends HTMLAttributes<HTMLElement> {
-    info: ApiRoom.RoomEntity['userInfo']
+    username: string
+    avatar: string
+    state?: User.UserEntity['state']
     showName?: boolean
     showState?: boolean
 }

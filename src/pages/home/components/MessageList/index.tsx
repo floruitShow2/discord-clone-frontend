@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Image } from '@arco-design/web-react'
 import UserAvatar from '@/components/userAvatar';
-import type { BaseProps, ImageMessage, MessageEntity, TextMessage } from './index.interface'
+import type { BaseProps } from './index.interface'
 import { cs } from '@/utils/property';
 
 function MessageList(props: BaseProps) {
@@ -11,25 +11,25 @@ function MessageList(props: BaseProps) {
         msgs
     } = props
 
-    const isSelf = (msg: MessageEntity) => {
+    const isSelf = (msg: ApiRoom.MessageEntity) => {
         return msg.content.user.userId === 'user-1'
     }
 
-    const genTextMsg = (msg: TextMessage) => {
-        return <li key={msg.id} className='text-sm break-all text-primary-l'>{msg.text}</li>
+    const genTextMsg = (msg: ApiRoom.TextMessage) => {
+        return <p className='text-sm break-all text-primary-l'>{msg.text}</p>
     }
 
-    const genImageMsg = (msg: ImageMessage) => {
-        return <li key={msg.id}>
+    const genImageMsg = (msg: ApiRoom.ImageMessage) => {
+        return <>
             <Image
                 width={200}
                 src={msg.url}
                 alt='lamp'
             />
-        </li>
+        </>
     }
 
-    const renderMsg = (msg: MessageEntity) => {
+    const renderMsg = (msg: ApiRoom.MessageEntity) => {
         switch (msg.type) {
             case 'text':
                 return genTextMsg(msg.content)
@@ -57,7 +57,9 @@ function MessageList(props: BaseProps) {
                                 isSelf(msg) ? 'ml-2' : 'mr-2'
                             )
                         }
-                        info={user}
+                        username={user.username}
+                        avatar={user.avatar}
+                        state={user.state}
                     />
                     <div className='max-w-[70%]'>
                         <div
@@ -79,5 +81,4 @@ function MessageList(props: BaseProps) {
     </ul>
 }
 
-export type { MessageEntity }
 export default MessageList

@@ -10,7 +10,7 @@ function MemeberList(props: BaseProps) {
     const genMembersCard = () => {
         return members.slice(0, 15).map(member => {
             return <li className='flex flex-col items-center justify-center' key={member.userId}>
-                <UserAvatar info={member} showState={false}></UserAvatar>
+                <UserAvatar username={member.username} avatar={member.avatar} showState={false}></UserAvatar>
                 <span className='text-xs text-primary-l mt-1'>{member.username}</span>
             </li>
         })

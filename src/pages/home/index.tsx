@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { produce } from 'immer'
 import { Input } from '@arco-design/web-react'
 import { IconSearch } from '@arco-design/web-react/icon'
+import { io } from 'socket.io-client'
 import { cs } from '@/utils/property'
 import RoomCard from './components/RoomCard'
 import RoomHeader from './components/RoomHeader'
@@ -15,19 +16,30 @@ function HomePage() {
   const [activeRoom, setActiveRoom] = useState<ApiRoom.RoomEntity | null>(null)
   
   const rooms: ApiRoom.RoomEntity[] = new Array(1).fill(0).map((item, index) => ({
-    name: '测试房间',
-    userInfo: {
-      userId: index + '',
-      avatar: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
-      username: 'Test ' + (index + 1),
-      state: ([0, 1] as Array<0 | 1>)[Math.round(Math.random())]
-    },
+    roomId: Math.random().toFixed(10),
+    roomName: '测试房间',
+    roomCover: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
     isPinned: true,
     noDisturbing: false,
     createTime: '2024年4月21日',
-    lastMessage: '测试测试',
-    lastUpdateTime: '12:15'
-  }))
+    messages: [
+      {
+        type: 'text',
+        content: {
+          id: '1',
+          user: {
+            userId: 'user-1',
+            avatar: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
+            username: 'Meleon',
+            state: 0
+          },
+          metions: [],
+          publishTime: '2024年4月23日',
+          text: '测试测试'
+        }
+      }
+    ]
+  }) as ApiRoom.RoomEntity)
 
   const changeRoomConfig = <K extends keyof ApiRoom.RoomEntity>(code: K, newVal: ApiRoom.RoomEntity[K]) => {
     const newState = produce(activeRoom, draftState => {
@@ -39,13 +51,28 @@ function HomePage() {
   const genRooms = () => {
     return rooms.map((room) => (
       <RoomCard
-        className='mb-2'
-        key={room.userInfo.userId}
+        className={cs('mb-2', room.roomId === activeRoom?.roomId && 'bg-module')}
+        key={room.roomId}
         info={room}
         onClick={() => setActiveRoom(room)}
       />
     ))
   }
+
+  useEffect(() => {
+
+    // connect the first room by default
+    if (rooms.length) setActiveRoom(rooms[0])
+
+    const socket = io('http://localhost:3001')
+    socket.on('connect', () => {
+      console.log(socket.id)
+      socket.emit('events', { data: '测试' })
+      socket.on('onEvents', (msg) => {
+        console.log(msg)
+      })
+    })
+  }, [])
 
   return (
     <div
@@ -71,7 +98,7 @@ function HomePage() {
           activeRoom
             ? (
               <>
-                <RoomHeader info={activeRoom.userInfo} />
+                <RoomHeader info={activeRoom} />
                 <RoomBody className={styles['room-body']} info={activeRoom} onConfigChange={changeRoomConfig} />
                 <RoomInput />
               </>

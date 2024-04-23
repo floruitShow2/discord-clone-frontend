@@ -7,11 +7,13 @@ function UserAvatar(props: BaseProps) {
 
     const {
         className,
-        info,
+        username,
+        avatar,
+        state,
         showName = false,
         showState = true
     } = props
-    const userStateColorMap: Record<BaseProps['info']['state'], string> = {
+    const userStateColorMap: Record<number, string> = {
         0: 'red',
         1: 'teal'
     }
@@ -21,7 +23,7 @@ function UserAvatar(props: BaseProps) {
             className={
                 cs(
                     styles['user-avatar'],
-                    styles['user-avatar--' + userStateColorMap[info.state]],
+                    state ? styles['user-avatar--' + userStateColorMap[state]] : '',
                     {
                         [styles['user-avatar--no-state']]: !showState
                     }
@@ -33,10 +35,10 @@ function UserAvatar(props: BaseProps) {
                 shape="square"
                 size={40}
             >
-                <img src={info.avatar} alt="" />
+                <img src={avatar} alt="" />
             </Avatar>
         </div>
-        { showName && <span className='ml-3 text-md text-primary-l'>{info.username}</span> }
+        { showName && <span className='ml-3 text-md text-primary-l'>{username}</span> }
     </div>
 }
 
