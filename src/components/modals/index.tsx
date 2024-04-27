@@ -19,7 +19,7 @@ function CreateServerModal() {
 
   return (
     <Modal title="Create a Server" visible={isOpen} onOk={closeModal} onCancel={closeModal}>
-      <p className='mb-3 text-sm text-primary-l'>
+      <p className="mb-3 text-sm text-primary-l">
         Give your server a personality with a name and an image. You can always change it later.
       </p>
 
@@ -43,7 +43,7 @@ function CreateServerModal() {
         </Avatar>
       ) : (
         <Upload
-          className='mb-3'
+          className="mb-3"
           accept=".jpg,.png,.jpeg"
           autoUpload={false}
           showUploadList={false}
@@ -55,9 +55,9 @@ function CreateServerModal() {
         </Upload>
       )}
 
-      <div className='flex flex-col items-start justify-start'>
-        <span className='mb-2 text-sm text-primary-l'>Server Name</span>
-        <Input placeholder='Please enter your '></Input>
+      <div className="flex flex-col items-start justify-start">
+        <span className="mb-2 text-sm text-primary-l">Server Name</span>
+        <Input placeholder="Please enter your "></Input>
       </div>
     </Modal>
   )

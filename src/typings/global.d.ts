@@ -1,16 +1,16 @@
 declare namespace Global {
-    interface Settings {
-        theme: 'dark' | 'light'
-        lang: 'zh-CN' | 'en-US'
-    }
+  interface Settings {
+    theme: 'dark' | 'light'
+    lang: 'zh-CN' | 'en-US'
+  }
 
-    interface Modal {
-        activeModal: 'CreateServerModal' | null
-    }
+  interface Modal {
+    activeModal: 'CreateServerModal' | null
+  }
 
-    interface State {
-        settings?: Settings
-        modal?: Modal
-        userInfo: User.UserEntity
-    }
+  interface State {
+    settings?: Settings
+    modal?: Modal
+    userInfo: User.UserEntity
+  }
 }

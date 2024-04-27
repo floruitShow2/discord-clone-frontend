@@ -19,7 +19,6 @@ const CellGroup: FunctionComponent<BaseProps> = (props) => {
     const [isEditing, setIsEditing] = useState(false)
 
     const handleInputChange = (val: string) => {
-      console.log(1, val)
       onChange && onChange(val, cell, index)
     }
 

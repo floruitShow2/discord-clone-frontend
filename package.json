@@ -7,14 +7,19 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "format": "prettier --write \"src/**/*.tsx\"",
+    "format": "prettier --write \"src/**/*.{tsx,ts}\"",
     "lint": "eslint src/ --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix --cache"
   },
   "dependencies": {
+    "@apollo/client": "^3.10.1",
     "@arco-design/web-react": "^2.61.2",
     "@clerk/clerk-react": "^4.30.10",
+    "@monaco-editor/react": "^4.6.0",
     "@reduxjs/toolkit": "^2.2.3",
+    "@typescript/ata": "^0.9.4",
+    "apollo-upload-client": "^18.0.1",
     "crypto-js": "^4.2.0",
+    "graphql": "^16.8.1",
     "immer": "^10.0.4",
     "less": "^4.2.0",
     "path": "^0.12.7",
@@ -25,6 +30,10 @@
     "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/client-preset": "^4.2.5",
+    "@parcel/watcher": "^2.4.1",
+    "@types/apollo-upload-client": "^18.0.0",
     "@types/crypto-js": "^4.2.2",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
@@ -38,7 +47,8 @@
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.2.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
     "vite": "^5.2.0"
   },
   "engines": {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { produce } from 'immer'
 import { Input } from '@arco-design/web-react'
 import { IconSearch } from '@arco-design/web-react/icon'
-import { io } from 'socket.io-client'
+// import { io } from 'socket.io-client'
 import { cs } from '@/utils/property'
 import RoomCard from './components/RoomCard'
 import RoomHeader from './components/RoomHeader'
@@ -69,14 +69,14 @@ function HomePage() {
     // connect the first room by default
     if (rooms.length) setActiveRoom(rooms[0])
 
-    const socket = io('http://localhost:3001')
-    socket.on('connect', () => {
-      console.log(socket.id)
-      socket.emit('events', { data: '测试' })
-      socket.on('onEvents', (msg) => {
-        console.log(msg)
-      })
-    })
+    // const socket = io('http://localhost:3001')
+    // socket.on('connect', () => {
+    //   console.log(socket.id)
+    //   socket.emit('events', { data: '测试' })
+    //   socket.on('onEvents', (msg) => {
+    //     console.log(msg)
+    //   })
+    // })
   }, [])
 
   return (

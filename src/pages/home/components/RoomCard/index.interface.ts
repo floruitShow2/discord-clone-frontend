@@ -1,5 +1,5 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes } from 'react'
 
 export interface BaseProps extends HTMLAttributes<HTMLElement> {
-    info: ApiRoom.RoomEntity
+  info: ApiRoom.RoomEntity
 }

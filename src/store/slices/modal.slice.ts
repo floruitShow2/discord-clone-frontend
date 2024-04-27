@@ -1,17 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialModal: Global.Modal = {
-    activeModal: null
+  activeModal: null
 }
 
 const ModalSlice = createSlice({
-    name: 'modal',
-    initialState: initialModal,
-    reducers: {
-        setActiveModal: (state, val) => {
-            state.activeModal = val.payload
-        }
+  name: 'modal',
+  initialState: initialModal,
+  reducers: {
+    setActiveModal: (state, val) => {
+      state.activeModal = val.payload
     }
+  }
 })
 
 export const { setActiveModal } = ModalSlice.actions

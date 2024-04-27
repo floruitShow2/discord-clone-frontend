@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react"
+import { HTMLAttributes } from 'react'
 export interface BaseProps extends HTMLAttributes<HTMLUListElement> {
-    msgs: ApiRoom.MessageEntity[]
+  msgs: ApiRoom.MessageEntity[]
 }
