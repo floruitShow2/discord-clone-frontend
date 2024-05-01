@@ -1,15 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { Routes, Route, useNavigate, BrowserRouter } from 'react-router-dom'
+import { useNavigate, BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { ConfigProvider } from '@arco-design/web-react'
 import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react'
 import { ApolloProvider } from '@apollo/client'
-import client from './apolloClient'
 import { store } from '@/store'
 import BaseLayout from '@/layouts/BaseLayout'
 // import HomePage from '@/pages/home/index.tsx'
 import GeneralModal from '@/components/modals'
+import client from './apolloClient'
 import '@arco-design/web-react/dist/css/arco.css'
 import './index.css'
 
@@ -37,17 +37,10 @@ const RouterComponent = () => {
   return (
     <Provider store={store}>
       <ClerkProvider publishableKey={PUBLISHABLE_KEY} navigate={(to) => navigate(to)}>
-        <Routes>
-          <Route
-            path="*"
-            element={
-              <ProtectRoute>
-                <GeneralModal />
-                <BaseLayout />
-              </ProtectRoute>
-            }
-          />
-        </Routes>
+        <ProtectRoute>
+          <GeneralModal />
+          <BaseLayout />
+        </ProtectRoute>
       </ClerkProvider>
     </Provider>
   )

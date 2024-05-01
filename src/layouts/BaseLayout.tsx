@@ -1,18 +1,18 @@
 import { useEffect, useMemo } from 'react'
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from '@arco-design/web-react'
 import { useAuth, useSession } from '@clerk/clerk-react'
 import { useMutation } from '@apollo/client'
-import NaviHeader from '@/components/naviHeader'
-import NaviSidebar from '@/components/naviSiderbar'
-import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '@/store'
 import { setUserInfo } from '@/store/slices/user.slice'
 import useRoute, { IRoute } from '@/routes'
 import { isArray } from '@/utils/is'
 import { changeTheme } from '@/utils/settings'
-import { CreateProfile } from '@/graphql/mutations/profile'
+import { CREATE_PROFILE } from '@/graphql/mutations/profile'
 import { MemberRole, Mutation, MutationCreateProfileArgs } from '@/gql/graphql'
+import NaviHeader from '@/components/naviHeader'
+import NaviSidebar from '@/components/naviSiderbar'
 
 function getFlattenRoutes(routes: IRoute[]) {
   const res: IRoute[] = []
@@ -52,7 +52,7 @@ function BaseLayout() {
 
   const { isSignedIn } = useAuth()
   const { session } = useSession()
-  const [createProfile] = useMutation<Mutation, MutationCreateProfileArgs>(CreateProfile, {})
+  const [createProfile] = useMutation<Mutation, MutationCreateProfileArgs>(CREATE_PROFILE, {})
   const createProfileFn = async () => {
     if (!session?.user) return
     try {
