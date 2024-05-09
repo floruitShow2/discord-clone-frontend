@@ -1,12 +1,18 @@
-import { Button, Tooltip } from '@arco-design/web-react'
+import { Button, Skeleton, Tooltip } from '@arco-design/web-react'
 import { IconPlus, IconShareAlt } from '@arco-design/web-react/icon'
 import useLocale from '@/locale/useLocale'
 import type { GroupBtnEntity } from './index.interface'
 import { useModal } from '@/hooks/useModal'
+import { useServers } from '@/hooks/servers/useServers'
+import { useEffect, useState } from 'react'
+import { useSession } from '@clerk/clerk-react'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store'
+import UserAvatar from '../userAvatar'
 
 function NaviSiderbar() {
   const $t = useLocale()
-
+  const { userInfo } = useSelector((state: RootState) => state.user)
   const { openModal } = useModal('CreateServerModal')
 
   const btnsConfig: GroupBtnEntity[] = [
@@ -38,9 +44,37 @@ function NaviSiderbar() {
     ))
   }
 
+  const { session } = useSession()
+  const { servers, loading } = useServers()
+  const [serversVisible, setServersVisible] = useState(false)  
+  const genServers = () => {
+    return <Skeleton loading={loading} image={{ shape: 'circle' }}>
+      {
+        servers.map(server => (
+          <div key={server.id}>
+          <UserAvatar username={server.name} avatar={server.imageUrl}></UserAvatar>
+          {/* <span>{server.name}</span> */}
+        </div>
+        ))
+      }
+    </Skeleton>
+  }
+
+  useEffect(() => {
+    if (!userInfo?.id) return
+    setServersVisible(true)
+  }, [session?.user])
+
   return (
     <div className="w-full h-full py-2 flex flex-col items-center gap-2 justify-start border-r border-primary-b">
-      {genButtons()}
+      {/* tools */}
+      <div className='flex flex-col items-center gap-2 justify-start'>
+        {genButtons()}
+      </div>
+      {/* servers */}
+      <div className='flex flex-col items-center gap-2 justify-start'>
+        {serversVisible && genServers()}
+      </div>
     </div>
   )
 }

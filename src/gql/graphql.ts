@@ -44,7 +44,7 @@ export type CreateProfileInput = {
 
 export type CreateServerInput = {
   name: Scalars['String']['input'];
-  profileId: Scalars['Float']['input'];
+  profileId: Scalars['Int']['input'];
 };
 
 export type Member = {
@@ -109,11 +109,6 @@ export type Query = {
   getServers: Array<Server>;
 };
 
-
-export type QueryGetServersArgs = {
-  profileId: Scalars['Int']['input'];
-};
-
 export type Server = {
   __typename?: 'Server';
   channels?: Maybe<Array<Maybe<Channel>>>;
@@ -125,7 +120,7 @@ export type Server = {
   members?: Maybe<Array<Maybe<Member>>>;
   name: Scalars['String']['output'];
   profile?: Maybe<Profile>;
-  profileId: Scalars['Float']['output'];
+  profileId: Scalars['Int']['output'];
   /** update time */
   updateAt: Scalars['String']['output'];
 };
