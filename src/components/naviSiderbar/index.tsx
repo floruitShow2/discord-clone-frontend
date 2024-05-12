@@ -6,13 +6,10 @@ import { useModal } from '@/hooks/useModal'
 import { useServers } from '@/hooks/servers/useServers'
 import { useEffect, useState } from 'react'
 import { useSession } from '@clerk/clerk-react'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
 import UserAvatar from '../userAvatar'
 
 function NaviSiderbar() {
   const $t = useLocale()
-  const { userInfo } = useSelector((state: RootState) => state.user)
   const { openModal } = useModal('CreateServerModal')
 
   const btnsConfig: GroupBtnEntity[] = [
@@ -52,27 +49,26 @@ function NaviSiderbar() {
       {
         servers.map(server => (
           <div key={server.id}>
-          <UserAvatar username={server.name} avatar={server.imageUrl}></UserAvatar>
-          {/* <span>{server.name}</span> */}
-        </div>
+            <UserAvatar username={server.name} avatar={server.imageUrl}></UserAvatar>
+            {/* <span>{server.name}</span> */}
+          </div>
         ))
       }
     </Skeleton>
   }
 
   useEffect(() => {
-    if (!userInfo?.id) return
     setServersVisible(true)
   }, [session?.user])
 
   return (
     <div className="w-full h-full py-2 flex flex-col items-center gap-2 justify-start border-r border-primary-b">
       {/* tools */}
-      <div className='flex flex-col items-center gap-2 justify-start'>
+      <div className='flex flex-col items-center gap-2 justify-start pb-3 mb-3 border-b border-primary-b'>
         {genButtons()}
       </div>
       {/* servers */}
-      <div className='flex flex-col items-center gap-2 justify-start'>
+      <div className='flex flex-col items-center gap-3 justify-start'>
         {serversVisible && genServers()}
       </div>
     </div>

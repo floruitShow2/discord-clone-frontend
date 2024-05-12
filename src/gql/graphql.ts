@@ -83,7 +83,7 @@ export type MutationCreateProfileArgs = {
 
 
 export type MutationCreateServerArgs = {
-  file: Scalars['Upload']['input'];
+  file?: InputMaybe<Scalars['Upload']['input']>;
   server: CreateServerInput;
 };
 
@@ -106,7 +106,13 @@ export type Profile = {
 export type Query = {
   __typename?: 'Query';
   getProfileById: Profile;
+  getServer: Server;
   getServers: Array<Server>;
+};
+
+
+export type QueryGetServerArgs = {
+  id: Scalars['Float']['input'];
 };
 
 export type Server = {

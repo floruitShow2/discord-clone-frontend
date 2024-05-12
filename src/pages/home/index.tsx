@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { produce } from 'immer'
-import { Input } from '@arco-design/web-react'
-import { IconSearch } from '@arco-design/web-react/icon'
+import { Input, Dropdown, Button, Menu } from '@arco-design/web-react'
+import { IconDelete, IconEdit, IconPlus, IconSearch, IconSettings, IconShareAlt } from '@arco-design/web-react/icon'
 // import { io } from 'socket.io-client'
 import { cs } from '@/utils/property'
 import RoomCard from './components/RoomCard'
 import RoomHeader from './components/RoomHeader'
 import RoomBody from './components/RoomBody'
 import RoomInput from './components/RoomInput'
+import type { Operation } from './index.interface'
 import styles from './index.module.less'
 
 function HomePage() {
@@ -43,6 +44,16 @@ function HomePage() {
         ]
       }) as ApiRoom.RoomEntity
   )
+  const genRooms = () => {
+    return rooms.map((room) => (
+      <RoomCard
+        className={cs('mb-2', room.roomId === activeRoom?.roomId && 'bg-module')}
+        key={room.roomId}
+        info={room}
+        onClick={() => setActiveRoom(room)}
+      />
+    ))
+  }
 
   const changeRoomConfig = <K extends keyof ApiRoom.RoomEntity>(
     code: K,
@@ -54,16 +65,41 @@ function HomePage() {
     setActiveRoom(newState)
   }
 
-  const genRooms = () => {
-    return rooms.map((room) => (
-      <RoomCard
-        className={cs('mb-2', room.roomId === activeRoom?.roomId && 'bg-module')}
-        key={room.roomId}
-        info={room}
-        onClick={() => setActiveRoom(room)}
-      />
-    ))
-  }
+  const operationConfigs: Operation[] = [
+    {
+      label: 'Invite People',
+      key: '1',
+      icon: <IconShareAlt className='text-primary-l' />,
+      handler() {
+        console.log('invite people')
+      }
+    },
+    
+    {
+      label: 'Create Channel',
+      key: '2',
+      icon: <IconPlus className='text-primary-l' />,
+      handler() {
+        console.log('Create Channel')
+      }
+    },
+    {
+      label: 'Update Server',
+      key: '3',
+      icon: <IconEdit className='text-primary-l' />,
+      handler() {
+        console.log('Update Server')
+      }
+    },
+    {
+      label: 'Delete Server',
+      key: '4',
+      icon: <IconDelete className='text-primary-l' />,
+      handler() {
+        console.log('Delete Server')
+      }
+    }
+  ]
 
   useEffect(() => {
     // connect the first room by default
@@ -82,7 +118,27 @@ function HomePage() {
   return (
     <div className={cs(styles.home, 'w-full flex items-start justify-between bg-primary')}>
       <aside className="w-60 h-full pt-5 border-r border-primary-b overflow-auto">
-        <h4 className="px-5 text-base font-bold text-primary-l">Chats</h4>
+        <div className='w-full px-5 flex items-center justify-between'>
+          <h4 className="text-base font-bold text-primary-l">Chats</h4>
+          <Dropdown
+            droplist={
+              <Menu>
+                {
+                  operationConfigs.map(operation => (
+                    <Menu.Item key={operation.key} onClick={() => operation.handler()}>
+                      <div className='w-40 h-full flex items-center justify-between'>
+                        <span className='text-sm text-primary-l'>{operation.label}</span>
+                        {operation.icon}
+                      </div>
+                    </Menu.Item>
+                  ))
+                }
+              </Menu>
+            }
+          >
+            <Button size='small' type='text' icon={<IconSettings className='text-primary-l' />}></Button>
+          </Dropdown>
+        </div>
         <span className="px-5 text-xs text-light-l">26 Messages, 3 Unread</span>
         <Input
           className="my-4 px-5"

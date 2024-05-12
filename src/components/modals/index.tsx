@@ -29,7 +29,6 @@ function CreateServerModal() {
   const [serverName, setServerName] = useState('')
 
   const onSubmit = async () => {
-    console.log(serverName, avatar)
     if (!serverName || !avatar?.url) return false
     if (!userInfo?.id) return false
 

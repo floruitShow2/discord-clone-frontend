@@ -13,6 +13,7 @@
   "dependencies": {
     "@apollo/client": "^3.10.1",
     "@arco-design/web-react": "^2.61.2",
+    "@babel/standalone": "^7.24.5",
     "@clerk/clerk-react": "^4.30.10",
     "@monaco-editor/react": "^4.6.0",
     "@reduxjs/toolkit": "^2.2.3",
@@ -34,6 +35,8 @@
     "@graphql-codegen/client-preset": "^4.2.5",
     "@parcel/watcher": "^2.4.1",
     "@types/apollo-upload-client": "^18.0.0",
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__standalone": "^7.1.7",
     "@types/crypto-js": "^4.2.2",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
