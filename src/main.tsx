@@ -7,7 +7,6 @@ import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/cle
 import { ApolloProvider } from '@apollo/client'
 import { store } from '@/store'
 import BaseLayout from '@/layouts/BaseLayout'
-// import HomePage from '@/pages/home/index.tsx'
 import GeneralModal from '@/components/modals'
 import client from './apolloClient'
 import '@arco-design/web-react/dist/css/arco.css'

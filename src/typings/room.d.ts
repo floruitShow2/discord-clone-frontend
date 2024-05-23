@@ -23,7 +23,7 @@ declare namespace ApiRoom {
   }
 
   interface TextMessage extends BaseMessage {
-    text: string
+    content: string
   }
 
   interface ImageMessage extends BaseMessage {
@@ -31,8 +31,8 @@ declare namespace ApiRoom {
   }
 
   type MessageEntity =
-    | { type: 'text'; content: TextMessage }
-    | { type: 'image'; content: ImageMessage }
+    | { type: MessageType.TEXT; content: TextMessage }
+    | { type: MessageType.IMAGE; content: ImageMessage }
 
   interface RoomEntity {
     roomId: string

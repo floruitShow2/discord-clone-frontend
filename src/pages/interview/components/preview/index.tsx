@@ -8,12 +8,7 @@ const Preview = (props: BaseProps) => {
   const { className, url } = props
   console.log(url)
 
-  return (
-    <iframe
-        className={cs(className, 'w-[400px] h-full')}
-        src={iframeUrl}
-    />
-  )
+  return <iframe className={cs(className, 'w-[400px] h-full')} src={iframeUrl} />
 }
 
 export default Preview

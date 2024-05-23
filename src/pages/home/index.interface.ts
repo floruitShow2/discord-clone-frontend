@@ -1,8 +1,8 @@
-import React from "react"
+import React from 'react'
 
 export interface Operation {
-    label: string
-    key: string
-    icon: React.ReactNode
-    handler: () => void
+  label: string
+  key: string
+  icon: React.ReactNode
+  handler: () => void
 }

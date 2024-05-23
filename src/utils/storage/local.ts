@@ -5,24 +5,32 @@ export interface StorageData<T> {
   expire: number | null
 }
 
-function useStorage() {
+type StorageKey = `--discord-${string}-record-key`
+
+export interface UseStorageEntity {
+  genKey: (id: string) => StorageKey
+  get: <T>(key: StorageKey) => T | null
+  set: <T>(key: StorageKey, val: T, expire?: number) => void
+  remove: (key: StorageKey) => void
+  clear: () => void
+}
+
+function useStorage(): UseStorageEntity {
   /** 默认缓存期限为7天 */
   const DEFAULT_CACHE_TIME = 60 * 60 * 24 * 7
-
-  type StorageKey = `--discord-${string}-record-key`
 
   function genKey(id: string): StorageKey {
     return `--discord-${id}-record-key`
   }
 
-  function remove(key: string) {
+  function remove(key: StorageKey) {
     localStorage.removeItem(key)
   }
   function clear() {
     localStorage.clear()
   }
 
-  function set<T>(key: string, val: T, expire: number = DEFAULT_CACHE_TIME) {
+  function set<T>(key: StorageKey, val: T, expire: number = DEFAULT_CACHE_TIME) {
     const storageData: StorageData<T> = {
       value: val,
       expire: expire ? new Date().getTime() + expire * 1000 : null
@@ -32,7 +40,7 @@ function useStorage() {
     localStorage.setItem(key, json)
   }
 
-  function get<T>(key: string): T | null {
+  function get<T>(key: StorageKey): T | null {
     const json = localStorage.getItem(key)
     if (!json) return null
 

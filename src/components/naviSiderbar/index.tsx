@@ -43,18 +43,18 @@ function NaviSiderbar() {
 
   const { session } = useSession()
   const { servers, loading } = useServers()
-  const [serversVisible, setServersVisible] = useState(false)  
+  const [serversVisible, setServersVisible] = useState(false)
   const genServers = () => {
-    return <Skeleton loading={loading} image={{ shape: 'circle' }}>
-      {
-        servers.map(server => (
+    return (
+      <Skeleton loading={loading} image={{ shape: 'circle' }}>
+        {servers.map((server) => (
           <div key={server.id}>
             <UserAvatar username={server.name} avatar={server.imageUrl}></UserAvatar>
             {/* <span>{server.name}</span> */}
           </div>
-        ))
-      }
-    </Skeleton>
+        ))}
+      </Skeleton>
+    )
   }
 
   useEffect(() => {
@@ -64,11 +64,11 @@ function NaviSiderbar() {
   return (
     <div className="w-full h-full py-2 flex flex-col items-center gap-2 justify-start border-r border-primary-b">
       {/* tools */}
-      <div className='flex flex-col items-center gap-2 justify-start pb-3 mb-3 border-b border-primary-b'>
+      <div className="flex flex-col items-center gap-2 justify-start pb-3 mb-3 border-b border-primary-b">
         {genButtons()}
       </div>
       {/* servers */}
-      <div className='flex flex-col items-center gap-3 justify-start'>
+      <div className="flex flex-col items-center gap-3 justify-start">
         {serversVisible && genServers()}
       </div>
     </div>

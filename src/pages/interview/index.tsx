@@ -23,7 +23,7 @@ function App() {
 
   const handleCompile = () => {
     if (!code) return
-    const otherCode =`
+    const otherCode = `
       function add(a, b) {
           return a + b;
       }
@@ -32,9 +32,9 @@ function App() {
     const url = URL.createObjectURL(new Blob([otherCode], { type: 'application/javascript' }))
     const transformImportSourcePlugin: PluginObj = {
       visitor: {
-          ImportDeclaration(path) {
-              path.node.source.value = url;
-          }
+        ImportDeclaration(path) {
+          path.node.source.value = url
+        }
       }
     }
     const res = transform(code, {
@@ -66,51 +66,54 @@ function App() {
   }
 
   const Aside: React.FC = () => {
-    return <aside className="h-full bg-primary">
-      侧边栏，预览题目【markdown】
-      <Button onClick={handleCompile}>Play</Button>
-    </aside>
+    return (
+      <aside className="h-full bg-primary">
+        侧边栏，预览题目【markdown】
+        <Button onClick={handleCompile}>Play</Button>
+      </aside>
+    )
   }
   const Main: React.FC = () => {
-    return <main className="h-full bg-primary">
-      <ResizeBox.Split
-        className='w-full h-full'
-        direction='vertical'
-        max={0.8}
-        min={0.2}
-        panes={[(
-          <div className='h-[500px]'>
-            <MonacoEditor
-              path={'guang.tsx'}
-              language={'typescript'}
-              value={code}
-              theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
-              options={{
-                fontSize: 16,
-                scrollBeyondLastLine: false,
-                minimap: {
-                  enabled: false
-                },
-                scrollbar: {
-                  verticalScrollbarSize: 6,
-                  horizontalScrollbarSize: 6
-                }
-              }}
-              onMount={handleEditorMount}
-              onChange={handleValueChange}
-            ></MonacoEditor>
-          </div>
-        ), (
-          <Preview className='h-[500px]' url=''></Preview>
-        )]}
-      />
-    </main>
+    return (
+      <main className="h-full bg-primary">
+        <ResizeBox.Split
+          className="w-full h-full"
+          direction="vertical"
+          max={0.8}
+          min={0.2}
+          panes={[
+            <div className="h-[500px]">
+              <MonacoEditor
+                path={'guang.tsx'}
+                language={'typescript'}
+                value={code}
+                theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
+                options={{
+                  fontSize: 16,
+                  scrollBeyondLastLine: false,
+                  minimap: {
+                    enabled: false
+                  },
+                  scrollbar: {
+                    verticalScrollbarSize: 6,
+                    horizontalScrollbarSize: 6
+                  }
+                }}
+                onMount={handleEditorMount}
+                onChange={handleValueChange}
+              ></MonacoEditor>
+            </div>,
+            <Preview className="h-[500px]" url=""></Preview>
+          ]}
+        />
+      </main>
+    )
   }
 
   return (
     <div className="w-full h-full flex items-start justify-between">
       <ResizeBox.SplitGroup
-        className='w-full h-full'
+        className="w-full h-full"
         panes={[
           {
             content: <Aside />,

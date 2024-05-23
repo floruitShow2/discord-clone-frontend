@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^2.2.3",
     "@typescript/ata": "^0.9.4",
     "apollo-upload-client": "^18.0.1",
+    "axios": "^1.7.2",
     "crypto-js": "^4.2.0",
     "graphql": "^16.8.1",
     "immer": "^10.0.4",
