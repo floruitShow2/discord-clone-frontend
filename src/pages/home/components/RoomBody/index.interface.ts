@@ -1,10 +1,10 @@
 import { HTMLAttributes } from 'react'
 
 export interface BaseProps extends HTMLAttributes<HTMLElement> {
-  info: ApiRoom.RoomEntity
+  info: Room.RoomEntity
   showDetails?: boolean
-  onConfigChange: <K extends keyof ApiRoom.RoomEntity>(
+  onConfigChange: <K extends keyof Room.RoomEntity>(
     code: K,
-    newVal: ApiRoom.RoomEntity[K]
+    newVal: Room.RoomEntity[K]
   ) => void
 }

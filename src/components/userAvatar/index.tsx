@@ -22,7 +22,7 @@ function UserAvatar(props: BaseProps) {
         )}
       >
         <Avatar
-          className="bg-module rounded-md cursor-pointer transition-colors hover:bg-module-2"
+          className="bg-primary rounded-md cursor-pointer transition-colors"
           shape="square"
           size={40}
         >

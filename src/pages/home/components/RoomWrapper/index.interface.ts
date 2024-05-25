@@ -1,9 +1,9 @@
 import { HTMLAttributes } from 'react'
 
 export interface RoomWrapperProps extends HTMLAttributes<HTMLElement> {
-  room: ApiRoom.RoomEntity | null
-  onConfigChange: <K extends keyof ApiRoom.RoomEntity>(
+  room: Room.RoomEntity | null
+  onConfigChange: <K extends keyof Room.RoomEntity>(
     code: K,
-    newVal: ApiRoom.RoomEntity[K]
+    newVal: Room.RoomEntity[K]
   ) => void
 }

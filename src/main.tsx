@@ -4,11 +4,9 @@ import { useNavigate, BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { ConfigProvider } from '@arco-design/web-react'
 import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react'
-import { ApolloProvider } from '@apollo/client'
 import { store } from '@/store'
 import BaseLayout from '@/layouts/BaseLayout'
 import GeneralModal from '@/components/modals'
-import client from './apolloClient'
 import '@arco-design/web-react/dist/css/arco.css'
 import './index.css'
 
@@ -47,11 +45,11 @@ const RouterComponent = () => {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ConfigProvider>
-    <ApolloProvider client={client}>
+    {/* <ApolloProvider client={client}> */}
       <BrowserRouter>
         <RouterComponent />
       </BrowserRouter>
-    </ApolloProvider>
+    {/* </ApolloProvider> */}
   </ConfigProvider>
 )
 

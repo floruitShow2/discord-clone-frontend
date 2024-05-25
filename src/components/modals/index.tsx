@@ -15,8 +15,6 @@ function CreateServerModal() {
 
   const { userInfo } = useSelector((state: RootState) => state.user)
 
-  const [createServer, { loading }] = useMutation<Mutation, MutationCreateServerArgs>(CREATE_SERVER)
-
   const [avatar, setAvatar] = useState<AvatarItem | null>(null)
 
   const handleAvatarUpload = (files: UploadItem[], currentFile: UploadItem) => {
@@ -31,22 +29,6 @@ function CreateServerModal() {
   const onSubmit = async () => {
     if (!serverName || !avatar?.url) return false
     if (!userInfo?.id) return false
-
-    createServer({
-      variables: {
-        server: {
-          name: serverName,
-          profileId: userInfo?.id
-        },
-        file: avatar.originFile
-      },
-      onCompleted() {
-        setAvatar(null)
-        setServerName('')
-        closeModal()
-      }
-    })
-
     return false
   }
 

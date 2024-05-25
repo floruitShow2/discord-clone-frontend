@@ -26,6 +26,7 @@ class CustomAxiosInstance {
     this.storage = useStorage()
     this.instance = axios.create(axiosConfig)
     this.backendConfig = backendConfig
+    this.setInterceptor()
   }
 
   /**
@@ -50,7 +51,7 @@ class CustomAxiosInstance {
 
     this.instance.interceptors.response.use(
       (async (response) => {
-        const { status } = response.data
+        const { status } = response
         if (status < 300 || status === 304) {
           const backend = response.data
           const { codeKey, dataKey, msgKey, successCode, failCode } = this.backendConfig

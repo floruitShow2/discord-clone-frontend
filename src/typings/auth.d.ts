@@ -1,9 +1,16 @@
 declare namespace User {
   interface UserEntity {
-    id: number
-    name: string
-    imageUrl: string
-    email?: string
+    avatar: string
+    email: string
+    introduction: string
+    job: string
+    location: string
+    organization: string
+    phone: string
+    registrationDate: string
+    socialAccounts: string[]
+    userId: string
+    username: string
     /**
      * @description 0-离线    1-在线
      */

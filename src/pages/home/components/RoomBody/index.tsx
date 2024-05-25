@@ -1,6 +1,7 @@
-import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Modal } from '@arco-design/web-react'
 import { IconPen, IconQrcode } from '@arco-design/web-react/icon'
+import { FetchMessageList } from '@/api/chat-message'
 import UserAvatar from '@/components/userAvatar'
 import CellGroup, { type CellConfig } from '@/components/cellGroup'
 import MemeberList from '../MembersList'
@@ -94,53 +95,21 @@ function RoomBody(props: BaseProps) {
     ]
   }
 
-  const messages: ApiRoom.MessageEntity[] = [
-    {
-      type: 'text',
-      content: {
-        id: 'msg-1',
-        user: {
-          userId: 'user-1',
-          username: 'Meleon',
-          avatar: 'https://avatars.githubusercontent.com/u/82753320?v=4',
-          state: 1
-        },
-        metions: [],
-        publishTime: '4月21日 16:42',
-        text: '这是一条测试数据aaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-      }
-    },
-    {
-      type: 'text',
-      content: {
-        id: 'msg-2',
-        user: {
-          userId: 'user-2',
-          username: 'Alice',
-          avatar: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
-          state: 1
-        },
-        metions: [],
-        publishTime: '4月21日 16:48',
-        text: '这是另一条测试数据'
-      }
-    },
-    {
-      type: 'image',
-      content: {
-        id: 'msg-3',
-        user: {
-          userId: 'user-2',
-          username: 'Alice',
-          avatar: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
-          state: 1
-        },
-        metions: [],
-        publishTime: '4月21日 16:48',
-        url: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png'
-      }
+  const [messages, setMessages] = useState<Message.Entity[]>([])
+
+  const initMessage = async () => {
+    try {
+      const { data } = await FetchMessageList({ roomId: info.roomId, page: 1, pageSize: 10 })
+      if (!data) return
+      setMessages(data)
+    } catch (err) {
+      console.log(err)
     }
-  ]
+  }
+
+  useEffect(() => {
+    initMessage()
+  }, [])
 
   return (
     <>

@@ -2,15 +2,13 @@ import { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from '@arco-design/web-react'
-import { useAuth, useSession } from '@clerk/clerk-react'
-import { useMutation } from '@apollo/client'
+import { useAuth, useUser } from '@clerk/clerk-react'
 import type { RootState } from '@/store'
 import { setUserInfo } from '@/store/slices/user.slice'
 import useRoute, { IRoute } from '@/routes'
 import { isArray } from '@/utils/is'
 import { changeTheme } from '@/utils/settings'
-import { CREATE_PROFILE } from '@/graphql/mutations/profile'
-import { MemberRole, Mutation, MutationCreateProfileArgs } from '@/gql/graphql'
+import { MemberRole } from '@/gql/graphql'
 import NaviHeader from '@/components/naviHeader'
 import NaviSidebar from '@/components/naviSiderbar'
 
@@ -43,7 +41,6 @@ function BaseLayout() {
   const Content = Layout.Content
 
   const { theme } = useSelector((state: RootState) => state.settings)
-  const { userInfo } = useSelector((state: RootState) => state.user)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -51,38 +48,15 @@ function BaseLayout() {
   }, [theme])
 
   const { isSignedIn } = useAuth()
-  const { session } = useSession()
-  const [createProfile] = useMutation<Mutation, MutationCreateProfileArgs>(CREATE_PROFILE, {})
-  const createProfileFn = async () => {
-    if (!session?.user) return
-    try {
-      await createProfile({
-        variables: {
-          profile: {
-            name: session?.user.fullName || '',
-            email: session.user.emailAddresses[0].emailAddress,
-            imageUrl: session?.user.imageUrl
-          }
-        },
-        onCompleted: (data) => {
-          dispatch(setUserInfo(data.createProfile))
-        }
-      })
-    } catch (err) {
-      console.log(`Error occurred when creating profile in backend`, err)
-    }
-  }
+  const user = useUser()
 
   const [routes, defaultRoute] = useRoute(MemberRole.Admin)
   const flattenRoutes = useMemo(() => getFlattenRoutes(routes), [routes])
 
   useEffect(() => {
     if (!isSignedIn) dispatch(setUserInfo(null))
+    console.log(user)
   }, [isSignedIn])
-  useEffect(() => {
-    if (userInfo?.id) return
-    createProfileFn()
-  }, [session?.user])
 
   return (
     <Layout className="h-full">

@@ -1,38 +1,4 @@
-declare namespace ApiRoom {
-  type PartialUser = Pick<User.UserEntity, 'avatar' | 'state' | 'username' | 'userId'>
-  /**
-   * 关于回复消息，需要考虑下，回复和接收用的结构有点不同
-   */
-  interface BaseMessage {
-    /**
-     * @description 消息的唯一标识符
-     */
-    id: string
-    /**
-     * @description 发布消息的用户
-     */
-    user: PartialUser
-    /**
-     * @description 消息提及的用户
-     */
-    metions: PartialUser[]
-    /**
-     * @description 发布时间
-     */
-    publishTime: string
-  }
-
-  interface TextMessage extends BaseMessage {
-    content: string
-  }
-
-  interface ImageMessage extends BaseMessage {
-    url: string
-  }
-
-  type MessageEntity =
-    | { type: MessageType.TEXT; content: TextMessage }
-    | { type: MessageType.IMAGE; content: ImageMessage }
+declare namespace Room {
 
   interface RoomEntity {
     roomId: string
@@ -55,7 +21,5 @@ declare namespace ApiRoom {
      * @description 房间创建时间
      */
     createTime: string
-
-    messages: MessageEntity[]
   }
 }

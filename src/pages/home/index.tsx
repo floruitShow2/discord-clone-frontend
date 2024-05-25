@@ -18,12 +18,12 @@ import styles from './index.module.less'
 function HomePage() {
   const [serachQuery, setSearchQuery] = useState('')
 
-  const [activeRoom, setActiveRoom] = useState<ApiRoom.RoomEntity | null>(null)
+  const [activeRoom, setActiveRoom] = useState<Room.RoomEntity | null>(null)
 
-  const rooms: ApiRoom.RoomEntity[] = new Array(1).fill(0).map(
-    (item, index) =>
+  const rooms: Room.RoomEntity[] = new Array(1).fill(0).map(
+    () =>
       ({
-        roomId: Math.random().toFixed(10),
+        roomId: '6649fb83035a382e127368db',
         roomName: '测试房间',
         roomCover: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
         isPinned: true,
@@ -46,7 +46,7 @@ function HomePage() {
             }
           }
         ]
-      }) as ApiRoom.RoomEntity
+      }) as Room.RoomEntity
   )
   const genRooms = () => {
     return rooms.map((room) => (
@@ -59,9 +59,9 @@ function HomePage() {
     ))
   }
 
-  const changeRoomConfig = <K extends keyof ApiRoom.RoomEntity>(
+  const changeRoomConfig = <K extends keyof Room.RoomEntity>(
     code: K,
-    newVal: ApiRoom.RoomEntity[K]
+    newVal: Room.RoomEntity[K]
   ) => {
     const newState = produce(activeRoom, (draftState) => {
       if (draftState) draftState[code] = newVal

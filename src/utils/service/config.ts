@@ -27,3 +27,24 @@ export const ErrorStatusEnum = {
   505: '505: http版本不支持该请求~',
   [NetworkErrorEnum.DEFAULT_ERROR_CODE]: NetworkErrorEnum.DEFAULT_ERROR_MESSAGE
 }
+
+/** 不同请求服务的环境配置 */
+const serviceEnv: Record<ServiceEnv.ServiceEnvType, ServiceEnv.ServiceEnvConfig> = {
+  development: {
+    url: 'http://localhost:3000'
+    // url: 'http://192.168.124.40:3000'
+  },
+  production: {
+    url: 'http://47.99.102.151:3000'
+  }
+}
+
+/**
+ * @params env 环境变量
+ */
+export const getServiceEnvConfig = (env: ImportMetaEnv): ServiceEnv.ServiceEnvConfig => {
+  const { VITE_ENV_MODE = 'development' } = env
+  const config = serviceEnv[VITE_ENV_MODE]
+
+  return { ...config }
+}
