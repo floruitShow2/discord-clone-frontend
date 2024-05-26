@@ -1,6 +1,7 @@
 export enum MessageType {
   TEXT = 'text',
-  IMAGE = 'image'
+  IMAGE = 'image',
+  TIMESTAMP = 'timestamp'
 }
 
 export enum SocketEmitEvents {

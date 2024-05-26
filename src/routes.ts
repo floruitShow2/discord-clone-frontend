@@ -14,6 +14,20 @@ export type IRoute = {
   children?: IRoute[]
 }
 
+const actionRoutes: IRoute[] = [
+  {
+    path: '/action',
+    key: 'action',
+    children: [
+      {
+        path: '/action/join',
+        key: 'action/join',
+        component: lazy(() => import('@/pages/action/join/index.tsx'))
+      }
+    ]
+  }
+]
+
 export const routes: IRoute[] = [
   {
     path: '/dashboard',
@@ -31,6 +45,7 @@ export const routes: IRoute[] = [
       }
     ]
   },
+  ...actionRoutes,
   {
     path: '/login',
     key: 'login',

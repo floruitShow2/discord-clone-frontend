@@ -1,4 +1,3 @@
-import * as React from 'react'
 import UserAvatar from '@/components/userAvatar'
 import type { BaseProps } from './index.interface'
 import { cs } from '@/utils/property'
@@ -29,7 +28,7 @@ function MemeberList(props: BaseProps) {
       </ul>
       <div className="w-full mt-2 flex items-center justify-center">
         <span className="cursor-pointer text-sm leading-6 text-primary-l hover:text-blue-500">
-          view all（21/100）
+          view all（{members.length}/100）
         </span>
       </div>
     </div>

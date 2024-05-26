@@ -21,7 +21,7 @@ function LoginPanel() {
       if (!data) return
       set(tokenKey, data.accessToken)
       // setLoginInfo({ username: '', password: '' })
-      window.location.href = '/'
+      location.pathname = '/'
     } catch (err) {
       console.log(err)
     }

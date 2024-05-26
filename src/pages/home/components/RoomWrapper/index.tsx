@@ -10,7 +10,7 @@ import RoomBody from '../RoomBody'
 import RoomInput from '../RoomInput'
 import { RoomWrapperProps } from './index.interface'
 import styles from './index.module.less'
-
+import { transalteMessagesByTime } from '@/utils/time'
 
 function RoomWrapper(props: RoomWrapperProps) {
   const { room, onConfigChange } = props
@@ -19,14 +19,19 @@ function RoomWrapper(props: RoomWrapperProps) {
   const currentUser = useRef<User.UserEntity | null>()
 
   const [messages, setMessages] = useState<Message.Entity[]>([])
-  const [pageOptions, setPageOptions] = useState<Pagination.Input>({ page: 1, pageSize: 10 })
-  const isNearBottom = useRef<Boolean>(true)
+  const [formatMessages, setFormatMessages] = useState<Message.Entity[]>([])
+
+  const [pageOptions, setPageOptions] = useState<Pagination.Input>({ page: 1, pageSize: 15 })
   const initMessage = async () => {
     if (!room) return
     try {
       const { data } = await FetchMessageList({ roomId: room.roomId, ...pageOptions })
       if (!data || !data?.length) return
-      setMessages([...data, ...messages])
+      const totalMessages = pageOptions.page === 1
+        ? [...data]
+        : [...data, ...messages]
+      setMessages(totalMessages)
+      setFormatMessages(transalteMessagesByTime(totalMessages))
     } catch (err) {
       console.log(err)
     }
@@ -65,6 +70,8 @@ function RoomWrapper(props: RoomWrapperProps) {
   const handlePageChange = async () => {
     setPageOptions((prevVal) => ({ ...pageOptions, page: prevVal.page + 1 }))
   }
+
+  const isNearBottom = useRef<Boolean>(true)
   const handleAllowScrollChange = (nearBottom: boolean) => {
     isNearBottom.current = nearBottom
   }
@@ -78,7 +85,7 @@ function RoomWrapper(props: RoomWrapperProps) {
   }, [pageOptions])
 
   useEffect(() => {
-    initMessage()
+    setPageOptions({ page: 1, pageSize: 15 })
     initSocket()
   }, [room])
 
@@ -89,7 +96,8 @@ function RoomWrapper(props: RoomWrapperProps) {
         <RoomBody
           className={styles['room-body']}
           info={room}
-          messages={messages}
+          messages={formatMessages}
+          currentPage={pageOptions.page}
           onAllowScrollChange={handleAllowScrollChange}
           onPageChange={handlePageChange}
           onConfigChange={onConfigChange}
