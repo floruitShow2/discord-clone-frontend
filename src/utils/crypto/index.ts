@@ -1,5 +1,5 @@
 import CryptoJS from 'crypto-js'
-import { StorageData } from '@/utils/storage/local'
+import { StorageData } from '@/utils/storage'
 
 const CryptoSecret = '__CryptoJS_Secret__'
 

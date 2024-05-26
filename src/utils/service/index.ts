@@ -1,5 +1,5 @@
-import { useRequest } from "./request";
-import { getServiceEnvConfig } from "./config";
+import { useRequest } from './request'
+import { getServiceEnvConfig } from './config'
 
 const { url } = getServiceEnvConfig(import.meta.env)
 

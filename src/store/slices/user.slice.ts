@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
-import type { Profile } from '@/gql/graphql'
 
-const initialUserInfo: { userInfo: Profile | null } = {
+const initialUserInfo: { userInfo: User.UserEntity | null } = {
   userInfo: null
 }
 

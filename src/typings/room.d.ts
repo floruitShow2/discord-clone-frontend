@@ -1,5 +1,4 @@
 declare namespace Room {
-
   interface RoomEntity {
     roomId: string
     /**

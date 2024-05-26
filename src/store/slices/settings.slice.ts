@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
-import useStorage from '@/utils/storage/local'
+import { useStorage } from '@/utils/storage'
+import { StorageIdEnum } from '@/constants/storage'
 
 const { genKey, get, set } = useStorage()
 
 const initialSettings: Global.Settings = {
-  theme: get(genKey('theme')) || 'light',
-  lang: get(genKey('lang')) || 'zh-CN'
+  theme: get(genKey(StorageIdEnum.APP_THEME)) || 'light',
+  lang: get(genKey(StorageIdEnum.APP_LANG)) || 'zh-CN'
 }
 
 const SettingsSlice = createSlice({
@@ -14,11 +15,11 @@ const SettingsSlice = createSlice({
   reducers: {
     toggleTheme: (state) => {
       state.theme = state.theme === 'dark' ? 'light' : 'dark'
-      set(genKey('theme'), state.theme)
+      set(genKey(StorageIdEnum.APP_THEME), state.theme)
     },
     toggleLang: (state, val) => {
       state.lang = val.payload ?? (state.lang === 'zh-CN' ? 'en-US' : 'zh-CN')
-      set(genKey('lang'), state.lang)
+      set(genKey(StorageIdEnum.APP_LANG), state.lang)
     }
   }
 })

@@ -30,6 +30,11 @@ export const routes: IRoute[] = [
         component: lazy(() => import('@/pages/interview/index.tsx'))
       }
     ]
+  },
+  {
+    path: '/login',
+    key: 'login',
+    component: lazy(() => import('@/pages/login/index.tsx'))
   }
 ]
 

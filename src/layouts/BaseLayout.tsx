@@ -1,10 +1,8 @@
 import { useEffect, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from '@arco-design/web-react'
-import { useAuth, useUser } from '@clerk/clerk-react'
 import type { RootState } from '@/store'
-import { setUserInfo } from '@/store/slices/user.slice'
 import useRoute, { IRoute } from '@/routes'
 import { isArray } from '@/utils/is'
 import { changeTheme } from '@/utils/settings'
@@ -41,22 +39,14 @@ function BaseLayout() {
   const Content = Layout.Content
 
   const { theme } = useSelector((state: RootState) => state.settings)
-  const dispatch = useDispatch()
 
   useEffect(() => {
     changeTheme(theme)
   }, [theme])
 
-  const { isSignedIn } = useAuth()
-  const user = useUser()
-
   const [routes, defaultRoute] = useRoute(MemberRole.Admin)
   const flattenRoutes = useMemo(() => getFlattenRoutes(routes), [routes])
-
-  useEffect(() => {
-    if (!isSignedIn) dispatch(setUserInfo(null))
-    console.log(user)
-  }, [isSignedIn])
+  console.log(defaultRoute)
 
   return (
     <Layout className="h-full">

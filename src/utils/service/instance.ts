@@ -1,10 +1,11 @@
 import axios, { AxiosResponse } from 'axios'
 import type { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios'
-import useStorage, { UseStorageEntity } from '@/utils/storage/local'
+import { useStorage, UseStorageEntity } from '@/utils/storage'
 import { handleAxiosError, handleBackendError, handleResponseError } from './error'
 import { handleServiceResult } from './handler'
 import { Message } from '@arco-design/web-react'
 import { REQUEST_ERROR_DURATION } from './config'
+import { StorageIdEnum } from '@/constants/storage'
 
 class CustomAxiosInstance {
   instance: AxiosInstance
@@ -35,10 +36,11 @@ class CustomAxiosInstance {
   setInterceptor() {
     this.instance.interceptors.request.use(
       async (config) => {
-        const tokenKey = this.storage.genKey('token')
+        const tokenKey = this.storage.genKey(StorageIdEnum.USER_TOKEN)
         const userToken = this.storage.get<string>(tokenKey)
         if (userToken) {
           config.headers.Authorization = `Bearer ${userToken}`
+          config.headers.user_token = userToken
         }
 
         return config

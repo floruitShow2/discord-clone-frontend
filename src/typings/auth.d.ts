@@ -1,4 +1,5 @@
 declare namespace User {
+
   interface UserEntity {
     avatar: string
     email: string
@@ -16,4 +17,10 @@ declare namespace User {
      */
     state: 0 | 1
   }
+
+  interface LoginInput {
+    username: string
+    password: string
+  }
+
 }

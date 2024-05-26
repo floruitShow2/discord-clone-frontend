@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react'
 import { Button, Modal } from '@arco-design/web-react'
 import { IconPen, IconQrcode } from '@arco-design/web-react/icon'
-import { FetchMessageList } from '@/api/chat-message'
 import UserAvatar from '@/components/userAvatar'
 import CellGroup, { type CellConfig } from '@/components/cellGroup'
 import MemeberList from '../MembersList'
 import MessageList from '../MessageList'
 import type { BaseProps } from './index.interface'
+import { useEffect } from 'react'
 
 function RoomBody(props: BaseProps) {
-  const { className, info, showDetails = true, onConfigChange } = props
+  const { className, info, messages, showDetails = true, onConfigChange } = props
 
   const members: User.UserEntity[] = new Array(21).fill(0).map(() => ({
     avatar: 'https://avatars.githubusercontent.com/u/82753320?v=4',
@@ -94,22 +93,6 @@ function RoomBody(props: BaseProps) {
       }
     ]
   }
-
-  const [messages, setMessages] = useState<Message.Entity[]>([])
-
-  const initMessage = async () => {
-    try {
-      const { data } = await FetchMessageList({ roomId: info.roomId, page: 1, pageSize: 10 })
-      if (!data) return
-      setMessages(data)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  useEffect(() => {
-    initMessage()
-  }, [])
 
   return (
     <>
