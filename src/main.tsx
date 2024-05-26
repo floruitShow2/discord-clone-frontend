@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { useNavigate, BrowserRouter } from 'react-router-dom'
 import { Provider, useDispatch } from 'react-redux'
 import { ConfigProvider } from '@arco-design/web-react'
-import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react'
+import { ClerkProvider } from '@clerk/clerk-react'
 import { store } from '@/store'
 import { setUserInfo } from '@/store/slices/user.slice'
 import { StorageIdEnum } from '@/constants/storage'
@@ -33,7 +33,6 @@ const ProtectRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   useEffect(() => {
-    console.log('a', userToken)
     if (userToken) {
       fetchUserInfo()
     } else if (window.location.pathname.replace(/\//g, '') !== 'login') {

@@ -6,9 +6,7 @@ import { RootState } from '@/store'
 import { MessageType } from '@/constants'
 import { RoomInputProps } from './index.interface'
 
-
 function RoomInput(props: RoomInputProps) {
-
   const { onMessageEmit } = props
 
   const iconBtnCls = 'cursor-pointer hover:text-blue-500'

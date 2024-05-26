@@ -1,14 +1,24 @@
-import { Button, Modal } from '@arco-design/web-react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
+import { Button, Modal, Message } from '@arco-design/web-react'
 import { IconPen, IconQrcode } from '@arco-design/web-react/icon'
 import UserAvatar from '@/components/userAvatar'
 import CellGroup, { type CellConfig } from '@/components/cellGroup'
 import MemeberList from '../MembersList'
 import MessageList from '../MessageList'
 import type { BaseProps } from './index.interface'
-import { useEffect } from 'react'
 
-function RoomBody(props: BaseProps) {
-  const { className, info, messages, showDetails = true, onConfigChange } = props
+const RoomBody = (props: BaseProps) => {
+  const {
+    className,
+    info,
+    messages,
+    showDetails = true,
+    onPageChange,
+    onConfigChange,
+    onAllowScrollChange
+  } = props
+
+  const msgWrapperRef = useRef<HTMLUListElement>(null)
 
   const members: User.UserEntity[] = new Array(21).fill(0).map(() => ({
     avatar: 'https://avatars.githubusercontent.com/u/82753320?v=4',
@@ -94,10 +104,47 @@ function RoomBody(props: BaseProps) {
     ]
   }
 
+  const getWrapperRect = () => {
+    if (!msgWrapperRef.current) return {}
+    const { scrollHeight, clientHeight, scrollTop } = msgWrapperRef.current
+    const maxScrollTop = scrollHeight - clientHeight
+    console.log(maxScrollTop, scrollHeight, clientHeight, scrollTop)
+    const isNearBottomNow = scrollTop >= maxScrollTop - clientHeight
+
+    return { scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow }
+  }
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!msgWrapperRef.current) return
+      const { scrollTop = 0, isNearBottomNow = true } = getWrapperRect()
+      onAllowScrollChange(isNearBottomNow)
+      if (scrollTop < 50) onPageChange()
+    }
+
+    const container = msgWrapperRef.current
+    if (!container) return
+    container.addEventListener('scroll', handleScroll)
+    return () => {
+      container.removeEventListener('scroll', handleScroll)
+    }
+  }, [msgWrapperRef])
+
+  useEffect(() => {
+    if (!msgWrapperRef.current) return
+
+    msgWrapperRef.current.scrollIntoView({ behavior: 'smooth' })
+    const { isNearBottomNow, maxScrollTop } = getWrapperRect() 
+
+    if (isNearBottomNow) {
+      msgWrapperRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0
+    }
+  }, [messages])
+
   return (
     <>
       <div className={`${className} flex items-start justify-between`}>
-        <main className="flex-1 h-full bg-module overflow-auto">
+        <main ref={msgWrapperRef} className="flex-1 h-full bg-module overflow-auto">
           <MessageList msgs={messages} />
         </main>
         {showDetails && (

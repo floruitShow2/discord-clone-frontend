@@ -17,7 +17,7 @@ function UserAvatar(props: BaseProps) {
           styles['user-avatar'],
           state ? styles['user-avatar--' + userStateColorMap[state]] : '',
           {
-            [styles['user-avatar--no-state']]: !showState
+            [styles['user-avatar--no-state']]: !showState || state === undefined
           }
         )}
       >

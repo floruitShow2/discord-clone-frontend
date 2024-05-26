@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { Button } from '@arco-design/web-react'
 import { IconMoreVertical, IconSearch } from '@arco-design/web-react/icon'
 import UserAvatar from '@/components/userAvatar'
@@ -9,7 +8,7 @@ function RoomHeader(props: BaseProps) {
 
   return (
     <div className="w-full h-16 p-3 flex items-center justify-between border-b border-primary-b">
-      <UserAvatar username={info.roomName} avatar={info.roomCover} state={0} showName />
+      <UserAvatar username={info.roomName} avatar={info.roomCover} showName />
 
       <div className="flex items-center justify-end">
         <Button className="!text-primary-l" type="text" icon={<IconSearch />} />

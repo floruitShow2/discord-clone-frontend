@@ -1,9 +1,9 @@
+import { useSelector } from 'react-redux'
 import { Image } from '@arco-design/web-react'
+import { RootState } from '@/store'
 import { cs } from '@/utils/property'
 import UserAvatar from '@/components/userAvatar'
 import type { BaseProps } from './index.interface'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
 
 function MessageList(props: BaseProps) {
   const { className, msgs } = props
@@ -54,9 +54,12 @@ function MessageList(props: BaseProps) {
               avatar={profile.avatar}
               showState={false}
             />
-            <div className={
-              cs('max-w-[70%] flex flex-col items-start justify-start', isSelf(msg) ? 'items-end' : '')
-            }>
+            <div
+              className={cs(
+                'max-w-[70%] flex flex-col items-start justify-start',
+                isSelf(msg) ? 'items-end' : ''
+              )}
+            >
               <div
                 className={cs(
                   'mb-1 flex gap-x-3 items-center justify-start',

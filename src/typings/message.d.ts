@@ -49,7 +49,8 @@ declare namespace Message {
     roomId: string
   }
 
-  interface CreateMessageInput extends Omit<Entity, 'messageId' | 'metions' | 'createTime' | 'profile'> {
+  interface CreateMessageInput
+    extends Omit<Entity, 'messageId' | 'metions' | 'createTime' | 'profile'> {
     profileId: string
   }
 }

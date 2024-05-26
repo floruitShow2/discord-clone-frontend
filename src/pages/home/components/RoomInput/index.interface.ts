@@ -1,5 +1,5 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes } from 'react'
 
 export interface RoomInputProps extends HTMLAttributes<HTMLElement> {
-    onMessageEmit: (createMessageInput: Message.CreateMessageInput) => void
+  onMessageEmit: (createMessageInput: Message.CreateMessageInput) => void
 }

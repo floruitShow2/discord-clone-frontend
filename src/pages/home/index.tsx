@@ -9,6 +9,7 @@ import {
   IconSettings,
   IconShareAlt
 } from '@arco-design/web-react/icon'
+import { FetchRoomList } from '@/api/chat-room'
 import { cs } from '@/utils/property'
 import RoomCard from './components/RoomCard'
 import RoomWrapper from './components/RoomWrapper'
@@ -20,34 +21,17 @@ function HomePage() {
 
   const [activeRoom, setActiveRoom] = useState<Room.RoomEntity | null>(null)
 
-  const rooms: Room.RoomEntity[] = new Array(1).fill(0).map(
-    () =>
-      ({
-        roomId: '6649fb83035a382e127368db',
-        roomName: '测试房间',
-        roomCover: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
-        isPinned: true,
-        noDisturbing: false,
-        createTime: '2024年4月21日',
-        messages: [
-          {
-            type: 'text',
-            content: {
-              id: '1',
-              user: {
-                userId: 'user-1',
-                avatar: 'http://127.0.0.1:3000/static/files/meleon/avatar/kanban method-rafiki.png',
-                username: 'Meleon',
-                state: 0
-              },
-              metions: [],
-              publishTime: '2024年4月23日',
-              content: '测试测试'
-            }
-          }
-        ]
-      }) as Room.RoomEntity
-  )
+  const [rooms, setRooms] = useState<Room.RoomEntity[]>([])
+  const initRooms = async () => {
+    try {
+      const { data } = await FetchRoomList()
+      if (!data || !data?.length) return
+      setRooms(data)
+      setActiveRoom(data[0])
+    } catch (err) {
+      console.log(err)
+    }
+  }
   const genRooms = () => {
     return rooms.map((room) => (
       <RoomCard
@@ -106,8 +90,7 @@ function HomePage() {
   ]
 
   useEffect(() => {
-    // connect the first room by default
-    if (rooms.length) setActiveRoom(rooms[0])
+    initRooms()
   }, [])
 
   return (
