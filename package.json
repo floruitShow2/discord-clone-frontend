@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "vite --host --config ./config/vite.config.dev.ts",
+    "build": "vue-tsc --noEmit && vite build --config ./config/vite.config.prod.ts",
     "preview": "vite preview",
-    "format": "prettier --write \"src/**/*.{tsx,ts}\"",
+    "format": "prettier --write \"src/**/*.{tsx,ts}\" \"config/**/*.ts\"",
     "lint": "eslint src/ --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix --cache"
   },
   "dependencies": {

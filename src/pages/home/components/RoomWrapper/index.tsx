@@ -18,19 +18,21 @@ function RoomWrapper(props: RoomWrapperProps) {
   const { userInfo } = useSelector((state: RootState) => state.user)
   const currentUser = useRef<User.UserEntity | null>()
 
+  // 消息列表
   const [messages, setMessages] = useState<Message.Entity[]>([])
   const [formatMessages, setFormatMessages] = useState<Message.Entity[]>([])
-
+  // 分页参数
   const [pageOptions, setPageOptions] = useState<Pagination.Input>({ page: 1, pageSize: 15 })
+
   const initMessage = async () => {
     if (!room) return
     try {
       const { data } = await FetchMessageList({ roomId: room.roomId, ...pageOptions })
       if (!data || !data?.length) return
-      const totalMessages = pageOptions.page === 1
-        ? [...data]
-        : [...data, ...messages]
+      const totalMessages = pageOptions.page === 1 ? [...data] : [...data, ...messages]
+      // 设置原始消息数据
       setMessages(totalMessages)
+      // 原始数据经过处理后再设置，页面展示这些
       setFormatMessages(transalteMessagesByTime(totalMessages))
     } catch (err) {
       console.log(err)
@@ -41,7 +43,7 @@ function RoomWrapper(props: RoomWrapperProps) {
   const initSocket = () => {
     // connect the first room by default
     const socketInstance = io('http://localhost:3001', {
-      query: { roomId: '6649fb83035a382e127368db' }
+      query: { roomId: room?.roomId }
     })
     setSocket(socketInstance)
     if (!socket) return

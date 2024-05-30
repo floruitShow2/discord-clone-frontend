@@ -5,10 +5,13 @@ import { Login } from '@/api/auth'
 import { useStorage } from '@/utils/storage'
 import { StorageIdEnum } from '@/constants/storage'
 import './index.less'
+import { useLocation } from 'react-router-dom'
 
 const FormItem = Form.Item
 
 function LoginPanel() {
+  const { search } = useLocation()
+
   const { genKey, set } = useStorage()
   const tokenKey = genKey(StorageIdEnum.USER_TOKEN)
 
@@ -20,8 +23,10 @@ function LoginPanel() {
       const { data } = await Login(info)
       if (!data) return
       set(tokenKey, data.accessToken)
+      const queryParams = new URLSearchParams(location.search)
       // setLoginInfo({ username: '', password: '' })
-      location.pathname = '/'
+      alert(queryParams.get('redirect'))
+      location.pathname = queryParams.get('redirect') ?? '/'
     } catch (err) {
       console.log(err)
     }

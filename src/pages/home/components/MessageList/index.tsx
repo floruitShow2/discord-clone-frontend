@@ -7,7 +7,6 @@ import type { BaseProps } from './index.interface'
 import { MessageType } from '@/constants'
 
 function NormalMessage(props: { msg: Message.Entity }) {
-
   const { msg } = props
   const { messageId, profile, createTime } = msg
 
@@ -38,14 +37,11 @@ function NormalMessage(props: { msg: Message.Entity }) {
         return genImageMsg(msg)
     }
   }
-  
+
   return (
     <li
       key={messageId}
-      className={cs(
-        'w-full py-4 mb-3 flex items-start',
-        isSelf(msg) ? 'flex-row-reverse' : ''
-      )}
+      className={cs('w-full py-4 mb-3 flex items-start', isSelf(msg) ? 'flex-row-reverse' : '')}
     >
       <UserAvatar
         className={cs(isSelf(msg) ? 'ml-2' : 'mr-2')}
@@ -76,7 +72,7 @@ function NormalMessage(props: { msg: Message.Entity }) {
 
 function MarkerMessage(props: { msg: Message.Entity }) {
   const { msg } = props
-  return <li className='w-full text-xs text-primary-l text-center'>{ msg.content }</li>
+  return <li className="w-full text-xs text-primary-l text-center">{msg.content}</li>
 }
 
 function MessageList(props: BaseProps) {

@@ -10,59 +10,67 @@ import { RoomDetailsProps } from './index.interface'
 import { formatToDateTime } from '@/utils/time'
 
 function QrcodeCardWrapper(props: RoomDetailsProps) {
-    const { info } = props
+  const { info } = props
 
-    const [qrcodeUrl, setQrcodeUrl] = useState<string>('')
-    const initQrcode = async () => {
-        try {
-            const { data } = await FetchInviteCode(info.roomId)
-            if (!data) return
-            const targetUrl = `${import.meta.env.VITE_APP_URL}/action/join?inviteCode=${data}`
-            console.log(targetUrl)
-            Qrcode.toDataURL(targetUrl, {
-                type: 'image/png',
-                errorCorrectionLevel: 'H',
-                color: {
-                    dark: '#555555',
-                    light: '#ffffff'
-                }
-            }, function(err, url) {
-                console.log(err)
-                setQrcodeUrl(url)
-            })
-        } catch (err) {
-            console.log(err)
+  const [qrcodeUrl, setQrcodeUrl] = useState<string>('')
+  const initQrcode = async () => {
+    try {
+      const { data } = await FetchInviteCode(info.roomId)
+      if (!data) return
+      const targetUrl = `${import.meta.env.VITE_APP_URL}/action/join?inviteCode=${data}`
+      console.log(targetUrl)
+      Qrcode.toDataURL(
+        targetUrl,
+        {
+          type: 'image/png',
+          errorCorrectionLevel: 'H',
+          color: {
+            dark: '#555555',
+            light: '#ffffff'
+          }
+        },
+        function (err, url) {
+          console.log(err)
+          setQrcodeUrl(url)
         }
+      )
+    } catch (err) {
+      console.log(err)
     }
+  }
 
-    const handleDownloadQrcode = () => {
-        const a = document.createElement('a')
-        a.download = `${info.roomName}-${formatToDateTime(new Date())}.png`
-        a.href = qrcodeUrl
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-    }
+  const handleDownloadQrcode = () => {
+    const a = document.createElement('a')
+    a.download = `${info.roomName}-${formatToDateTime(new Date())}.png`
+    a.href = qrcodeUrl
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }
 
-    useEffect(() => {
-        initQrcode()
-    }, [])
+  useEffect(() => {
+    initQrcode()
+  }, [])
 
-    return (
-        <div className='w-full h-full'>
-            <div className='w-full p-4 mb-8 flex flex-col items-start justify-center rounded-md shadow-md'>
-                <span className='mb-2 text-md text-primary-l'>{info.roomName}</span>
-                <p className='mb-2 p-2 rounded-md text-sm text-light-l bg-module'>通过扫描下方二维码加入群聊，分享前请注意甄别对方信息，避免群聊信息泄露</p>
-                <div className='w-full h-60 flex items-center justify-center'>
-                    <img className='h-full' src={qrcodeUrl} alt="" />
-                </div>
-            </div>
-            <div className='w-full flex gap-x-4 items-center justify-center'>
-                <Button type='primary' onClick={handleDownloadQrcode}>保存到本地</Button>
-                <Button disabled>分享</Button>
-            </div>
+  return (
+    <div className="w-full h-full">
+      <div className="w-full p-4 mb-8 flex flex-col items-start justify-center rounded-md shadow-md">
+        <span className="mb-2 text-md text-primary-l">{info.roomName}</span>
+        <p className="mb-2 p-2 rounded-md text-sm text-light-l bg-module">
+          通过扫描下方二维码加入群聊，分享前请注意甄别对方信息，避免群聊信息泄露
+        </p>
+        <div className="w-full h-60 flex items-center justify-center">
+          <img className="h-full" src={qrcodeUrl} alt="" />
         </div>
-    )
+      </div>
+      <div className="w-full flex gap-x-4 items-center justify-center">
+        <Button type="primary" onClick={handleDownloadQrcode}>
+          保存到本地
+        </Button>
+        <Button disabled>分享</Button>
+      </div>
+    </div>
+  )
 }
 
 function RoomDetails(props: RoomDetailsProps) {
@@ -180,9 +188,12 @@ function RoomDetails(props: RoomDetailsProps) {
             <span className="text-xs text-light-l">Lorem ipsum dolor sit amet</span>
           </div>
         </div>
-        <Button icon={<IconQrcode />} onClick={() => {
+        <Button
+          icon={<IconQrcode />}
+          onClick={() => {
             setQrcodeVisible(true)
-        }} />
+          }}
+        />
       </div>
 
       <MemeberList className="mb-4" members={members} />
@@ -194,16 +205,16 @@ function RoomDetails(props: RoomDetailsProps) {
         </div>
       ))}
 
-    <Drawer
+      <Drawer
         width={450}
         title={<span>群聊二维码</span>}
         visible={qrcodeVisible}
         footer={null}
         onOk={() => {
-          setQrcodeVisible(false);
+          setQrcodeVisible(false)
         }}
         onCancel={() => {
-          setQrcodeVisible(false);
+          setQrcodeVisible(false)
         }}
       >
         <QrcodeCardWrapper info={info} />

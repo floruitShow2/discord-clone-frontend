@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, lazy } from 'react'
 import { MemberRole } from '@/gql/graphql'
+import { isArray } from '@/utils/is'
 
 interface Meta {
   role?: MemberRole
@@ -45,7 +46,6 @@ export const routes: IRoute[] = [
       }
     ]
   },
-  ...actionRoutes,
   {
     path: '/login',
     key: 'login',
@@ -69,7 +69,32 @@ const judge = (route: IRoute, userPermission?: MemberRole): boolean => {
   }
 }
 
-const useRoute = (userPermission?: MemberRole): [IRoute[], string] => {
+export function getFlattenRoutes(routes: IRoute[]) {
+  const res: IRoute[] = []
+  function travel(_routes: IRoute[]) {
+    _routes.forEach((route) => {
+      const visibleChildren = (route.children || []).filter((child) => !child.meta?.ignored)
+      if (route.key && (!route.children || !visibleChildren.length)) {
+        try {
+          res.push(route)
+        } catch (e) {
+          console.log(route.key)
+          console.error(e)
+        }
+      }
+
+      if (isArray(route.children) && route.children?.length) {
+        travel(route.children)
+      }
+    })
+  }
+  travel(routes)
+  return res
+}
+
+const useRoute = (
+  userPermission?: MemberRole
+): { routes: IRoute[]; actionRoutes: IRoute[]; defaultRoute: string } => {
   const filterRoutes = (routes: IRoute[], arr: IRoute[] = []): IRoute[] => {
     if (!routes.length) return []
 
@@ -94,6 +119,7 @@ const useRoute = (userPermission?: MemberRole): [IRoute[], string] => {
   }
 
   const [permissionRoutes, setPermissionRoutes] = useState(routes)
+
   useEffect(() => {
     const newRoutes = filterRoutes(routes)
     setPermissionRoutes(newRoutes)
@@ -109,7 +135,11 @@ const useRoute = (userPermission?: MemberRole): [IRoute[], string] => {
     return ''
   }, [permissionRoutes])
 
-  return [permissionRoutes, defaultRoute]
+  return {
+    routes: permissionRoutes,
+    actionRoutes,
+    defaultRoute
+  }
 }
 
 export default useRoute

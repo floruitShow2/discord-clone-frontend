@@ -31,8 +31,9 @@ export const ErrorStatusEnum = {
 /** 不同请求服务的环境配置 */
 const serviceEnv: Record<ServiceEnv.ServiceEnvType, ServiceEnv.ServiceEnvConfig> = {
   development: {
-    url: 'http://localhost:3000'
-    // url: 'http://192.168.124.40:3000'
+    // url: 'http://localhost:3000'
+    url: 'http://192.168.100.100:3000'
+    // url: 'http://192.168.124.88:3000'
   },
   production: {
     url: 'http://47.99.102.151:3000'

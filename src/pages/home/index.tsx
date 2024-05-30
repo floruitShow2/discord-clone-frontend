@@ -17,7 +17,6 @@ import type { Operation } from './index.interface'
 import styles from './index.module.less'
 
 function HomePage() {
-
   const [serachQuery, setSearchQuery] = useState('')
 
   const [activeRoom, setActiveRoom] = useState<Room.RoomEntity | null>(null)
