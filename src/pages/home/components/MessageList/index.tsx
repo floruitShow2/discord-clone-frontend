@@ -80,7 +80,7 @@ function NormalMessage(props: NormalMessageProps) {
   const genVideoMessage = (msg: Message.Entity) => {
     return (
       <video src={msg.url} controls width={300}>
-        <p className='text-sm text-primary-l'>
+        <p className="text-sm text-primary-l">
           你当前使用的浏览器暂不支持播放视频，点击链接
           <a href={msg.url} download={msg.content}>
             {msg.content}
@@ -92,15 +92,17 @@ function NormalMessage(props: NormalMessageProps) {
   }
 
   const genAudioMessage = (msg: Message.Entity) => {
-    return <audio src={msg.url} controls>
-      <p className='text-sm text-primary-l'>
+    return (
+      <audio src={msg.url} controls>
+        <p className="text-sm text-primary-l">
           你当前使用的浏览器暂不支持播放音频，点击链接
           <a href={msg.url} download={msg.content}>
             {msg.content}
           </a>
           下载到本地查看
         </p>
-    </audio>
+      </audio>
+    )
   }
 
   const renderMsg = (msg: Message.Entity) => {
@@ -167,7 +169,7 @@ function MessageList(props: BaseProps) {
 
   return (
     <>
-      <ul className={cs(className, 'w-full p-2 flex flex-col items-center justify-start')}>
+      <ul className={cs(className, 'relative w-full p-2 flex flex-col items-center justify-start z-50')}>
         {msgs.map((msg) => {
           if (msg.type === MessageTypeEnum.ACTION) {
             return <MarkerMessage key={msg.messageId} msg={msg} />

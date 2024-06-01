@@ -23,6 +23,9 @@ dependencies:
   '@reduxjs/toolkit':
     specifier: ^2.2.3
     version: 2.2.3(react-redux@9.1.1)(react@18.2.0)
+  '@tencentcloud/call-uikit-react':
+    specifier: ^3.2.9
+    version: 3.2.9
   '@typescript/ata':
     specifier: ^0.9.4
     version: 0.9.4(typescript@5.4.5)
@@ -2211,6 +2214,26 @@ packages:
 
   /@socket.io/component-emitter@3.1.2:
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
+    dev: false
+
+  /@tencentcloud/call-uikit-react@3.2.9:
+    resolution: {integrity: sha512-ioJuDbknPZ+rLwHvjjc1/AhiPrCsSY1kCoor4J94aQERnKdVyif49hYKaPnPZq6U0jOyKhnFgijNnvN95pK2yA==}
+    dependencies:
+      '@tencentcloud/chat': 3.3.5
+      '@tencentcloud/tui-core': 2.1.4
+      tuicall-engine-webrtc: 3.0.8
+    dev: false
+
+  /@tencentcloud/chat@3.3.5:
+    resolution: {integrity: sha512-KqUw+DHFgDMkIzyWuDV21OhA2cxl+qtSvrosEmqH7UKk5a/dFt7BM7eVKwPXMPIUjJ/qXzOnzqRCdoCV7+wl2w==}
+    dev: false
+
+  /@tencentcloud/tui-core@2.1.4:
+    resolution: {integrity: sha512-GE8ujfC4ZUGo+GCCCAdW2IX3J+FQONRISjxZoENMYPM3bAR44b0qmG49VOf+ytj3B4ByAbUDmNTbXUzSZgAr/w==}
+    dependencies:
+      '@tencentcloud/chat': 3.3.5
+      tim-profanity-filter-plugin: 1.1.0
+      tim-upload-plugin: 1.3.0
     dev: false
 
   /@tsconfig/node10@1.0.11:
@@ -5176,6 +5199,10 @@ packages:
       fsevents: 2.3.3
     dev: true
 
+  /rtc-ai-denoiser@1.1.7:
+    resolution: {integrity: sha512-53e/4a4lT96K004mqDnLDE+upNSpBLRMfFgYCeIw3Gvuw9F17nxLP5v8MOVLly4/Epomxkx4SXrOFJJMxD2pIw==}
+    dev: false
+
   /run-async@2.4.1:
     resolution: {integrity: sha512-tvVnVv01b8c1RrA6Ep7JkStj85Guv/YrMcwqYQnwjsAS2cTmmPGBBjAjpCW7RrSodNSoE2/qg9O4bceNvUuDgQ==}
     engines: {node: '>=0.12.0'}
@@ -5224,6 +5251,10 @@ packages:
   /scuid@1.1.0:
     resolution: {integrity: sha512-MuCAyrGZcTLfQoH2XoBlQ8C6bzwN88XT/0slOGz0pn8+gIP85BOAfYa44ZXQUTOwRwPU0QvgU+V+OSajl/59Xg==}
     dev: true
+
+  /sdp@3.2.0:
+    resolution: {integrity: sha512-d7wDPgDV3DDiqulJjKiV2865wKsJ34YI+NDREbm+FySq6WuKOikwyNQcm+doLAZ1O6ltdO0SeKle2xMpN3Brgw==}
+    dev: false
 
   /semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
@@ -5527,6 +5558,14 @@ packages:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
     dev: true
 
+  /tim-profanity-filter-plugin@1.1.0:
+    resolution: {integrity: sha512-+49p+n5LJs18rSPBvJFyq/m6ib8wiXvPEx2/Sz3M7hhDXAz69WuZ8cB/painNrN0MKAETf6G5cWa6xtVZfAK7A==}
+    dev: false
+
+  /tim-upload-plugin@1.3.0:
+    resolution: {integrity: sha512-meoGeB3vOs3FvtBh+ik7zlOj8C03tC6MZEkjc8BKYvgTrCzBWVDXZi9a3X8AM/YtoyuTaeLuEmaLQj1O/5luuw==}
+    dev: false
+
   /title-case@3.0.3:
     resolution: {integrity: sha512-e1zGYRvbffpcHIrnuqT0Dh+gEJtDaxDSoG4JAIpq4oDFyooziLBIiYQv0GBT4FUAnUop5uZ1hiIAj7oAF6sOCA==}
     dependencies:
@@ -5555,6 +5594,18 @@ packages:
   /tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
     dev: true
+
+  /trtc-cloud-js-sdk@2.4.3:
+    resolution: {integrity: sha512-qK1O0cEnrMxEBvmLkSw7nXaEAMoM+uJDembjTcfNQoUX8z+I3QRFhT7PwhHNFFPJ6HEaJ4+3ZU7K66GEwgz/eg==}
+    dependencies:
+      trtc-sdk-v5: 5.5.2
+    dev: false
+
+  /trtc-sdk-v5@5.5.2:
+    resolution: {integrity: sha512-E7K28df6h9HWfT0AQRY2WqAIJXKyJ/tHMv5nJMQE/pylpPqYRRzeGsx+pyotJQoxCLE+InucMxN3UVrfQeBaZQ==}
+    dependencies:
+      webrtc-adapter: 8.2.3
+    dev: false
 
   /ts-api-utils@1.3.0(typescript@5.4.5):
     resolution: {integrity: sha512-UQMIo7pb8WRomKR1/+MFVLTroIvDVtMX3K6OUir8ynLyzB8Jeriont2bTAtmNPa1ekAgN7YPDyf6V+ygrdU+eQ==}
@@ -5616,6 +5667,14 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
+  /tuicall-engine-webrtc@3.0.8:
+    resolution: {integrity: sha512-KVKh8LiLlCHX2+akNgeOHwdiZrGC+TdC4Qc2BfuuLi00RXZIZXGO9JJihAX4HS6ZH6cAaaUWcPhdL/4hyjhVgg==}
+    dependencies:
+      '@tencentcloud/chat': 3.3.5
+      rtc-ai-denoiser: 1.1.7
+      trtc-cloud-js-sdk: 2.4.3
+    dev: false
 
   /type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -5815,6 +5874,13 @@ packages:
   /webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
     dev: true
+
+  /webrtc-adapter@8.2.3:
+    resolution: {integrity: sha512-gnmRz++suzmvxtp3ehQts6s2JtAGPuDPjA1F3a9ckNpG1kYdYuHWYpazoAnL9FS5/B21tKlhkorbdCXat0+4xQ==}
+    engines: {node: '>=6.0.0', npm: '>=3.10.0'}
+    dependencies:
+      sdp: 3.2.0
+    dev: false
 
   /whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
