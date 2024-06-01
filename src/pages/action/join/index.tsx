@@ -40,10 +40,14 @@ function ActionJoin() {
   if (user && room) {
     console.log(user)
     return (
-      <div className="w-[100vw] h-[100vh] flex flex-col items-center justify-center">
-        <span>
-          是否接受{user.username}的邀请，加入房间{room.roomName}?
-        </span>
+      <div className="w-[100vw] h-[100vh] flex gap-y-5 flex-col items-center justify-center">
+        <img src={room.roomCover} alt="" />
+        <p className="text-sm text-primary-l">
+          收到来自
+          <span className="text-blue-500">{user.username}</span>
+          的加群邀请，是否确认加入
+          <span className="text-blue-500">{room.roomName}</span>?
+        </p>
         <Button type="primary" onClick={handleJoinGroup}>
           确认加入
         </Button>

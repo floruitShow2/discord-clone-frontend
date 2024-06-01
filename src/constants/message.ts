@@ -1,7 +1,10 @@
-export enum MessageType {
+export enum MessageTypeEnum {
   TEXT = 'text',
   IMAGE = 'image',
-  TIMESTAMP = 'timestamp'
+  VIDEO = 'video',
+  AUDIO = 'audio',
+  FILE = 'file',
+  ACTION = 'action'
 }
 
 export enum SocketEmitEvents {

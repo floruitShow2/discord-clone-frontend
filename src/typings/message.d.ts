@@ -1,5 +1,5 @@
 declare namespace Message {
-  import { MessageType } from '@/constants'
+  import { MessageTypeEnum } from '@/constants'
 
   interface Entity {
     /**
@@ -23,7 +23,7 @@ declare namespace Message {
      */
     content: string
     url: string
-    type: MessageType
+    type: MessageTypeEnum
     /**
      * @description 发布时间
      */
@@ -39,8 +39,8 @@ declare namespace Message {
   // }
 
   // type MessageEntity =
-  //     | { type: MessageType.TEXT; content: TextMessage }
-  //     | { type: MessageType.IMAGE; content: ImageMessage }
+  //     | { type: MessageTypeEnum.TEXT; content: TextMessage }
+  //     | { type: MessageTypeEnum.IMAGE; content: ImageMessage }
 
   /**
    * @description 接口请求参数格式

@@ -1,4 +1,4 @@
-import { MessageType } from '@/constants'
+import { MessageTypeEnum } from '@/constants'
 import { formatToDateTime } from './translate'
 
 const genTimestampMessage = (message: Message.Entity) => {
@@ -10,7 +10,7 @@ const genTimestampMessage = (message: Message.Entity) => {
     metions: [],
     content: formatToDateTime(createTime, 'MM月DD日 HH:mm'),
     url: '',
-    type: MessageType.TIMESTAMP,
+    type: MessageTypeEnum.ACTION,
     createTime
   }
 
@@ -26,6 +26,7 @@ export const transalteMessagesByTime = (
   const firstTimestamp = genTimestampMessage(messages[0])
 
   const result: Message.Entity[] = [firstTimestamp, messages[0]]
+  const messageIdSet = new Set<string>([])
 
   for (let i = 1; i < messages.length; i++) {
     const lastEle = result.at(-1)
@@ -36,6 +37,9 @@ export const transalteMessagesByTime = (
     const lastTimestamp = new Date(lastEle.createTime).getTime()
     const curTimestamp = new Date(curEle.createTime).getTime()
 
+    if (messageIdSet.has(curEle.messageId)) continue
+
+    messageIdSet.add(curEle.messageId)
     if (lastTimestamp + minInterval <= curTimestamp) {
       result.push(genTimestampMessage(curEle), curEle)
     } else {

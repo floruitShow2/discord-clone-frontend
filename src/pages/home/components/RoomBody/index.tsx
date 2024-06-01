@@ -14,7 +14,7 @@ const RoomBody = (props: BaseProps) => {
     currentPage,
     onPageChange,
     onConfigChange,
-    onAllowScrollChange
+    onIsNearBoyyomChange
   } = props
 
   const msgWrapperRef = useRef<HTMLUListElement>(null)
@@ -27,7 +27,7 @@ const RoomBody = (props: BaseProps) => {
     const maxScrollTop = scrollHeight - clientHeight
     const isNearBottomNow = scrollTop >= maxScrollTop - clientHeight
 
-    console.log({ scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow })
+    // console.log({ scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow })
 
     return { scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow }
   }
@@ -36,7 +36,8 @@ const RoomBody = (props: BaseProps) => {
     const handleScroll = () => {
       if (!msgWrapperRef.current) return
       const { scrollTop = 0, isNearBottomNow = true } = getWrapperRect()
-      onAllowScrollChange(isNearBottomNow)
+      console.log('ce', isNearBottomNow)
+      onIsNearBoyyomChange(isNearBottomNow)
       if (scrollTop < 100 || scrollTop === 0) run()
     }
 

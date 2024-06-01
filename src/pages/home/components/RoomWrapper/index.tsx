@@ -33,7 +33,6 @@ function RoomWrapper(props: RoomWrapperProps) {
       // 设置原始消息数据
       setMessages(totalMessages)
       // 原始数据经过处理后再设置，页面展示这些
-      setFormatMessages(transalteMessagesByTime(totalMessages))
     } catch (err) {
       console.log(err)
     }
@@ -46,9 +45,10 @@ function RoomWrapper(props: RoomWrapperProps) {
       query: { roomId: room?.roomId }
     })
     setSocket(socketInstance)
-    if (!socket) return
-    socket.on(SocketOnEvents.SOCKET_CONNECT, () => {
-      socket.on(SocketOnEvents.MSG_CREATE, (msg) => {
+    console.log('start connect')
+    socketInstance.on(SocketOnEvents.SOCKET_CONNECT, () => {
+      console.log('connected')
+      socketInstance.on(SocketOnEvents.MSG_CREATE, (msg) => {
         handleMessageReceive(msg)
       })
     })
@@ -58,10 +58,13 @@ function RoomWrapper(props: RoomWrapperProps) {
     if (!socket) return
     socket.emit(SocketEmitEvents.CREATE_MESSAGE, createMessageInput)
   }
-  const handleMessageReceive = (message: Message.Entity) => {
-    setMessages((prevVal) => [...prevVal, message])
-
-    if (isNearBottom.current && message.profile.userId !== currentUser.current?.userId) {
+  const handleMessageReceive = (msgs: Message.Entity[]) => {
+    const totalMessages = [...messages, ...msgs]
+    setMessages((prev) => [...prev, ...msgs])
+    const hasNewMsg = totalMessages.some(
+      (msg) => msg.profile.userId !== currentUser.current?.userId
+    )
+    if (!isNearBottom.current && hasNewMsg) {
       Message.info({
         content: 'you got new message',
         duration: 2000
@@ -91,6 +94,10 @@ function RoomWrapper(props: RoomWrapperProps) {
     initSocket()
   }, [room])
 
+  useEffect(() => {
+    setFormatMessages(transalteMessagesByTime(messages))
+  }, [messages])
+
   if (room) {
     return (
       <>
@@ -100,11 +107,11 @@ function RoomWrapper(props: RoomWrapperProps) {
           info={room}
           messages={formatMessages}
           currentPage={pageOptions.page}
-          onAllowScrollChange={handleAllowScrollChange}
+          onIsNearBoyyomChange={handleAllowScrollChange}
           onPageChange={handlePageChange}
           onConfigChange={onConfigChange}
         />
-        <RoomInput onMessageEmit={handleMessageEmit} />
+        <RoomInput info={room} onMessageEmit={handleMessageEmit} />
       </>
     )
   } else {
