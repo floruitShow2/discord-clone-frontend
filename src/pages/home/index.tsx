@@ -13,7 +13,6 @@ import { FetchRoomList } from '@/api/chat-room'
 import { cs } from '@/utils/property'
 import RoomCard from './components/RoomCard'
 import RoomWrapper from './components/RoomWrapper'
-import type { Operation } from './index.interface'
 import styles from './index.module.less'
 
 function HomePage() {
@@ -53,7 +52,7 @@ function HomePage() {
     setActiveRoom(newState)
   }
 
-  const operationConfigs: Operation[] = [
+  const operationConfigs: DropdownItem.Entity[] = [
     {
       label: 'Invite People',
       key: '1',

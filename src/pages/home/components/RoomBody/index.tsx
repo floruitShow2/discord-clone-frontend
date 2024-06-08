@@ -41,7 +41,6 @@ const RoomBody = (props: BaseProps) => {
     const handleScroll = () => {
       if (!msgWrapperRef.current) return
       const { scrollTop = 0, isNearBottomNow = true } = getWrapperRect()
-      console.log('ce', isNearBottomNow)
       onIsNearBoyyomChange(isNearBottomNow)
       if (scrollTop < 100 || scrollTop === 0) run()
     }
@@ -67,21 +66,21 @@ const RoomBody = (props: BaseProps) => {
 
   return (
     <>
-        <div className={`${className} flex items-start justify-between`}>
-            <main ref={msgWrapperRef} className="flex-1 h-full bg-module overflow-auto">
-              <Watermark
-                content={userInfo ? [userInfo.username, userInfo.phone.slice(-4)] : []}
-                fontStyle={{
-                  fontSize: '14px',
-                  color:'rgba(0, 0, 0, 0.1)'
-                }}
-                zIndex={1}
-              >
-                <MessageList msgs={messages} />
-              </Watermark>
-            </main>
-          {showDetails && <RoomDetails info={info} onConfigChange={onConfigChange} />}
-        </div>
+      <div className={`${className} flex items-start justify-between`}>
+        <main ref={msgWrapperRef} className="flex-1 h-full bg-module overflow-auto">
+          <Watermark
+            content={userInfo ? [userInfo.username, userInfo.phone.slice(-4)] : []}
+            fontStyle={{
+              fontSize: '14px',
+              color: 'rgba(0, 0, 0, 0.1)'
+            }}
+            zIndex={1}
+          >
+            <MessageList msgs={messages} />
+          </Watermark>
+        </main>
+        {showDetails && <RoomDetails info={info} onConfigChange={onConfigChange} />}
+      </div>
     </>
   )
 }

@@ -1,12 +1,51 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Image, Button } from '@arco-design/web-react'
-import { IconClose } from '@arco-design/web-react/icon'
+import { Image, Button, Dropdown, Menu } from '@arco-design/web-react'
+import { IconClose, IconCopy, IconUndo } from '@arco-design/web-react/icon'
 import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
 import { cs } from '@/utils/property'
 import UserAvatar from '@/components/userAvatar'
-import type { BaseProps, NormalMessageProps } from './index.interface'
+import type { BaseProps, NormalMessageProps, DropdownListProps } from './index.interface'
+import { FilePreviewer } from '@/components/filePreviewer'
+
+function DropdownList(props: DropdownListProps) {
+  const { msg } = props
+
+  const iconCls = 'text-xs'
+
+  const dropdownList: DropdownItem.Entity[] = [
+    {
+      label: '复制',
+      key: 'copy',
+      icon: <IconCopy className={iconCls} />,
+      handler() {
+        console.log('copy', msg)
+      }
+    },
+    {
+      label: '撤回',
+      key: 'recall',
+      icon: <IconUndo className={iconCls} />,
+      handler() {
+        console.log('recall', msg)
+      }
+    }
+  ]
+
+  return (
+    <Menu>
+      {dropdownList.map((item) => {
+        return (
+          <Menu.Item key={item.key} className="h-8 leading-8" onClick={item.handler}>
+            {item.icon}
+            <span className="ml-1 text-xs text-primary-l">{item.label}</span>
+          </Menu.Item>
+        )
+      })}
+    </Menu>
+  )
+}
 
 function NormalMessage(props: NormalMessageProps) {
   const { msg, onPreview } = props
@@ -146,7 +185,9 @@ function NormalMessage(props: NormalMessageProps) {
           <h4 className="text-base text-primary-l">{profile.username}</h4>
           <span className="text-xs text-light-l">{createTime}</span>
         </div>
-        <div className="w-fit p-3 rounded-md bg-primary">{renderMsg(msg)}</div>
+        <Dropdown trigger="contextMenu" position="bl" droplist={DropdownList({ msg })}>
+          <div className="w-fit p-3 rounded-md bg-primary">{renderMsg(msg)}</div>
+        </Dropdown>
       </div>
     </li>
   )
@@ -169,7 +210,12 @@ function MessageList(props: BaseProps) {
 
   return (
     <>
-      <ul className={cs(className, 'relative w-full p-2 flex flex-col items-center justify-start z-50')}>
+      <ul
+        className={cs(
+          className,
+          'relative w-full p-2 flex flex-col items-center justify-start z-50'
+        )}
+      >
         {msgs.map((msg) => {
           if (msg.type === MessageTypeEnum.ACTION) {
             return <MarkerMessage key={msg.messageId} msg={msg} />
@@ -182,25 +228,35 @@ function MessageList(props: BaseProps) {
         <div className="fixed top-0 bottom-0 left-0 right-0 w-[100vw] h-[100vh] flex items-center justify-center shadow-md z-[999] bg-[#94949457]">
           <div className="w-[70vw] h-[70vh] bg-white rounded-md">
             {curMessage && (
-              <div className="w-full p-3 flex items-center justify-between border-b border-solid border-primary-b">
-                <div className="flex items-center justify-start">
-                  <UserAvatar className="mr-1" avatar={curMessage.profile.avatar}></UserAvatar>
-                  <div>
-                    <h4 className="text-sm text-primary-l">{curMessage.content}</h4>
-                    <p className="text-xs text-light-l">
-                      <span className="mr-2">{curMessage.createTime}</span>由{' '}
-                      <span>{curMessage.profile.username}</span> 上传
-                    </p>
+              <>
+                <div className="w-full px-3 h-[6vh] min-h-[60px] flex items-center justify-between border-b border-solid border-primary-b">
+                  <div className="flex items-center justify-start">
+                    <UserAvatar className="mr-1" avatar={curMessage.profile.avatar}></UserAvatar>
+                    <div>
+                      <h4 className="text-sm text-primary-l">{curMessage.content}</h4>
+                      <p className="text-xs text-light-l">
+                        <span className="mr-2">{curMessage.createTime}</span>由{' '}
+                        <span>{curMessage.profile.username}</span> 上传
+                      </p>
+                    </div>
+                  </div>
+                  <div className="gap-x-4 flex items-center justify-end text-primary-l cursor-pointer">
+                    <IconClose
+                      className="hover:text-blue-500"
+                      fontSize={16}
+                      onClick={() => setIsPreview(false)}
+                    />
                   </div>
                 </div>
-                <div className="gap-x-4 flex items-center justify-end text-primary-l cursor-pointer">
-                  <IconClose
-                    className="hover:text-blue-500"
-                    fontSize={16}
-                    onClick={() => setIsPreview(false)}
-                  />
+                <div className="w-full h-[64vh]">
+                  <FilePreviewer filename={curMessage.content} url={curMessage.url}></FilePreviewer>
+                  {/* <iframe
+                    src={`https://view.officeapps.live.com/op/view.aspx?src=${curMessage.url}`}
+                    width="100%"
+                    height="500px"
+                  ></iframe> */}
                 </div>
-              </div>
+              </>
             )}
           </div>
         </div>

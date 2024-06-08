@@ -1,8 +1,6 @@
-import * as React from 'react'
 import { Tooltip, Button, Select, Message } from '@arco-design/web-react'
 import { IconLanguage, IconMoonFill, IconSunFill } from '@arco-design/web-react/icon'
 import { useDispatch, useSelector } from 'react-redux'
-import { UserButton } from '@clerk/clerk-react'
 import type { RootState } from '@/store'
 import { toggleTheme, toggleLang } from '@/store/slices/settings.slice'
 import DefaultLocale from '@/locale'
@@ -56,7 +54,6 @@ function NaviSidebar() {
             onClick={() => dispatch(toggleTheme())}
           />
         </Tooltip>
-        <UserButton />
       </div>
     </div>
   )

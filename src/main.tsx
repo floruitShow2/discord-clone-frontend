@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Provider, useDispatch } from 'react-redux'
-import { ClerkProvider } from '@clerk/clerk-react'
 import { ConfigProvider } from '@arco-design/web-react'
 import { store } from '@/store'
 import { setUserInfo } from '@/store/slices/user.slice'
@@ -56,23 +55,20 @@ if (!PUBLISHABLE_KEY) {
 }
 
 const RouterComponent = () => {
-  const navigate = useNavigate()
   const { actionRoutes } = useRoute(MemberRole.Admin)
 
   return (
     <Provider store={store}>
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY} navigate={(to) => navigate(to)}>
-        <ProtectRoute>
-          <GeneralModal />
-          <Routes>
-            {getFlattenRoutes(actionRoutes).map((route) => {
-              const { path, key, component: Component } = route
-              return <Route key={key} path={path} Component={Component}></Route>
-            })}
-            <Route path="*" Component={BaseLayout}></Route>
-          </Routes>
-        </ProtectRoute>
-      </ClerkProvider>
+      <ProtectRoute>
+        <GeneralModal />
+        <Routes>
+          {getFlattenRoutes(actionRoutes).map((route) => {
+            const { path, key, component: Component } = route
+            return <Route key={key} path={path} Component={Component}></Route>
+          })}
+          <Route path="*" Component={BaseLayout}></Route>
+        </Routes>
+      </ProtectRoute>
     </Provider>
   )
 }

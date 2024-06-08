@@ -19,8 +19,10 @@ function RoomInput(props: RoomInputProps) {
   const iconBtnCls = 'cursor-pointer hover:text-blue-500'
 
   const callData = {
-    SDKAppID: 1600038806,
-    SecretKey: '0f97219de275acfe9e25d9411f362c57dfdf0e80a2ef1e04c976c536edf4aeca'
+    // SDKAppID: 1600038806,
+    // SecretKey: '0f97219de275acfe9e25d9411f362c57dfdf0e80a2ef1e04c976c536edf4aeca'
+    SDKAppID: 0,
+    SecretKey: ''
   }
   const login = async (SDKAppID: number, SecretKey: string, userID: string) => {
     const { userSig } = GenerateTestUserSig.genTestUserSig({
@@ -35,7 +37,7 @@ function RoomInput(props: RoomInputProps) {
     })
   }
   const call = async () => {
-    await TUICallKitServer.call({ userID: '664aaaaae5d0d07d6de682c0', type: 2 }); //【2】Make a 1v1 video call
+    await TUICallKitServer.call({ userID: '664aaaaae5d0d07d6de682c0', type: 2 }) //【2】Make a 1v1 video call
   }
   const init = async () => {
     const { SDKAppID, SecretKey } = callData
@@ -47,13 +49,13 @@ function RoomInput(props: RoomInputProps) {
         console.error(error)
       }
     } else {
-      alert('[TUICallKit] Please fill in the SDKAppID, userID and SecretKey.')
+      console.log('[TUICallKit] Please fill in the SDKAppID, userID and SecretKey.')
     }
   }
 
   useEffect(() => {
     init()
-  }, [])
+  }, [userInfo])
 
   const [inputValue, setInputValue] = useState('')
   const handleKeyDown = (e: any) => {
@@ -66,7 +68,7 @@ function RoomInput(props: RoomInputProps) {
     })
     setInputValue('')
   }
-  
+
   const callKitStyle = useMemo<any>(() => {
     if (TUIGlobal.isPC) {
       return {
@@ -81,7 +83,7 @@ function RoomInput(props: RoomInputProps) {
       }
     }
     return {
-      position: 'fixed',     
+      position: 'fixed',
       top: 0,
       left: 0,
       width: '100%',
@@ -89,7 +91,6 @@ function RoomInput(props: RoomInputProps) {
       zIndex: 999
     }
   }, [TUIGlobal.isPC])
-
 
   const uploadRef = useRef<UploadInstance>(null)
   const handleChangeFiles = async (files: UploadItem[]) => {
@@ -124,7 +125,7 @@ function RoomInput(props: RoomInputProps) {
               <IconFolderAdd className={iconBtnCls} />
             </Tooltip>
           </Upload>
-          <Tooltip content='语音通话'>
+          <Tooltip content="语音通话">
             <IconVideoCamera className={iconBtnCls} onClick={call} />
           </Tooltip>
         </div>

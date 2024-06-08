@@ -18,7 +18,6 @@ function QrcodeCardWrapper(props: RoomDetailsProps) {
       const { data } = await FetchInviteCode(info.roomId)
       if (!data) return
       const targetUrl = `${import.meta.env.VITE_APP_URL}/action/join?inviteCode=${data}`
-      console.log(targetUrl)
       Qrcode.toDataURL(
         targetUrl,
         {

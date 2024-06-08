@@ -39,7 +39,7 @@ export function useServer() {
   })
 
   const members =
-    server?.getServer.members?.filter((member) => member?.profileId !== userInfo?.id) || []
+    server?.getServer.members?.filter((member) => member?.profileId !== userInfo?.userId) || []
 
   return {
     server: server?.getServer,
