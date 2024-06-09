@@ -1,5 +1,5 @@
 import { MessageTypeEnum } from '@/constants'
-import { formatToDateTime } from './translate'
+import { translateToDateTime } from './translate'
 
 const genTimestampMessage = (message: Message.Entity) => {
   const { createTime, roomId, profile } = message
@@ -8,7 +8,7 @@ const genTimestampMessage = (message: Message.Entity) => {
     roomId,
     profile,
     metions: [],
-    content: formatToDateTime(createTime, 'MM月DD日 HH:mm'),
+    content: translateToDateTime(createTime, 'MM月DD日 HH:mm'),
     url: '',
     type: MessageTypeEnum.ACTION,
     createTime

@@ -1,6 +1,6 @@
 import UserAvatar from '@/components/userAvatar'
 import type { BaseProps } from './index.interface'
-import { formatTimeAgo } from '@/utils/time'
+import { translateToTimeAgo } from '@/utils/time'
 
 function RoomCard(props: BaseProps) {
   const { className, info, onClick } = props
@@ -14,7 +14,7 @@ function RoomCard(props: BaseProps) {
       <div className="w-36">
         <div className="flex items-center justify-between">
           <h4 className="text-md whitespace-nowrap text-heavy-l">{info.roomName}</h4>
-          <span className="text-xs text-light-l">{formatTimeAgo(info.createTime)}</span>
+          <span className="text-xs text-light-l">{translateToTimeAgo(info.createTime)}</span>
         </div>
         <div className="text-xs text-light-l whitespace-nowrap overflow-hidden text-ellipsis">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero sapiente sequi obcaecati,

@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Image, Button, Dropdown, Menu } from '@arco-design/web-react'
-import { IconClose, IconCopy, IconUndo } from '@arco-design/web-react/icon'
+import { IconClose, IconCopy, IconUndo, IconPlayCircle } from '@arco-design/web-react/icon'
 import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
 import { cs } from '@/utils/property'
 import UserAvatar from '@/components/userAvatar'
 import type { BaseProps, NormalMessageProps, DropdownListProps } from './index.interface'
 import { FilePreviewer } from '@/components/filePreviewer'
+import styles from './index.module.less'
 
 function DropdownList(props: DropdownListProps) {
   const { msg } = props
@@ -118,15 +119,18 @@ function NormalMessage(props: NormalMessageProps) {
 
   const genVideoMessage = (msg: Message.Entity) => {
     return (
-      <video src={msg.url} controls width={300}>
-        <p className="text-sm text-primary-l">
-          你当前使用的浏览器暂不支持播放视频，点击链接
-          <a href={msg.url} download={msg.content}>
-            {msg.content}
-          </a>
-          下载到本地查看
-        </p>
-      </video>
+      <div className={styles['video-overlay']}>
+        <video src={msg.url} controls={false} width={300}>
+          <p className="text-sm text-primary-l">
+            你当前使用的浏览器暂不支持播放视频，点击链接
+            <a href={msg.url} download={msg.content}>
+              {msg.content}
+            </a>
+            下载到本地查看
+          </p>
+        </video>
+        <IconPlayCircle className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl text-primary hover:text-blue-400 transition-colors cursor-pointer z-50' onClick={() =>onPreview(msg)} />
+      </div>
     )
   }
 

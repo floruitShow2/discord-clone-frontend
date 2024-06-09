@@ -7,7 +7,7 @@ import UserAvatar from '@/components/userAvatar'
 import CellGroup, { type CellConfig } from '@/components/cellGroup'
 import MemeberList from '../MembersList'
 import { RoomDetailsProps } from './index.interface'
-import { formatToDateTime } from '@/utils/time'
+import { translateToDateTime } from '@/utils/time'
 
 function QrcodeCardWrapper(props: RoomDetailsProps) {
   const { info } = props
@@ -40,7 +40,7 @@ function QrcodeCardWrapper(props: RoomDetailsProps) {
 
   const handleDownloadQrcode = () => {
     const a = document.createElement('a')
-    a.download = `${info.roomName}-${formatToDateTime(new Date())}.png`
+    a.download = `${info.roomName}-${translateToDateTime(new Date())}.png`
     a.href = qrcodeUrl
     document.body.appendChild(a)
     a.click()

@@ -1,0 +1,34 @@
+.video-renderer-frame {
+    position: relative;
+    width: 244px;
+    height: 128px;
+    pointer-events: none;
+    // transform: translate(-50%, -115%);
+    animation: frame-enter 0.2s ease forwards;
+    @apply rounded-sm p-2 bg-primary;
+    &::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%, 8px);
+        display: block;
+        width: 0;
+        height: 0;
+        border: solid 6px #FFFFFF;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+        border-right-color: transparent;
+    }
+}
+
+@keyframes frame-enter {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -105%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -115%);
+    }
+}

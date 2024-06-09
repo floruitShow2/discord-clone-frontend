@@ -3,20 +3,26 @@ import dayjs from 'dayjs'
 const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 const DATE_FORMAT = 'YYYY-MM-DD '
 
-export function formatToDateTime(
+/**
+ * @description 将时间转换为 年月日 时分秒 的格式
+ * @param date
+ * @param format
+ * @returns
+ */
+export function translateToDateTime(
   date: dayjs.ConfigType = undefined,
   format = DATE_TIME_FORMAT
 ): string {
   return dayjs(date).format(format)
 }
 
-export function formatToDate(date: dayjs.ConfigType = undefined, format = DATE_FORMAT): string {
+export function translateToDate(date: dayjs.ConfigType = undefined, format = DATE_FORMAT): string {
   return dayjs(date).format(format)
 }
 
 export const dateUtil = dayjs
 
-export function formatTimeAgo(time: Date | string | number) {
+export function translateToTimeAgo(time: Date | string | number) {
   const timestamp = new Date(time).getTime()
   const current = new Date().getTime()
   const delta = current - timestamp
@@ -43,4 +49,23 @@ export function formatTimeAgo(time: Date | string | number) {
     return `${Math.floor(minutes)}分钟前`
   }
   return '刚刚'
+}
+
+function padStart(value: string | number, length: number, padString: string) {
+  value = value.toString();
+  while (value.length < length) {
+    value = padString + value
+  }
+  return value
+}
+export function translateSecondsToTimeCount(seconds: number) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60
+
+  if (hours > 0) {
+    return `${hours}:${padStart(minutes, 2, '0')}:${padStart(secs, 2, '0')}`;
+  } else {
+    return `${padStart(minutes, 2, '0')}:${padStart(secs, 2, '0')}`;
+  }
 }

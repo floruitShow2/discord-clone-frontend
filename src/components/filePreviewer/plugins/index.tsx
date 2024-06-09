@@ -1,12 +1,22 @@
 import { useContext } from 'react'
 import PDFRenderer from './pdf/pdfRenderer'
+import DOCXRenderer from './doc/docRenderer'
+import VideoRenderer from './video/videoRenderer'
 import { RendererEntity, RendererProps } from '../index.interface'
 import { DocumentContext } from '../index'
 
 const defaultPlugins: RendererEntity[] = [
   {
-    fileType: /\s*(.pdf)$/,
+    fileType: /.pdf$/,
     renderer: PDFRenderer
+  },
+  {
+    fileType: /.(docx|doc)$/,
+    renderer: DOCXRenderer
+  },
+  {
+    fileType: /.mp4$/,
+    renderer: VideoRenderer
   }
 ]
 
