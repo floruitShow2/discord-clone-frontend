@@ -129,7 +129,10 @@ function NormalMessage(props: NormalMessageProps) {
             下载到本地查看
           </p>
         </video>
-        <IconPlayCircle className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl text-primary hover:text-blue-400 transition-colors cursor-pointer z-50' onClick={() =>onPreview(msg)} />
+        <IconPlayCircle
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl text-primary hover:text-blue-400 transition-colors cursor-pointer z-50"
+          onClick={() => onPreview(msg)}
+        />
       </div>
     )
   }

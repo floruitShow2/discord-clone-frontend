@@ -115,7 +115,7 @@ function RoomInput(props: RoomInputProps) {
             limit={5}
             autoUpload={false}
             showUploadList={false}
-            accept=".jpg,.png,.mp4,.mp3,.pdf"
+            accept=".jpg,.png,.mp4,.mp3,.pdf,.xlsx"
             onChange={handleChangeFiles}
             onExceedLimit={() => {
               Message.warning('超过上传数量限制！最多上传3个')

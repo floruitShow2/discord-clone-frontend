@@ -3,7 +3,7 @@
     width: 244px;
     height: 128px;
     pointer-events: none;
-    // transform: translate(-50%, -115%);
+    margin-bottom: 10px;
     animation: frame-enter 0.2s ease forwards;
     @apply rounded-sm p-2 bg-primary;
     &::after {
@@ -25,10 +25,10 @@
 @keyframes frame-enter {
     from {
         opacity: 0;
-        transform: translate(-50%, -105%);
+        transform: translateX(-50%) translateY(10px);
     }
     to {
         opacity: 1;
-        transform: translate(-50%, -115%);
+        transform: translateX(-50%) translateY(0);
     }
 }

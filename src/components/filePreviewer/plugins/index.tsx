@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import PDFRenderer from './pdf/pdfRenderer'
 import DOCXRenderer from './doc/docRenderer'
 import VideoRenderer from './video/videoRenderer'
+import XLSXRenderer from './xlsx/xlsxRenderer'
 import { RendererEntity, RendererProps } from '../index.interface'
 import { DocumentContext } from '../index'
 
@@ -17,6 +18,10 @@ const defaultPlugins: RendererEntity[] = [
   {
     fileType: /.mp4$/,
     renderer: VideoRenderer
+  },
+  {
+    fileType: /.xlsx$/,
+    renderer: XLSXRenderer
   }
 ]
 

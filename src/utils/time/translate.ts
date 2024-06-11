@@ -52,20 +52,20 @@ export function translateToTimeAgo(time: Date | string | number) {
 }
 
 function padStart(value: string | number, length: number, padString: string) {
-  value = value.toString();
+  value = value.toString()
   while (value.length < length) {
     value = padString + value
   }
   return value
 }
 export function translateSecondsToTimeCount(seconds: number) {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
   const secs = seconds % 60
 
   if (hours > 0) {
-    return `${hours}:${padStart(minutes, 2, '0')}:${padStart(secs, 2, '0')}`;
+    return `${hours}:${padStart(minutes, 2, '0')}:${padStart(secs, 2, '0')}`
   } else {
-    return `${padStart(minutes, 2, '0')}:${padStart(secs, 2, '0')}`;
+    return `${padStart(minutes, 2, '0')}:${padStart(secs, 2, '0')}`
   }
 }
