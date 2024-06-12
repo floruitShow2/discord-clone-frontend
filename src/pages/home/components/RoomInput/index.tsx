@@ -100,7 +100,7 @@ function RoomInput(props: RoomInputProps) {
       if (file.originFile) fd.append('files', file.originFile)
     })
     const res = await CreateFilesMessage(fd)
-    console.log(res)
+    console.log(res, uploadRef.current)
   }
 
   return (
@@ -115,7 +115,7 @@ function RoomInput(props: RoomInputProps) {
             limit={5}
             autoUpload={false}
             showUploadList={false}
-            accept=".jpg,.png,.mp4,.mp3,.pdf,.xlsx"
+            accept=".jpg,.png,.mp4,.mp3,.pdf,.xlsx,.js,.jsx,.tsx,.html"
             onChange={handleChangeFiles}
             onExceedLimit={() => {
               Message.warning('超过上传数量限制！最多上传3个')

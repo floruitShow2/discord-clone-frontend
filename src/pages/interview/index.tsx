@@ -7,7 +7,6 @@ import type { PluginObj } from '@babel/core'
 import { RootState } from '@/store'
 import { createATA } from './ata'
 import Preview from './components/preview/index'
-import style from './index.module.less'
 
 function InterviewPage() {
   const { theme } = useSelector((state: RootState) => state.settings)

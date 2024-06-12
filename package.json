@@ -29,6 +29,7 @@
     "exceljs": "^4.4.0",
     "graphql": "^16.8.1",
     "handsontable": "^14.3.0",
+    "hyperformula": "^2.7.0",
     "immer": "^10.0.4",
     "less": "^4.2.0",
     "path": "^0.12.7",

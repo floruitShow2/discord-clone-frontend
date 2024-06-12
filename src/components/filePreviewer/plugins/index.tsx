@@ -3,6 +3,7 @@ import PDFRenderer from './pdf/pdfRenderer'
 import DOCXRenderer from './doc/docRenderer'
 import VideoRenderer from './video/videoRenderer'
 import XLSXRenderer from './xlsx/xlsxRenderer'
+import ScriptRenderer from './script/scriptRenderer'
 import { RendererEntity, RendererProps } from '../index.interface'
 import { DocumentContext } from '../index'
 
@@ -22,6 +23,10 @@ const defaultPlugins: RendererEntity[] = [
   {
     fileType: /.xlsx$/,
     renderer: XLSXRenderer
+  },
+  {
+    fileType: /.(js|ts|tsx|jsx|html)$/,
+    renderer: ScriptRenderer
   }
 ]
 
