@@ -94,6 +94,12 @@ export default function XLSXRenderer(props: RendererProps) {
     initWorkbook()
   }, [])
 
+  useEffect(() => {
+    if (workbook) {
+      initWorkSheetData(activeSheet)
+    }
+  }, [workbook, activeSheet])
+
   return (
     <div className="w-full h-full overflow-auto">
       {workbook ? (

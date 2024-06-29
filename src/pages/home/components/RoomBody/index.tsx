@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useDebounceFn } from 'ahooks'
 import { Watermark } from '@arco-design/web-react'
@@ -7,18 +7,20 @@ import MessageList from '../MessageList'
 import RoomDetails from '../RoomDetails'
 import type { BaseProps } from './index.interface'
 import './index.less'
+import { RoomContext } from '../RoomWrapper'
 
 const RoomBody = (props: BaseProps) => {
   const {
     className,
     info,
-    messages,
     showDetails = true,
     currentPage,
     onPageChange,
     onConfigChange,
     onIsNearBoyyomChange
   } = props
+
+  const { msgs } = useContext(RoomContext)
 
   const { userInfo } = useSelector((state: RootState) => state.user)
 
@@ -62,13 +64,14 @@ const RoomBody = (props: BaseProps) => {
     if (isNearBottomNow || currentPage === 1) {
       msgWrapperRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0
     }
-  }, [messages])
+  }, [msgs])
 
   return (
     <>
       <div className={`${className} flex items-start justify-between`}>
         <main ref={msgWrapperRef} className="flex-1 h-full bg-module overflow-auto">
           <Watermark
+            className='w-full h-full overflow-auto'
             content={userInfo ? [userInfo.username, userInfo.phone.slice(-4)] : []}
             fontStyle={{
               fontSize: '14px',
@@ -76,7 +79,7 @@ const RoomBody = (props: BaseProps) => {
             }}
             zIndex={1}
           >
-            <MessageList msgs={messages} />
+            <MessageList />
           </Watermark>
         </main>
         {showDetails && <RoomDetails info={info} onConfigChange={onConfigChange} />}

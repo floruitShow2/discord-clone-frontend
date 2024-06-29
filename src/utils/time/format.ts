@@ -23,6 +23,7 @@ export const transalteMessagesByTime = (
 ) => {
   if (!messages.length) return []
 
+  messages = messages.sort((a, b) => new Date(a.createTime).getTime() - new Date(b.createTime).getTime())
   const firstTimestamp = genTimestampMessage(messages[0])
 
   const result: Message.Entity[] = [firstTimestamp, messages[0]]

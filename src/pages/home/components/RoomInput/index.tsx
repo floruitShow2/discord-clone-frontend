@@ -93,6 +93,7 @@ function RoomInput(props: RoomInputProps) {
   }, [TUIGlobal.isPC])
 
   const uploadRef = useRef<UploadInstance>(null)
+  const [fileList, setFileList] = useState<UploadItem[]>([])
   const handleChangeFiles = async (files: UploadItem[]) => {
     const fd = new FormData()
     fd.append('roomId', info.roomId)
@@ -101,6 +102,7 @@ function RoomInput(props: RoomInputProps) {
     })
     const res = await CreateFilesMessage(fd)
     console.log(res, uploadRef.current)
+    setFileList([])
   }
 
   return (
@@ -113,9 +115,10 @@ function RoomInput(props: RoomInputProps) {
             ref={uploadRef}
             multiple
             limit={5}
+            fileList={fileList}
             autoUpload={false}
             showUploadList={false}
-            accept=".jpg,.png,.mp4,.mp3,.pdf,.xlsx,.js,.jsx,.tsx,.html"
+            accept=".jpg,.png,.mp4,.mp3,.pdf,.xlsx,.js,.jsx,.ts,.tsx,.html"
             onChange={handleChangeFiles}
             onExceedLimit={() => {
               Message.warning('超过上传数量限制！最多上传3个')

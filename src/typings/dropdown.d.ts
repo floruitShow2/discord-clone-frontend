@@ -3,6 +3,7 @@ declare namespace DropdownItem {
     label: string
     key: string
     icon: React.ReactNode
+    visible?: boolean | (() => boolean)
     handler: () => void
   }
 }

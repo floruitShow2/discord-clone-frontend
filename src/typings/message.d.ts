@@ -53,4 +53,6 @@ declare namespace Message {
     extends Omit<Entity, 'messageId' | 'metions' | 'createTime' | 'profile'> {
     profileId: string
   }
+
+  interface RecallMessageInput extends Pick<Entity, 'messageId'> {}
 }

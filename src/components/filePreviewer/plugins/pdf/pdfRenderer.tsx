@@ -14,7 +14,7 @@ import useZoom from '@/hooks/useZoom'
 /**
  * @description 找了几个cdn链接，目前看来就这个能用
  */
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.mjs`
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`
 
 export default function PDFRenderer(props: RendererProps) {
   const { url } = props

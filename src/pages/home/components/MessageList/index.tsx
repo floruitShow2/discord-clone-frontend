@@ -1,17 +1,24 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Image, Button, Dropdown, Menu } from '@arco-design/web-react'
 import { IconClose, IconCopy, IconUndo, IconPlayCircle } from '@arco-design/web-react/icon'
 import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
 import { cs } from '@/utils/property'
+import { isFunction, isUndefined } from '@/utils/is'
 import UserAvatar from '@/components/userAvatar'
-import type { BaseProps, NormalMessageProps, DropdownListProps } from './index.interface'
 import { FilePreviewer } from '@/components/filePreviewer'
+import type { NormalMessageProps, DropdownListProps, BaseProps } from './index.interface'
 import styles from './index.module.less'
+import { RoomContext } from '../RoomWrapper'
+
+const isSelf = (msg: Message.Entity, userInfo: User.UserEntity | null) => {
+  if (!userInfo) return false
+  return msg.profile?.userId === userInfo.userId
+}
 
 function DropdownList(props: DropdownListProps) {
-  const { msg } = props
+  const { msg, userInfo, handleRecall } = props
 
   const iconCls = 'text-xs'
 
@@ -27,37 +34,40 @@ function DropdownList(props: DropdownListProps) {
     {
       label: '撤回',
       key: 'recall',
+      visible: isSelf(msg, userInfo),
       icon: <IconUndo className={iconCls} />,
-      handler() {
-        console.log('recall', msg)
+      async handler() {
+        handleRecall && handleRecall(msg)
       }
     }
   ]
 
   return (
     <Menu>
-      {dropdownList.map((item) => {
-        return (
-          <Menu.Item key={item.key} className="h-8 leading-8" onClick={item.handler}>
-            {item.icon}
-            <span className="ml-1 text-xs text-primary-l">{item.label}</span>
-          </Menu.Item>
-        )
-      })}
+      {
+        dropdownList
+          .filter(item => {
+            if (isUndefined(item.visible)) return true
+            return isFunction(item.visible) ? item.visible() : !!item.visible
+          })
+          .map((item) => {
+            return (
+              <Menu.Item key={item.key} className="h-8 leading-8" onClick={item.handler}>
+                {item.icon}
+                <span className="ml-1 text-xs text-primary-l">{item.label}</span>
+              </Menu.Item>
+            )
+          })
+      }
     </Menu>
   )
 }
 
 function NormalMessage(props: NormalMessageProps) {
-  const { msg, onPreview } = props
+  const { msg, onPreview, onRecall } = props
   const { messageId, profile, createTime } = msg
 
   const { userInfo } = useSelector((state: RootState) => state.user)
-
-  const isSelf = (msg: Message.Entity) => {
-    if (!userInfo) return false
-    return msg.profile?.userId === userInfo.userId
-  }
 
   /**
    * @description 渲染文本标签
@@ -75,9 +85,7 @@ function NormalMessage(props: NormalMessageProps) {
    */
   const genImageMsg = (msg: Message.Entity) => {
     return (
-      <>
-        <Image width={200} src={msg.url} alt="lamp" />
-      </>
+      <Image width={200} src={msg.url} alt="lamp" />
     )
   }
 
@@ -169,10 +177,10 @@ function NormalMessage(props: NormalMessageProps) {
   return (
     <li
       key={messageId}
-      className={cs('w-full py-4 mb-3 flex items-start', isSelf(msg) ? 'flex-row-reverse' : '')}
+      className={cs('w-full py-4 mb-3 flex items-start', isSelf(msg, userInfo) ? 'flex-row-reverse' : '')}
     >
       <UserAvatar
-        className={cs(isSelf(msg) ? 'ml-2' : 'mr-2')}
+        className={cs(isSelf(msg, userInfo) ? 'ml-2' : 'mr-2')}
         username={profile.username}
         avatar={profile.avatar}
         showState={false}
@@ -180,19 +188,27 @@ function NormalMessage(props: NormalMessageProps) {
       <div
         className={cs(
           'max-w-[70%] flex flex-col items-start justify-start',
-          isSelf(msg) ? 'items-end' : ''
+          isSelf(msg, userInfo) ? 'items-end' : ''
         )}
       >
         <div
           className={cs(
             'mb-1 flex gap-x-3 items-center justify-start',
-            isSelf(msg) ? 'flex-row-reverse' : ''
+            isSelf(msg, userInfo) ? 'flex-row-reverse' : ''
           )}
         >
           <h4 className="text-base text-primary-l">{profile.username}</h4>
           <span className="text-xs text-light-l">{createTime}</span>
         </div>
-        <Dropdown trigger="contextMenu" position="bl" droplist={DropdownList({ msg })}>
+        <Dropdown
+          trigger="contextMenu"
+          position="bl"
+          droplist={DropdownList({
+            msg,
+            userInfo,
+            handleRecall: onRecall
+          })}
+        >
           <div className="w-fit p-3 rounded-md bg-primary">{renderMsg(msg)}</div>
         </Dropdown>
       </div>
@@ -206,7 +222,9 @@ function MarkerMessage(props: { msg: Message.Entity }) {
 }
 
 function MessageList(props: BaseProps) {
-  const { className, msgs } = props
+  const { className } = props
+
+  const { msgs, handleRecall } = useContext(RoomContext)
 
   const [isPreview, setIsPreview] = useState(false)
   const [curMessage, setCurMessage] = useState<Message.Entity>()
@@ -227,7 +245,7 @@ function MessageList(props: BaseProps) {
           if (msg.type === MessageTypeEnum.ACTION) {
             return <MarkerMessage key={msg.messageId} msg={msg} />
           } else {
-            return <NormalMessage key={msg.messageId} msg={msg} onPreview={handleFilePreview} />
+            return <NormalMessage key={msg.messageId} msg={msg} onRecall={handleRecall} onPreview={handleFilePreview} />
           }
         })}
       </ul>
