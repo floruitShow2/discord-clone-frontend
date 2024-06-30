@@ -1,7 +1,9 @@
 import { HTMLAttributes } from 'react'
 
 export interface RoomContextProps {
+  room: Room.RoomEntity | null
   msgs: Message.Entity[]
+  handleClear?: (roomId: string) => void
   handleRecall?: (msg: Message.Entity) => void
 }
 

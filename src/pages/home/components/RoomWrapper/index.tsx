@@ -3,7 +3,7 @@ import { Message } from '@arco-design/web-react'
 import { io, Socket } from 'socket.io-client'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { FetchMessageList, RecallMessage } from '@/api/chat-message'
+import { ClearRecords, FetchMessageList, RecallMessage } from '@/api/chat-message'
 import { SocketEmitEvents, SocketOnEvents } from '@/constants'
 import { transalteMessagesByTime } from '@/utils/time'
 import RoomHeader from '../RoomHeader'
@@ -13,13 +13,15 @@ import { RoomContextProps, RoomProviderProps, RoomWrapperProps } from './index.i
 import styles from './index.module.less'
 
 export const RoomContext = createContext<RoomContextProps>({
+  room: null,
   msgs: [],
+  handleClear: undefined,
   handleRecall: undefined
 })
 
 const RoomProvider = (props: RoomProviderProps) => {
-  const { msgs, children, handleRecall } = props
-  return <RoomContext.Provider value={{ msgs, handleRecall }}>
+  const { children, ...rest } = props
+  return <RoomContext.Provider value={{ ...rest }}>
     {children}
   </RoomContext.Provider>
 }
@@ -59,9 +61,11 @@ function RoomWrapper(props: RoomWrapperProps) {
     setSocket(socketInstance)
     console.log('start connect')
     socketInstance.on(SocketOnEvents.SOCKET_CONNECT, () => {
-      console.log('connected')
       socketInstance.on(SocketOnEvents.MSG_CREATE, (msg) => {
         handleMessageReceive(msg)
+      })
+      socketInstance.on(SocketOnEvents.MSG_RECALL, (messageId: string, msgs: Message.Entity[]) => {
+        handleMessageRecall(messageId, msgs)
       })
     })
   }
@@ -86,13 +90,26 @@ function RoomWrapper(props: RoomWrapperProps) {
     }
   }
   // 撤回消息
-  const handleMessageRecall = async (msg: Message.Entity) => {
-    const findIdx = messages.findIndex(item => item.messageId === msg.messageId)
-    const newMessages = [...messages]
-    newMessages.splice(findIdx, 1)
-    setMessages(newMessages)
-
+  const onMessageRecall = async (msg: Message.Entity) => {
     await RecallMessage({ messageId: msg.messageId })
+  }
+  const handleMessageRecall = (messageId: string, recallMessages: Message.Entity[]) => {
+    setMessages((prev) => {
+      const findIdx = prev.findIndex(item => item.messageId === messageId)
+      if (findIdx !== -1) prev.splice(findIdx, 1)
+      const newMessages = [...prev, ...recallMessages]
+      console.log('a', messageId, prev, recallMessages, newMessages)
+      return [...prev, ...recallMessages]
+    })
+  }
+  // 清空聊天记录
+  const onRecordsClear = async (roomId: string) => {
+    try {
+      await ClearRecords(roomId)
+      setMessages([])
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const handlePageChange = async () => {
@@ -123,11 +140,15 @@ function RoomWrapper(props: RoomWrapperProps) {
 
   if (room) {
     return (
-      <RoomProvider msgs={formatMessages} handleRecall={handleMessageRecall}>
+      <RoomProvider
+        room={room}
+        msgs={formatMessages}
+        handleRecall={onMessageRecall}
+        handleClear={onRecordsClear}
+      >
         <RoomHeader info={room} />
         <RoomBody
           className={styles['room-body']}
-          info={room}
           currentPage={pageOptions.page}
           onIsNearBoyyomChange={handleAllowScrollChange}
           onPageChange={handlePageChange}

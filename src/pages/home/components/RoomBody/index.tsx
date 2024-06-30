@@ -12,7 +12,6 @@ import { RoomContext } from '../RoomWrapper'
 const RoomBody = (props: BaseProps) => {
   const {
     className,
-    info,
     showDetails = true,
     currentPage,
     onPageChange,
@@ -82,7 +81,7 @@ const RoomBody = (props: BaseProps) => {
             <MessageList />
           </Watermark>
         </main>
-        {showDetails && <RoomDetails info={info} onConfigChange={onConfigChange} />}
+        {showDetails && <RoomDetails onConfigChange={onConfigChange} />}
       </div>
     </>
   )

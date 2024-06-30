@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Button, Modal, Drawer } from '@arco-design/web-react'
 import { IconPen, IconQrcode } from '@arco-design/web-react/icon'
 import Qrcode from 'qrcode'
@@ -8,9 +8,9 @@ import CellGroup, { type CellConfig } from '@/components/cellGroup'
 import MemeberList from '../MembersList'
 import { RoomDetailsProps } from './index.interface'
 import { translateToDateTime } from '@/utils/time'
+import { RoomContext } from '../RoomWrapper'
 
-function QrcodeCardWrapper(props: RoomDetailsProps) {
-  const { info } = props
+function QrcodeCardWrapper({ info }: { info: Room.RoomEntity }) {
 
   const [qrcodeUrl, setQrcodeUrl] = useState<string>('')
   const initQrcode = async () => {
@@ -73,7 +73,9 @@ function QrcodeCardWrapper(props: RoomDetailsProps) {
 }
 
 function RoomDetails(props: RoomDetailsProps) {
-  const { info, onConfigChange } = props
+  const { onConfigChange } = props
+  const { room: info, handleClear } = useContext(RoomContext)
+
   const [members, setMembers] = useState<User.UserEntity[]>([])
 
   const genDetailsConfig = (): Array<{ group: string; configs: CellConfig[] }> => {
@@ -85,7 +87,7 @@ function RoomDetails(props: RoomDetailsProps) {
             type: 'text',
             label: '群名称',
             description: '您暂无编辑群名称的权限，请联系管理员获取',
-            value: info.roomName,
+            value: info?.roomName,
             allowEdit: true,
             onChange: (newVal: string) => {
               if (!newVal) return
@@ -95,7 +97,7 @@ function RoomDetails(props: RoomDetailsProps) {
           {
             type: 'text',
             label: '创建时间',
-            value: info.createTime
+            value: info?.createTime
           }
         ]
       },
@@ -111,7 +113,7 @@ function RoomDetails(props: RoomDetailsProps) {
           {
             type: 'switch',
             label: '置顶会话',
-            defaultChecked: info.isPinned,
+            defaultChecked: info?.isPinned,
             onChange: (newVal: boolean) => {
               onConfigChange && onConfigChange('isPinned', newVal)
             }
@@ -119,7 +121,7 @@ function RoomDetails(props: RoomDetailsProps) {
           {
             type: 'switch',
             label: '消息免打扰',
-            defaultChecked: info.noDisturbing,
+            defaultChecked: info?.noDisturbing,
             onChange: (newVal: boolean) => {
               onConfigChange && onConfigChange('noDisturbing', newVal)
             }
@@ -138,6 +140,7 @@ function RoomDetails(props: RoomDetailsProps) {
                 content: '确认删除所有聊天记录吗？清空后将无法重新找回',
                 onOk() {
                   console.log('ok')
+                  if (info && handleClear) handleClear(info.roomId)
                 }
               })
             }
@@ -156,7 +159,7 @@ function RoomDetails(props: RoomDetailsProps) {
 
   const initRoomMembers = async () => {
     try {
-      const { data } = await FetchRoomMembers(info.roomId)
+      const { data } = await FetchRoomMembers(info?.roomId || '')
       if (!data) return
       setMembers(data)
     } catch (err) {
@@ -175,13 +178,13 @@ function RoomDetails(props: RoomDetailsProps) {
         <div className="flex items-center justify-start">
           <UserAvatar
             className="mr-2"
-            username={info.roomName}
-            avatar={info.roomCover}
+            username={info?.roomName}
+            avatar={info?.roomCover || ''}
             showState={false}
           />
           <div className="flex flex-col items-start justify-center">
             <div className="flex items-center justify-start text-primary-l">
-              <span className="mr-1 text-sm">{info.roomName}</span>
+              <span className="mr-1 text-sm">{info?.roomName}</span>
               <IconPen className="cursor-pointer hover:text-blue-500" />
             </div>
             <span className="text-xs text-light-l">Lorem ipsum dolor sit amet</span>
@@ -216,7 +219,7 @@ function RoomDetails(props: RoomDetailsProps) {
           setQrcodeVisible(false)
         }}
       >
-        <QrcodeCardWrapper info={info} />
+        { info && <QrcodeCardWrapper info={info} /> }
       </Drawer>
     </aside>
   )

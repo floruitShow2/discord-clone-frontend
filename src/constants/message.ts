@@ -13,5 +13,6 @@ export enum SocketEmitEvents {
 
 export enum SocketOnEvents {
   SOCKET_CONNECT = 'connect',
-  MSG_CREATE = 'onCreateMessage'
+  MSG_CREATE = 'onCreateMessage',
+  MSG_RECALL = 'onRecallMessage'
 }

@@ -3,7 +3,8 @@ import { request } from '@/utils/service'
 enum URLs {
   FetchMessageList = '/api/chat/message/getMessagesList',
   CreateFileMessage = '/api/chat/message/createFileMessage',
-  RecallMessage = '/api/chat/message/recall'
+  Recall = '/api/chat/message/recall',
+  Clear = '/api/chat/message/clear'
 }
 
 export const FetchMessageList = (params: Message.FetchMessageListInput) => {
@@ -15,5 +16,9 @@ export const CreateFilesMessage = (formData: FormData) => {
 }
 
 export const RecallMessage = (data: Message.RecallMessageInput) => {
-  return request.post<string>(URLs.RecallMessage, data)
+  return request.post<string>(URLs.Recall, data)
+}
+
+export const ClearRecords = (roomId: string) => {
+  return request.post(URLs.Clear, { roomId })
 }

@@ -218,7 +218,7 @@ function NormalMessage(props: NormalMessageProps) {
 
 function MarkerMessage(props: { msg: Message.Entity }) {
   const { msg } = props
-  return <li className="w-full text-xs text-primary-l text-center">{msg.content}</li>
+  return <li className="w-full text-xs text-light-l text-center leading-10">{msg.content}</li>
 }
 
 function MessageList(props: BaseProps) {
