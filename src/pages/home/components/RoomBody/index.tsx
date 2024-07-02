@@ -1,13 +1,14 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useDebounceFn } from 'ahooks'
 import { Watermark } from '@arco-design/web-react'
 import { RootState } from '@/store'
 import MessageList from '../MessageList'
 import RoomDetails from '../RoomDetails'
+import { RoomContext } from '../RoomWrapper'
 import type { BaseProps } from './index.interface'
 import './index.less'
-import { RoomContext } from '../RoomWrapper'
+import ReplyChain from '../ReplyChain'
 
 const RoomBody = (props: BaseProps) => {
   const {
@@ -16,10 +17,10 @@ const RoomBody = (props: BaseProps) => {
     currentPage,
     onPageChange,
     onConfigChange,
-    onIsNearBoyyomChange
+    onIsNearBottomChange
   } = props
 
-  const { msgs } = useContext(RoomContext)
+  const { msgs, handleRecall, handleReply } = useContext(RoomContext)
 
   const { userInfo } = useSelector((state: RootState) => state.user)
 
@@ -33,27 +34,31 @@ const RoomBody = (props: BaseProps) => {
     const maxScrollTop = scrollHeight - clientHeight
     const isNearBottomNow = scrollTop >= maxScrollTop - clientHeight
 
-    // console.log({ scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow })
+    console.log({ scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow })
 
     return { scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow }
   }
 
+  // 监听消息列表的滚动事件
   useEffect(() => {
     const handleScroll = () => {
       if (!msgWrapperRef.current) return
       const { scrollTop = 0, isNearBottomNow = true } = getWrapperRect()
-      onIsNearBoyyomChange(isNearBottomNow)
+      onIsNearBottomChange(isNearBottomNow)
       if (scrollTop < 100 || scrollTop === 0) run()
     }
 
     const container = msgWrapperRef.current
+    console.log('a', container)
     if (!container) return
     container.addEventListener('scroll', handleScroll)
+
     return () => {
       container.removeEventListener('scroll', handleScroll)
     }
   }, [msgWrapperRef])
 
+  // 如果在第一页接收到新消息，滚动到底部
   useEffect(() => {
     if (!msgWrapperRef.current) return
 
@@ -65,12 +70,23 @@ const RoomBody = (props: BaseProps) => {
     }
   }, [msgs])
 
+  const [replyChainId, setReplyChainId] = useState('')
+  const [showReplyChain, setShowReplyChain] = useState(false)
+  const handleClickReplyMsg = (msg: Message.Entity) => {
+    setShowReplyChain(true)
+    setReplyChainId(msg.messageId)
+  }
+  const handleCloseReplyChain = () => {
+    setShowReplyChain(false)
+    setReplyChainId('')
+  }
+
   return (
     <>
-      <div className={`${className} flex items-start justify-between`}>
+      <div className={`${className} relative flex items-start justify-between`}>
         <main ref={msgWrapperRef} className="flex-1 h-full bg-module overflow-auto">
           <Watermark
-            className='w-full h-full overflow-auto'
+            className="w-full min-height-full"
             content={userInfo ? [userInfo.username, userInfo.phone.slice(-4)] : []}
             fontStyle={{
               fontSize: '14px',
@@ -78,10 +94,22 @@ const RoomBody = (props: BaseProps) => {
             }}
             zIndex={1}
           >
-            <MessageList />
+            <MessageList
+              msgs={msgs}
+              onRecall={handleRecall}
+              onReply={handleReply}
+              onClickReplyMsg={handleClickReplyMsg}
+            />
           </Watermark>
         </main>
         {showDetails && <RoomDetails onConfigChange={onConfigChange} />}
+        {showReplyChain && (
+          <ReplyChain
+            className="absolute right-0 top-0 z-[100]"
+            messageId={replyChainId}
+            onClose={handleCloseReplyChain}
+          />
+        )}
       </div>
     </>
   )

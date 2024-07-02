@@ -1,10 +1,18 @@
 import { Avatar } from '@arco-design/web-react'
 import { cs } from '@/utils/property'
 import styles from './index.module.less'
-import type { BaseProps } from './index.interface'
+import type { UserAvatarProps } from './index.interface'
 
-function UserAvatar(props: BaseProps) {
-  const { className, username, avatar, state, showName = false, showState = true } = props
+function UserAvatar(props: UserAvatarProps) {
+  const {
+    className,
+    username,
+    description,
+    avatar,
+    state,
+    showDetails = false,
+    showState = true
+  } = props
   const userStateColorMap: Record<number, string> = {
     0: 'red',
     1: 'teal'
@@ -29,7 +37,12 @@ function UserAvatar(props: BaseProps) {
           <img src={avatar} alt="" />
         </Avatar>
       </div>
-      {showName && <span className="ml-3 text-md text-primary-l">{username}</span>}
+      {showDetails && (
+        <div className="ml-2 gap-y-0.5 flex flex-col items-start justify-center">
+          <span className="text-md text-primary-l">{username}</span>
+          <span className="text-xs text-light-l">{description}</span>
+        </div>
+      )}
     </div>
   )
 }

@@ -19,18 +19,18 @@ export default function ScriptRenderer(props: RendererProps) {
   const updateFileType = (value: string) => {
     const fileExt = value.split('.').pop()
     const fileTypeMap: Record<string, string> = {
-        js: 'javascript',
-        ts: 'typescript',
-        html: 'html',
-        jsx: 'javascript',
-        tsx: 'typescript'
+      js: 'javascript',
+      ts: 'typescript',
+      html: 'html',
+      jsx: 'javascript',
+      tsx: 'typescript'
     }
     setFileType(fileTypeMap[fileExt || 'js'])
   }
   useEffect(() => {
     updateFileType(filename)
   }, [filename])
-  
+
   const handleEditorMount: OnMount = (editor, monaco) => {
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
       editor.getAction('editor.action.formatDocument')?.run()

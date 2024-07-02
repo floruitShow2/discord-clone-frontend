@@ -15,15 +15,16 @@ import styles from './index.module.less'
 export const RoomContext = createContext<RoomContextProps>({
   room: null,
   msgs: [],
+  replyId: '',
   handleClear: undefined,
+  handleReply: undefined,
+  handleReplyCancel: undefined,
   handleRecall: undefined
 })
 
 const RoomProvider = (props: RoomProviderProps) => {
   const { children, ...rest } = props
-  return <RoomContext.Provider value={{ ...rest }}>
-    {children}
-  </RoomContext.Provider>
+  return <RoomContext.Provider value={{ ...rest }}>{children}</RoomContext.Provider>
 }
 
 function RoomWrapper(props: RoomWrapperProps) {
@@ -89,13 +90,21 @@ function RoomWrapper(props: RoomWrapperProps) {
       })
     }
   }
+  // 回复消息
+  const [curReplyId, setCurReplyId] = useState<string>('')
+  const onMessageReply = (msg: Message.Entity) => {
+    setCurReplyId(msg.messageId)
+  }
+  const onReplyCancel = () => {
+    setCurReplyId('')
+  }
   // 撤回消息
   const onMessageRecall = async (msg: Message.Entity) => {
     await RecallMessage({ messageId: msg.messageId })
   }
   const handleMessageRecall = (messageId: string, recallMessages: Message.Entity[]) => {
     setMessages((prev) => {
-      const findIdx = prev.findIndex(item => item.messageId === messageId)
+      const findIdx = prev.findIndex((item) => item.messageId === messageId)
       if (findIdx !== -1) prev.splice(findIdx, 1)
       const newMessages = [...prev, ...recallMessages]
       console.log('a', messageId, prev, recallMessages, newMessages)
@@ -143,18 +152,21 @@ function RoomWrapper(props: RoomWrapperProps) {
       <RoomProvider
         room={room}
         msgs={formatMessages}
+        replyId={curReplyId}
         handleRecall={onMessageRecall}
+        handleReply={onMessageReply}
+        handleReplyCancel={onReplyCancel}
         handleClear={onRecordsClear}
       >
         <RoomHeader info={room} />
         <RoomBody
           className={styles['room-body']}
           currentPage={pageOptions.page}
-          onIsNearBoyyomChange={handleAllowScrollChange}
+          onIsNearBottomChange={handleAllowScrollChange}
           onPageChange={handlePageChange}
           onConfigChange={onConfigChange}
         />
-        <RoomInput info={room} onMessageEmit={handleMessageEmit} />
+        <RoomInput onMessageEmit={handleMessageEmit} />
       </RoomProvider>
     )
   } else {

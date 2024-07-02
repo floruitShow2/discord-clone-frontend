@@ -2,13 +2,23 @@ import { request } from '@/utils/service'
 
 enum URLs {
   FetchMessageList = '/api/chat/message/getMessagesList',
+  FetchMessageById = '/api/chat/message/getMessageById',
+  FetchReplyChain = '/api/chat/message/getReplyChain',
   CreateFileMessage = '/api/chat/message/createFileMessage',
-  Recall = '/api/chat/message/recall',
-  Clear = '/api/chat/message/clear'
+  RecallMessage = '/api/chat/message/recall',
+  ClearRecords = '/api/chat/message/clear'
 }
 
 export const FetchMessageList = (params: Message.FetchMessageListInput) => {
   return request.get<Message.Entity[]>(URLs.FetchMessageList, { params })
+}
+
+export const FetchMessageById = (messageId: string) => {
+  return request.get<Message.Entity>(URLs.FetchMessageById, { params: { messageId } })
+}
+
+export const FetchReplyChain = (messageId: string) => {
+  return request.get<Message.Entity[]>(URLs.FetchReplyChain, { params: { messageId } })
 }
 
 export const CreateFilesMessage = (formData: FormData) => {
@@ -16,9 +26,9 @@ export const CreateFilesMessage = (formData: FormData) => {
 }
 
 export const RecallMessage = (data: Message.RecallMessageInput) => {
-  return request.post<string>(URLs.Recall, data)
+  return request.post<string>(URLs.RecallMessage, data)
 }
 
 export const ClearRecords = (roomId: string) => {
-  return request.post(URLs.Clear, { roomId })
+  return request.post(URLs.ClearRecords, { roomId })
 }

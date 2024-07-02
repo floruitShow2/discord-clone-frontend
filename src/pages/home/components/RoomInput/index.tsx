@@ -1,22 +1,47 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Mentions, Tooltip, Upload, Message } from '@arco-design/web-react'
-import { IconFaceSmileFill, IconFolderAdd, IconVideoCamera } from '@arco-design/web-react/icon'
+import { Mentions, Tooltip, Upload, Message, Input } from '@arco-design/web-react'
+import {
+  IconFaceSmileFill,
+  IconFolderAdd,
+  IconVideoCamera,
+  IconCloseCircle
+} from '@arco-design/web-react/icon'
+import type { RefTextAreaType } from '@arco-design/web-react/es/Input'
 import type { UploadInstance, UploadItem } from '@arco-design/web-react/es/Upload'
 import { TUICallKit, TUICallKitServer, TUIGlobal } from '@tencentcloud/call-uikit-react'
 // @ts-ignore
 import * as GenerateTestUserSig from '@/debug/GenerateTestUserSig-es'
 import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
-import { CreateFilesMessage } from '@/api/chat-message'
+import { CreateFilesMessage, FetchMessageById } from '@/api/chat-message'
 import { RoomInputProps } from './index.interface'
+import { RoomContext } from '../RoomWrapper'
+import { cs } from '@/utils/property'
 
 function RoomInput(props: RoomInputProps) {
-  const { info, onMessageEmit } = props
+  const { onMessageEmit } = props
+
+  const { room, replyId, handleReplyCancel } = useContext(RoomContext)
+  const [replyMessage, setReplyMessage] = useState<Message.Entity | null>(null)
+  const fetchReplyMessage = async () => {
+    if (!replyId) return
+    const { data } = await FetchMessageById(replyId)
+    if (!data) return
+    inputRef.current && inputRef.current.focus()
+    setReplyMessage(data)
+  }
+  const handleCloseReply = () => {
+    handleReplyCancel && handleReplyCancel()
+    setReplyMessage(null)
+  }
+  useEffect(() => {
+    fetchReplyMessage()
+  }, [replyId])
 
   const { userInfo } = useSelector((state: RootState) => state.user)
 
-  const iconBtnCls = 'cursor-pointer hover:text-blue-500'
+  const iconBtnCls = 'text-light-l cursor-pointer hover:text-blue-500'
 
   const callData = {
     // SDKAppID: 1600038806,
@@ -52,21 +77,24 @@ function RoomInput(props: RoomInputProps) {
       console.log('[TUICallKit] Please fill in the SDKAppID, userID and SecretKey.')
     }
   }
-
   useEffect(() => {
     init()
   }, [userInfo])
 
+  const inputRef = useRef<RefTextAreaType>(null)
   const [inputValue, setInputValue] = useState('')
   const handleKeyDown = (e: any) => {
+    if (!room) return
     onMessageEmit({
-      roomId: '6649fb83035a382e127368db',
-      type: MessageTypeEnum.TEXT,
+      roomId: room.roomId,
       profileId: userInfo?.userId || '',
+      replyId,
+      type: MessageTypeEnum.TEXT,
       content: e.target.value,
       url: ''
     })
     setInputValue('')
+    handleReplyCancel && handleReplyCancel()
   }
 
   const callKitStyle = useMemo<any>(() => {
@@ -95,8 +123,9 @@ function RoomInput(props: RoomInputProps) {
   const uploadRef = useRef<UploadInstance>(null)
   const [fileList, setFileList] = useState<UploadItem[]>([])
   const handleChangeFiles = async (files: UploadItem[]) => {
+    if (!room) return
     const fd = new FormData()
-    fd.append('roomId', info.roomId)
+    fd.append('roomId', room.roomId)
     files.forEach((file) => {
       if (file.originFile) fd.append('files', file.originFile)
     })
@@ -108,7 +137,43 @@ function RoomInput(props: RoomInputProps) {
   return (
     <>
       <TUICallKit style={callKitStyle}></TUICallKit>
-      <div className="w-full h-28 px-3 py-2 flex flex-col items-start justify-between border-t border-primary-b">
+      <div
+        className={cs(
+          'relative w-full px-3 py-2',
+          'flex flex-col items-start justify-between',
+          'border-t border-primary-b'
+        )}
+      >
+        {replyId && replyMessage && (
+          <div
+            className={cs(
+              'absolute top-0 left-0 -translate-y-full',
+              'w-full h-16 py-3 px-4',
+              'border-b border-solid bg-white shadow-[0_-4px_12px_-1px_rgba(125,125,125,0.1)]',
+              'z-50'
+            )}
+          >
+            <div className={cs('relative w-full h-full', 'flex items-center justify-start')}>
+              <div
+                className={cs(
+                  'w-full h-full pl-4',
+                  'flex flex-col items-start justify-center',
+                  'text-sm text-light-l',
+                  "before:content-[''] before:absolute before:left-0 before:top-0",
+                  'before:block before:w-1 before:h-full',
+                  'before:bg-module'
+                )}
+              >
+                <span>{replyMessage.profile.username}</span>
+                <span>{replyMessage.content}</span>
+              </div>
+              <IconCloseCircle
+                className={cs(iconBtnCls, 'absolute top-0 right-0')}
+                onClick={handleCloseReply}
+              />
+            </div>
+          </div>
+        )}
         <div className="w-full py-2 flex gap-x-2 items-center justify-start text-xl text-light-l">
           <IconFaceSmileFill className={iconBtnCls} />
           <Upload
@@ -132,12 +197,11 @@ function RoomInput(props: RoomInputProps) {
             <IconVideoCamera className={iconBtnCls} onClick={call} />
           </Tooltip>
         </div>
-        <Mentions
+        <Input.TextArea
+          ref={inputRef}
           placeholder="You can use @ Plato to mention Platon"
-          options={['Jack', 'Steven', 'Platon', 'Mary']}
           value={inputValue}
           rows={2}
-          alignTextarea={false}
           onChange={(val) => setInputValue(val)}
           onPressEnter={handleKeyDown}
         />

@@ -8,7 +8,7 @@ function RoomHeader(props: BaseProps) {
 
   return (
     <div className="w-full h-16 p-3 flex items-center justify-between border-b border-primary-b">
-      <UserAvatar username={info.roomName} avatar={info.roomCover} showName />
+      <UserAvatar username={info.roomName} avatar={info.roomCover} showDetails />
 
       <div className="flex items-center justify-end">
         <Button className="!text-primary-l" type="text" icon={<IconSearch />} />

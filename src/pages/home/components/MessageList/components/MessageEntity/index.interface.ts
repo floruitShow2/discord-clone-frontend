@@ -1,18 +1,14 @@
 import { HTMLAttributes } from 'react'
 
-export interface MessageListProps extends HTMLAttributes<HTMLUListElement> {
-  msgs: Message.Entity[]
-  disabled?: boolean
-  onRecall?: (msg: Message.Entity) => void
-  onReply?: (msg: Message.Entity) => void
-  onClickReplyMsg?: (msg: Message.Entity) => void
-}
-
 export interface NormalMessageProps extends HTMLAttributes<HTMLElement> {
   msg: Message.Entity
-  onPreview: (msg: Message.Entity) => void
+  disabled?: boolean
+  onPreview?: (msg: Message.Entity) => void
   onRecall?: (msg: Message.Entity) => void
+  // 回复消息
   onReply?: (msg: Message.Entity) => void
+  // 点击回复的目标消息
+  onClickReplyMsg?: (msg: Message.Entity) => void
 }
 
 export interface DropdownListProps extends HTMLAttributes<HTMLElement> {

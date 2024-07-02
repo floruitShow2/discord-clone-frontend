@@ -11,7 +11,6 @@ import { translateToDateTime } from '@/utils/time'
 import { RoomContext } from '../RoomWrapper'
 
 function QrcodeCardWrapper({ info }: { info: Room.RoomEntity }) {
-
   const [qrcodeUrl, setQrcodeUrl] = useState<string>('')
   const initQrcode = async () => {
     try {
@@ -219,7 +218,7 @@ function RoomDetails(props: RoomDetailsProps) {
           setQrcodeVisible(false)
         }}
       >
-        { info && <QrcodeCardWrapper info={info} /> }
+        {info && <QrcodeCardWrapper info={info} />}
       </Drawer>
     </aside>
   )

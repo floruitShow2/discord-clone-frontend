@@ -1,10 +1,20 @@
 import { HTMLAttributes } from 'react'
 
+interface RoomContextMethod {
+  (msg: Message.Entity): void
+}
 export interface RoomContextProps {
   room: Room.RoomEntity | null
   msgs: Message.Entity[]
+  replyId: string
+  // 清空聊天记录
   handleClear?: (roomId: string) => void
-  handleRecall?: (msg: Message.Entity) => void
+  // 回复消息
+  handleReply?: RoomContextMethod
+  // 取消回复消息
+  handleReplyCancel?: () => void
+  // 撤回消息
+  handleRecall?: RoomContextMethod
 }
 
 export interface RoomProviderProps extends RoomContextProps {

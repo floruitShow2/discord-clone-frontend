@@ -1,9 +1,10 @@
 import { HTMLAttributes } from 'react'
 
-export interface BaseProps extends HTMLAttributes<HTMLElement> {
+export interface UserAvatarProps extends HTMLAttributes<HTMLElement> {
   username?: string
+  description?: string
   avatar: string
   state?: User.UserEntity['state']
-  showName?: boolean
+  showDetails?: boolean
   showState?: boolean
 }

@@ -11,6 +11,14 @@ declare namespace Message {
      */
     roomId: string
     /**
+     * @description 回复的消息id
+     */
+    replyId?: string
+    /**
+     * @description 回复的消息实体
+     */
+    replyMessage?: Entity
+    /**
      * @description 发布消息的用户
      */
     profile: User.UserEntity
