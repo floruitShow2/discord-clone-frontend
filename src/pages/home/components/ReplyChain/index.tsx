@@ -26,7 +26,7 @@ function ReplyChain(props: ReplyChainProps) {
         'w-[400px] h-full overflow-auto',
         'border-l border-solid border-primary-b',
         'z-[9999]',
-        'bg-module shadow-[-4px_0_12px_-1px_rgba(125,125,125,0.1)]',
+        'bg-module shadow-[-4px_2px_12px_-1px_rgba(125,125,125,0.1)]',
         className
       )}
     >

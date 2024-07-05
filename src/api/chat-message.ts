@@ -4,6 +4,7 @@ enum URLs {
   FetchMessageList = '/api/chat/message/getMessagesList',
   FetchMessageById = '/api/chat/message/getMessageById',
   FetchReplyChain = '/api/chat/message/getReplyChain',
+  FetchLocatedPage = '/api/chat/message/getLocatedPage',
   CreateFileMessage = '/api/chat/message/createFileMessage',
   RecallMessage = '/api/chat/message/recall',
   ClearRecords = '/api/chat/message/clear'
@@ -19,6 +20,15 @@ export const FetchMessageById = (messageId: string) => {
 
 export const FetchReplyChain = (messageId: string) => {
   return request.get<Message.Entity[]>(URLs.FetchReplyChain, { params: { messageId } })
+}
+
+export interface FetchLocatedPageInput {
+  roomId: string
+  messageId: string
+  pageSize: number
+}
+export const FetchLocatedPage = (params: FetchLocatedPageInput) => {
+  return request.get<number>(URLs.FetchLocatedPage, { params })
 }
 
 export const CreateFilesMessage = (formData: FormData) => {

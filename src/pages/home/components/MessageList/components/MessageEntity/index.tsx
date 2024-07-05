@@ -149,8 +149,7 @@ export function renderMsg(props: NormalMessageProps) {
           'relative',
           "after:content-['']",
           'after:absolute after:top-0 after:left-0',
-          'block w-full h-full bg-[rgba(169, 169, 169, 0.2)]',
-          'pointer-events-none'
+          'block w-full h-full bg-[rgba(169, 169, 169, 0.2)]'
         )}
       >
         <video src={msg.url} controls={false} width={300}>
@@ -164,7 +163,11 @@ export function renderMsg(props: NormalMessageProps) {
         </video>
         {onPreview && (
           <IconPlayCircle
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl text-primary hover:text-blue-400 transition-colors cursor-pointer z-50"
+            className={cs(
+              'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+              'text-4xl text-primary hover:text-blue-400 transition-colors',
+              'cursor-pointer z-50'
+            )}
             onClick={() => handlePreview(msg)}
           />
         )}

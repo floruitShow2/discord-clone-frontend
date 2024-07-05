@@ -123,7 +123,7 @@ export default function VideoRenderer(props: RendererProps) {
         'relative w-full h-full flex flex-col items-center justify-center'
       )}
     >
-      <video id={rendererId} className="w-full" controls crossOrigin="">
+      <video id={rendererId} className={cs('video-renderer', 'w-full')} controls crossOrigin="">
         <source src={url} type="video/mp4" sizes="1080" />
 
         {/* <track kind="captions" label="English" srcLang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default /> */}

@@ -136,6 +136,7 @@ function RoomDetails(props: RoomDetailsProps) {
             onBtnClick() {
               Modal.confirm({
                 title: '清空聊天记录',
+                alignCenter: true,
                 content: '确认删除所有聊天记录吗？清空后将无法重新找回',
                 onOk() {
                   console.log('ok')

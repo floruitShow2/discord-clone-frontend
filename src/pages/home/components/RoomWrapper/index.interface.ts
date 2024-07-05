@@ -9,6 +9,7 @@ export interface RoomContextProps {
   replyId: string
   // 清空聊天记录
   handleClear?: (roomId: string) => void
+  handleLocated?: (messageId: string) => void
   // 回复消息
   handleReply?: RoomContextMethod
   // 取消回复消息

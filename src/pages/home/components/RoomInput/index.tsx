@@ -1,13 +1,13 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Mentions, Tooltip, Upload, Message, Input } from '@arco-design/web-react'
+import { Tooltip, Upload, Message, Input } from '@arco-design/web-react'
 import {
   IconFaceSmileFill,
   IconFolderAdd,
   IconVideoCamera,
   IconCloseCircle
 } from '@arco-design/web-react/icon'
-import type { RefTextAreaType } from '@arco-design/web-react/es/Input'
+import type { RefInputType } from '@arco-design/web-react/es/Input'
 import type { UploadInstance, UploadItem } from '@arco-design/web-react/es/Upload'
 import { TUICallKit, TUICallKitServer, TUIGlobal } from '@tencentcloud/call-uikit-react'
 // @ts-ignore
@@ -81,16 +81,18 @@ function RoomInput(props: RoomInputProps) {
     init()
   }, [userInfo])
 
-  const inputRef = useRef<RefTextAreaType>(null)
+  const inputRef = useRef<RefInputType>(null)
   const [inputValue, setInputValue] = useState('')
   const handleKeyDown = (e: any) => {
     if (!room) return
+    const content = e.target.value
+    if (!content) return
     onMessageEmit({
       roomId: room.roomId,
       profileId: userInfo?.userId || '',
       replyId,
       type: MessageTypeEnum.TEXT,
-      content: e.target.value,
+      content,
       url: ''
     })
     setInputValue('')
@@ -197,11 +199,9 @@ function RoomInput(props: RoomInputProps) {
             <IconVideoCamera className={iconBtnCls} onClick={call} />
           </Tooltip>
         </div>
-        <Input.TextArea
+        <Input
           ref={inputRef}
-          placeholder="You can use @ Plato to mention Platon"
           value={inputValue}
-          rows={2}
           onChange={(val) => setInputValue(val)}
           onPressEnter={handleKeyDown}
         />

@@ -34,7 +34,7 @@ const RoomBody = (props: BaseProps) => {
     const maxScrollTop = scrollHeight - clientHeight
     const isNearBottomNow = scrollTop >= maxScrollTop - clientHeight
 
-    console.log({ scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow })
+    // console.log({ scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow })
 
     return { scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow }
   }
@@ -43,13 +43,21 @@ const RoomBody = (props: BaseProps) => {
   useEffect(() => {
     const handleScroll = () => {
       if (!msgWrapperRef.current) return
-      const { scrollTop = 0, isNearBottomNow = true } = getWrapperRect()
+      const {
+        scrollTop = 0,
+        isNearBottomNow = true,
+        clientHeight = 800,
+        scrollHeight = 800
+      } = getWrapperRect()
       onIsNearBottomChange(isNearBottomNow)
-      if (scrollTop < 100 || scrollTop === 0) run()
+      if (scrollTop < clientHeight * 0.2) {
+        run(currentPage + 1)
+      } else if (scrollTop >= scrollHeight - clientHeight) {
+        run(currentPage - 1 <= 0 ? 1 : currentPage - 1)
+      }
     }
 
     const container = msgWrapperRef.current
-    console.log('a', container)
     if (!container) return
     container.addEventListener('scroll', handleScroll)
 
