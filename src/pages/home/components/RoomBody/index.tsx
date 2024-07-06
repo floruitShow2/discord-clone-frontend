@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { useDebounceFn } from 'ahooks'
 import { Watermark } from '@arco-design/web-react'
@@ -6,25 +6,30 @@ import { RootState } from '@/store'
 import MessageList from '../MessageList'
 import RoomDetails from '../RoomDetails'
 import { RoomContext } from '../RoomWrapper'
-import type { BaseProps } from './index.interface'
+import type { RoomBodyProps } from './index.interface'
 import './index.less'
-import ReplyChain from '../ReplyChain'
 
-const RoomBody = (props: BaseProps) => {
+const RoomBody = (props: RoomBodyProps) => {
   const {
     className,
     showDetails = true,
-    currentPage,
+    roomPage,
     onPageChange,
     onConfigChange,
     onIsNearBottomChange
   } = props
 
-  const { msgs, handleRecall, handleReply } = useContext(RoomContext)
+  const { msgs, handleRecall, handleReply, handleReplyChain } = useContext(RoomContext)
 
   const { userInfo } = useSelector((state: RootState) => state.user)
 
   const msgWrapperRef = useRef<HTMLUListElement>(null)
+
+  const page = useRef(roomPage)
+  useEffect(() => {
+    console.log(roomPage)
+    page.current = roomPage
+  }, [roomPage])
 
   const { run } = useDebounceFn(onPageChange, { wait: 50 })
 
@@ -32,7 +37,7 @@ const RoomBody = (props: BaseProps) => {
     if (!msgWrapperRef.current) return {}
     const { scrollHeight, clientHeight, scrollTop } = msgWrapperRef.current
     const maxScrollTop = scrollHeight - clientHeight
-    const isNearBottomNow = scrollTop >= maxScrollTop - clientHeight
+    const isNearBottomNow = scrollTop >= maxScrollTop - clientHeight * 0.6
 
     // console.log({ scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow })
 
@@ -50,10 +55,11 @@ const RoomBody = (props: BaseProps) => {
         scrollHeight = 800
       } = getWrapperRect()
       onIsNearBottomChange(isNearBottomNow)
-      if (scrollTop < clientHeight * 0.2) {
-        run(currentPage + 1)
+      const curPage = page.current
+      if (scrollTop < clientHeight * 0.6) {
+        run(curPage + 1)
       } else if (scrollTop >= scrollHeight - clientHeight) {
-        run(currentPage - 1 <= 0 ? 1 : currentPage - 1)
+        run(curPage - 1 <= 0 ? 1 : curPage - 1)
       }
     }
 
@@ -73,21 +79,10 @@ const RoomBody = (props: BaseProps) => {
     msgWrapperRef.current.scrollIntoView({ behavior: 'smooth' })
     const { isNearBottomNow, maxScrollTop = 0 } = getWrapperRect()
 
-    if (isNearBottomNow || currentPage === 1) {
+    if (isNearBottomNow || page.current === 1) {
       msgWrapperRef.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0
     }
   }, [msgs])
-
-  const [replyChainId, setReplyChainId] = useState('')
-  const [showReplyChain, setShowReplyChain] = useState(false)
-  const handleClickReplyMsg = (msg: Message.Entity) => {
-    setShowReplyChain(true)
-    setReplyChainId(msg.messageId)
-  }
-  const handleCloseReplyChain = () => {
-    setShowReplyChain(false)
-    setReplyChainId('')
-  }
 
   return (
     <>
@@ -106,18 +101,11 @@ const RoomBody = (props: BaseProps) => {
               msgs={msgs}
               onRecall={handleRecall}
               onReply={handleReply}
-              onClickReplyMsg={handleClickReplyMsg}
+              onClickReplyMsg={handleReplyChain}
             />
           </Watermark>
         </main>
         {showDetails && <RoomDetails onConfigChange={onConfigChange} />}
-        {showReplyChain && (
-          <ReplyChain
-            className="absolute right-0 top-0 z-[100]"
-            messageId={replyChainId}
-            onClose={handleCloseReplyChain}
-          />
-        )}
       </div>
     </>
   )

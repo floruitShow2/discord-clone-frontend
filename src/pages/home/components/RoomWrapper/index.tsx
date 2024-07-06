@@ -3,22 +3,32 @@ import { Message } from '@arco-design/web-react'
 import { io, Socket } from 'socket.io-client'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { ClearRecords, FetchLocatedPage, FetchMessageList, RecallMessage } from '@/api/chat-message'
+import {
+  ClearRecords,
+  CreateNormalMessage,
+  FetchLocatedPage,
+  FetchMessageList,
+  RecallMessage
+} from '@/api/chat-message'
 import { SocketEmitEvents, SocketOnEvents } from '@/constants'
 import { transalteMessagesByTime } from '@/utils/time'
 import RoomHeader from '../RoomHeader'
 import RoomBody from '../RoomBody'
 import RoomInput from '../RoomInput'
+import RoomDrawer, { renderRoomDrawer, RoomDrawerContentEnum } from '../RoomDrawer'
 import { RoomContextProps, RoomProviderProps, RoomWrapperProps } from './index.interface'
 import styles from './index.module.less'
+import { RoomDrawerContentProps } from '../RoomDrawer/index.interface'
 
 export const RoomContext = createContext<RoomContextProps>({
   room: null,
   msgs: [],
   replyId: '',
+  handleCreate: undefined,
   handleClear: undefined,
   handleLocated: undefined,
   handleReply: undefined,
+  handleReplyChain: undefined,
   handleReplyCancel: undefined,
   handleRecall: undefined
 })
@@ -71,7 +81,6 @@ function RoomWrapper(props: RoomWrapperProps) {
       query: { roomId: room?.roomId }
     })
     setSocket(socketInstance)
-    console.log('start connect')
     socketInstance.on(SocketOnEvents.SOCKET_CONNECT, () => {
       socketInstance.on(SocketOnEvents.MSG_CREATE, (msg) => {
         handleMessageReceive(msg)
@@ -82,14 +91,19 @@ function RoomWrapper(props: RoomWrapperProps) {
     })
   }
 
+  const [roomDrawerVisible, setRoomDrawerVisible] = useState(false)
+  const [roomDrawerProps, setRoomDrawerProps] = useState<Omit<RoomDrawerContentProps, 'onClose'>>({
+    type: RoomDrawerContentEnum.REPLY_CHAIN,
+    messageId: ''
+  })
+
   // 发送消息
-  const handleMessageEmit = (createMessageInput: Message.CreateMessageInput) => {
-    if (!socket) return
-    socket.emit(SocketEmitEvents.CREATE_MESSAGE, createMessageInput)
+  const onMessageCreate = async (createMessageInput: Message.CreateMessageInput) => {
+    const { data } = await CreateNormalMessage(createMessageInput)
+    return data
   }
   // 接收消息
   const handleMessageReceive = (msgs: Message.Entity[]) => {
-    console.log('return', msgs)
     const totalMessages = [...messages, ...msgs]
     setMessages((prev) => [...prev, ...msgs])
     const hasNewMsg = totalMessages.some(
@@ -120,6 +134,14 @@ function RoomWrapper(props: RoomWrapperProps) {
   }
   const onReplyCancel = () => {
     setCurReplyId('')
+  }
+  const onSearchReplyChain = (message: Message.Entity) => {
+    setRoomDrawerVisible(true)
+    setRoomDrawerProps({
+      type: RoomDrawerContentEnum.REPLY_CHAIN,
+      messageId: message.messageId,
+      roomId: message.roomId
+    })
   }
   // 撤回消息
   const onMessageRecall = async (msg: Message.Entity) => {
@@ -176,21 +198,32 @@ function RoomWrapper(props: RoomWrapperProps) {
         room={room}
         msgs={formatMessages}
         replyId={curReplyId}
+        handleCreate={onMessageCreate}
         handleClear={onRecordsClear}
         handleLocated={onLocateMessage}
         handleRecall={onMessageRecall}
         handleReply={onMessageReply}
         handleReplyCancel={onReplyCancel}
+        handleReplyChain={onSearchReplyChain}
       >
         <RoomHeader info={room} />
         <RoomBody
           className={styles['room-body']}
-          currentPage={pageOptions.page}
-          onIsNearBottomChange={handleAllowScrollChange}
+          roomPage={pageOptions.page}
           onPageChange={handlePageChange}
           onConfigChange={onConfigChange}
+          onIsNearBottomChange={handleAllowScrollChange}
         />
-        <RoomInput onMessageEmit={handleMessageEmit} />
+        <RoomInput />
+        <RoomDrawer visible={roomDrawerVisible} onClose={() => setRoomDrawerVisible(false)}>
+          {renderRoomDrawer({
+            ...roomDrawerProps,
+            roomId: room.roomId,
+            onClose() {
+              setRoomDrawerVisible(false)
+            }
+          })}
+        </RoomDrawer>
       </RoomProvider>
     )
   } else {

@@ -15,14 +15,11 @@ import * as GenerateTestUserSig from '@/debug/GenerateTestUserSig-es'
 import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
 import { CreateFilesMessage, FetchMessageById } from '@/api/chat-message'
-import { RoomInputProps } from './index.interface'
 import { RoomContext } from '../RoomWrapper'
 import { cs } from '@/utils/property'
 
-function RoomInput(props: RoomInputProps) {
-  const { onMessageEmit } = props
-
-  const { room, replyId, handleReplyCancel } = useContext(RoomContext)
+function RoomInput() {
+  const { room, replyId, handleCreate, handleReplyCancel } = useContext(RoomContext)
   const [replyMessage, setReplyMessage] = useState<Message.Entity | null>(null)
   const fetchReplyMessage = async () => {
     if (!replyId) return
@@ -84,10 +81,10 @@ function RoomInput(props: RoomInputProps) {
   const inputRef = useRef<RefInputType>(null)
   const [inputValue, setInputValue] = useState('')
   const handleKeyDown = (e: any) => {
-    if (!room) return
+    if (!room || !handleCreate) return
     const content = e.target.value
     if (!content) return
-    onMessageEmit({
+    handleCreate({
       roomId: room.roomId,
       profileId: userInfo?.userId || '',
       replyId,

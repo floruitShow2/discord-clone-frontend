@@ -149,7 +149,7 @@ export function renderMsg(props: NormalMessageProps) {
           'relative',
           "after:content-['']",
           'after:absolute after:top-0 after:left-0',
-          'block w-full h-full bg-[rgba(169, 169, 169, 0.2)]'
+          'block w-fit max-w-full h-full rounded-md overflow-hidden bg-[rgba(169, 169, 169, 0.2)]'
         )}
       >
         <video src={msg.url} controls={false} width={300}>
@@ -165,8 +165,11 @@ export function renderMsg(props: NormalMessageProps) {
           <IconPlayCircle
             className={cs(
               'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
-              'text-4xl text-primary hover:text-blue-400 transition-colors',
-              'cursor-pointer z-50'
+              'text-4xl text-primary transition-colors',
+              'cursor-pointer z-50',
+              {
+                ['hover:text-blue-400']: !disabled
+              }
             )}
             onClick={() => handlePreview(msg)}
           />
@@ -267,7 +270,7 @@ export function NormalMessage(props: NormalMessageProps) {
                 onClick={() => handleClickReplyMessage(msg)}
               >
                 <span className="text-xs text-light-l">{msg.replyMessage.profile.username}: </span>
-                {renderMsg({ msg: msg.replyMessage, disabled, onPreview })}
+                {renderMsg({ msg: msg.replyMessage, disabled: true, onPreview })}
               </div>
             )}
             {/* 消息本身 */}

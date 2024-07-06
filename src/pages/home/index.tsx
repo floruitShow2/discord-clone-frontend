@@ -128,7 +128,7 @@ function HomePage() {
         />
         <ul className="w-full">{genRooms()}</ul>
       </aside>
-      <main className={`${styles['home-main']} h-full`}>
+      <main className={`${styles['home-main']} relative h-full`}>
         <RoomWrapper room={activeRoom} onConfigChange={changeRoomConfig}></RoomWrapper>
       </main>
     </div>

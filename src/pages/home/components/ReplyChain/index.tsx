@@ -1,23 +1,50 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { Empty, Input } from '@arco-design/web-react'
+import { IconClose } from '@arco-design/web-react/icon'
+import { RootState } from '@/store'
 import { FetchReplyChain } from '@/api/chat-message'
 import { cs } from '@/utils/property'
 import UserAvatar from '@/components/userAvatar'
-import { ReplyChainProps } from './index.interface'
+import { RoomContext } from '../RoomWrapper'
 import MessageList from '../MessageList'
 import { renderMsg } from '../MessageList/components/MessageEntity'
-import { IconClose } from '@arco-design/web-react/icon'
+import type { ReplyChainProps } from './index.interface'
+import styles from './index.module.less'
+import { MessageTypeEnum } from '@/constants'
 
 function ReplyChain(props: ReplyChainProps) {
   const { className, messageId, onClose } = props
 
+  const { userInfo } = useSelector((state: RootState) => state.user)
+
+  const { room, handleCreate } = useContext(RoomContext)
+
   const [replyChain, setReplyChain] = useState<Message.Entity[]>([])
-  const initReplyChain = async () => {
-    const { data } = await FetchReplyChain(messageId)
+  const initReplyChain = async (id: string) => {
+    const { data } = await FetchReplyChain(id)
     setReplyChain(data || [])
   }
 
+  const [value, setValue] = useState('')
+  const handleKeyDown = async (e: any) => {
+    if (!room || !handleCreate) return
+    const content = e.target.value
+    if (!content) return
+    const newMessage = await handleCreate({
+      roomId: room.roomId,
+      profileId: userInfo?.userId || '',
+      replyId: messageId,
+      type: MessageTypeEnum.TEXT,
+      content,
+      url: ''
+    })
+    setValue('')
+    if (newMessage) initReplyChain(newMessage.messageId)
+  }
+
   useEffect(() => {
-    initReplyChain()
+    initReplyChain(messageId)
   }, [messageId])
 
   return (
@@ -26,13 +53,13 @@ function ReplyChain(props: ReplyChainProps) {
         'w-[400px] h-full overflow-auto',
         'border-l border-solid border-primary-b',
         'z-[9999]',
-        'bg-module shadow-[-4px_2px_12px_-1px_rgba(125,125,125,0.1)]',
+        'bg-module',
         className
       )}
     >
       <div
         className={cs(
-          'w-full h-[6%] px-4 bg-primary',
+          'w-full h-16 px-4 bg-primary',
           'flex items-center justify-between',
           'text-primary-l'
         )}
@@ -40,24 +67,44 @@ function ReplyChain(props: ReplyChainProps) {
         <h4 className="text-lg">话题</h4>
         <IconClose className=" cursor-pointer hover:text-blue-500" onClick={onClose}></IconClose>
       </div>
-      {replyChain.length && (
-        <div className="w-full h-[94%)] p-4 overflow-auto">
-          <div className="w-full p-2 rounded-md bg-white">
-            <UserAvatar
-              className="mb-2"
-              username={replyChain[0].profile.username}
-              avatar={replyChain[0].profile.avatar}
-              description={replyChain[0].createTime}
-              showDetails
-              showState={false}
-            />
-            {renderMsg({ msg: replyChain[0] })}
-          </div>
-          <div className="w-full">
-            <MessageList msgs={replyChain.slice(1)}></MessageList>
-          </div>
-        </div>
-      )}
+      <div className={cs('w-full p-4 overflow-auto', styles['reply-chain-content'])}>
+        {replyChain.length ? (
+          <>
+            <div className="w-full p-2 rounded-md bg-white">
+              <UserAvatar
+                className="mb-2"
+                username={replyChain[0].profile.username}
+                avatar={replyChain[0].profile.avatar}
+                description={replyChain[0].createTime}
+                showDetails
+                showState={false}
+              />
+              {renderMsg({ msg: replyChain[0] })}
+            </div>
+            <div className="w-full">
+              <MessageList msgs={replyChain.slice(1)}></MessageList>
+            </div>
+          </>
+        ) : (
+          <>
+            <Empty description="数据查询失败，尝试重新获取" />
+          </>
+        )}
+      </div>
+      <div
+        className={cs(
+          'w-full h-16 px-4 bg-primary',
+          'flex items-center justify-between',
+          'text-primary-l'
+        )}
+      >
+        <Input
+          value={value}
+          placeholder="请输入回复内容"
+          onChange={setValue}
+          onPressEnter={handleKeyDown}
+        ></Input>
+      </div>
     </aside>
   )
 }
