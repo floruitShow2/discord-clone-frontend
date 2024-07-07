@@ -10,7 +10,7 @@ import {
   FetchMessageList,
   RecallMessage
 } from '@/api/chat-message'
-import { SocketEmitEvents, SocketOnEvents } from '@/constants'
+import { SocketOnEvents } from '@/constants'
 import { transalteMessagesByTime } from '@/utils/time'
 import RoomHeader from '../RoomHeader'
 import RoomBody from '../RoomBody'
@@ -24,9 +24,11 @@ export const RoomContext = createContext<RoomContextProps>({
   room: null,
   msgs: [],
   replyId: '',
+  locatedId: '',
   handleCreate: undefined,
   handleClear: undefined,
   handleLocated: undefined,
+  handleClearLocatedId: undefined,
   handleReply: undefined,
   handleReplyChain: undefined,
   handleReplyCancel: undefined,
@@ -49,6 +51,7 @@ function RoomWrapper(props: RoomWrapperProps) {
   const [formatMessages, setFormatMessages] = useState<Message.Entity[]>([])
   // 分页参数
   const [pageOptions, setPageOptions] = useState<Pagination.Input>({ page: 1, pageSize: 15 })
+  const pageRange = useRef<number[]>([1, 1])
   // 已经加载过的消息列表，避免重复加载
   const [loadedPages, setLoadedPages] = useState<Set<number>>(new Set())
 
@@ -57,7 +60,13 @@ function RoomWrapper(props: RoomWrapperProps) {
     try {
       const { pageSize } = pageOptions
       const { data } = await FetchMessageList({ roomId: room.roomId, page: currentPage, pageSize })
-      if (!data || !data?.length) return
+      if (!data || !data?.length) {
+        pageRange.current = [
+          pageRange.current[0],
+          currentPage - 1
+        ]
+        return
+      }
       // 设置原始消息数据，
       setMessages((prevMessages) => {
         const updatedMessages = [...prevMessages]
@@ -68,7 +77,6 @@ function RoomWrapper(props: RoomWrapperProps) {
         return updatedMessages
       })
       setLoadedPages((prevPages) => new Set(prevPages).add(currentPage))
-      // 原始数据经过处理后再设置，页面展示这些
     } catch (err) {
       console.log(err)
     }
@@ -117,15 +125,64 @@ function RoomWrapper(props: RoomWrapperProps) {
     }
   }
   // 定位消息
-  const onLocateMessage = async (messageId: string) => {
-    if (!room) return
-    const { data } = await FetchLocatedPage({
-      roomId: room.roomId,
+  const [locatedId, setLocatedId] = useState('')
+  useEffect(() => {
+    if (!locatedId) return
+    setTimeout(() => {
+      const item = document.querySelector(`[data-id="${locatedId}"]`)
+      if (item) {
+        item.scrollIntoView()
+      }
+    }, 100)
+  }, [locatedId])
+  const onClearLocatedId = () => {
+    setLocatedId('')
+  }
+  const onLocateMessage = async (msg: Message.Entity) => {
+    const item = document.querySelector(`[data-id="${locatedId}"]`)
+    if (item) {
+      setLocatedId(msg.messageId)
+      return
+    }
+    const { roomId, messageId } = msg
+    const { data: locatedPage } = await FetchLocatedPage({
+      roomId,
       messageId,
       pageSize: pageOptions.pageSize
     })
-    if (!data || data < 1) return
-    console.log(data)
+    if (!locatedPage || locatedPage < 1) return
+    const { pageSize } = pageOptions
+    const prevPage = locatedPage - 1
+    const nextPage = locatedPage + 1
+    const { data: prevMessages } =
+      !!prevPage
+        ? await FetchMessageList({ roomId: roomId, page: prevPage, pageSize })
+        : { data: [] }
+    const { data: curMessages } = await FetchMessageList({
+      roomId: roomId,
+      page: locatedPage,
+      pageSize
+    })
+    const { data: nextMessages } = await FetchMessageList({
+      roomId: roomId,
+      page: nextPage,
+      pageSize
+    })
+
+    const totalMessages = [...(prevMessages || []), ...(curMessages || []), ...(nextMessages || [])]
+    if (!totalMessages.length) return
+    setRoomDrawerVisible(false)
+    setMessages(totalMessages)
+    setLoadedPages(
+      new Set(
+        prevPage
+          ? [prevPage, locatedPage, nextPage]
+          : [locatedPage, nextPage]
+      )
+    )
+    pageRange.current = [!!prevPage ? prevPage : 1 , nextPage]
+    handlePageChange(locatedPage)
+    setLocatedId(messageId)
   }
   // 回复消息
   const [curReplyId, setCurReplyId] = useState<string>('')
@@ -140,7 +197,8 @@ function RoomWrapper(props: RoomWrapperProps) {
     setRoomDrawerProps({
       type: RoomDrawerContentEnum.REPLY_CHAIN,
       messageId: message.messageId,
-      roomId: message.roomId
+      roomId: message.roomId,
+      onLocate: onLocateMessage
     })
   }
   // 撤回消息
@@ -151,8 +209,6 @@ function RoomWrapper(props: RoomWrapperProps) {
     setMessages((prev) => {
       const findIdx = prev.findIndex((item) => item.messageId === messageId)
       if (findIdx !== -1) prev.splice(findIdx, 1)
-      const newMessages = [...prev, ...recallMessages]
-      console.log('a', messageId, prev, recallMessages, newMessages)
       return [...prev, ...recallMessages]
     })
   }
@@ -167,6 +223,11 @@ function RoomWrapper(props: RoomWrapperProps) {
   }
 
   const handlePageChange = async (curPage: number) => {
+    const [prev, next] = pageRange.current
+    pageRange.current = [
+      curPage < prev ? curPage : prev,
+      curPage > next ? curPage : next
+    ]
     setPageOptions((prevVal) => ({ ...prevVal, page: curPage }))
   }
 
@@ -198,9 +259,11 @@ function RoomWrapper(props: RoomWrapperProps) {
         room={room}
         msgs={formatMessages}
         replyId={curReplyId}
+        locatedId={locatedId}
         handleCreate={onMessageCreate}
         handleClear={onRecordsClear}
         handleLocated={onLocateMessage}
+        handleClearLocatedId={onClearLocatedId}
         handleRecall={onMessageRecall}
         handleReply={onMessageReply}
         handleReplyCancel={onReplyCancel}
@@ -210,6 +273,7 @@ function RoomWrapper(props: RoomWrapperProps) {
         <RoomBody
           className={styles['room-body']}
           roomPage={pageOptions.page}
+          roomPageRange={pageRange.current}
           onPageChange={handlePageChange}
           onConfigChange={onConfigChange}
           onIsNearBottomChange={handleAllowScrollChange}

@@ -1,12 +1,20 @@
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Image, Button, Dropdown, Menu, Message } from '@arco-design/web-react'
-import { IconCopy, IconUndo, IconMessage, IconPlayCircle } from '@arco-design/web-react/icon'
+import {
+  IconCopy,
+  IconUndo,
+  IconMessage,
+  IconPlayCircle,
+  IconLocation
+} from '@arco-design/web-react/icon'
 import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
 import { isFunction, isUndefined } from '@/utils/is'
 import { cs } from '@/utils/property'
 import UserAvatar from '@/components/userAvatar'
 import type { NormalMessageProps, DropdownListProps } from './index.interface'
+import styles from './index.module.less'
 
 const isSelf = (msg: Message.Entity, userInfo: User.UserEntity | null) => {
   if (!userInfo) return false
@@ -14,7 +22,7 @@ const isSelf = (msg: Message.Entity, userInfo: User.UserEntity | null) => {
 }
 
 function DropdownList(props: DropdownListProps) {
-  const { msg, userInfo, onRecall, onReply } = props
+  const { msg, disabled, inReplyChain, userInfo, onRecall, onReply, onLocate } = props
 
   const iconCls = 'text-xs'
 
@@ -36,6 +44,7 @@ function DropdownList(props: DropdownListProps) {
     {
       label: '回复',
       key: 'reply',
+      visible: () => !inReplyChain,
       icon: <IconMessage className={iconCls} />,
       handler() {
         console.log('reply', msg)
@@ -43,9 +52,20 @@ function DropdownList(props: DropdownListProps) {
       }
     },
     {
+      label: '定位到消息',
+      key: 'locate',
+      visible: () => inReplyChain,
+      icon: <IconLocation className={iconCls} />,
+      handler() {
+        onLocate && onLocate(msg)
+      }
+    },
+    {
       label: '撤回',
       key: 'recall',
-      visible: isSelf(msg, userInfo),
+      visible: () => {
+        return isSelf(msg, userInfo) && !inReplyChain
+      },
       icon: <IconUndo className={iconCls} />,
       async handler() {
         onRecall && onRecall(msg)
@@ -57,6 +77,7 @@ function DropdownList(props: DropdownListProps) {
     <Menu>
       {dropdownList
         .filter((item) => {
+          if (disabled) return false
           if (isUndefined(item.visible)) return true
           return isFunction(item.visible) ? item.visible() : !!item.visible
         })
@@ -207,7 +228,18 @@ export function renderMsg(props: NormalMessageProps) {
 }
 
 export function NormalMessage(props: NormalMessageProps) {
-  const { msg, disabled = false, onPreview, onRecall, onReply, onClickReplyMsg } = props
+  const {
+    msg,
+    locatedId,
+    disabled = false,
+    inReplyChain = false,
+    onPreview,
+    onRecall,
+    onReply,
+    onClickReplyMsg,
+    onLocate,
+    onClearLocatedId
+  } = props
   const { messageId, profile, createTime } = msg
 
   const { userInfo } = useSelector((state: RootState) => state.user)
@@ -217,13 +249,24 @@ export function NormalMessage(props: NormalMessageProps) {
     onClickReplyMsg && onClickReplyMsg(msg)
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      onClearLocatedId && onClearLocatedId()
+    }, 5000);
+  })
+
   return (
     <li
       key={messageId}
       className={cs(
         'w-full py-4 mb-3 flex items-start',
-        isSelf(msg, userInfo) ? 'flex-row-reverse' : ''
+        'transition-colors',
+        {
+          'flex-row-reverse': isSelf(msg, userInfo),
+          [styles['fade-out']]: locatedId === messageId
+        }
       )}
+      data-id={messageId}
     >
       <UserAvatar
         className={cs(isSelf(msg, userInfo) ? 'ml-2' : 'mr-2')}
@@ -252,9 +295,12 @@ export function NormalMessage(props: NormalMessageProps) {
           disabled={disabled}
           droplist={DropdownList({
             msg,
+            inReplyChain,
+            disabled,
             userInfo,
             onReply,
-            onRecall
+            onRecall,
+            onLocate
           })}
         >
           {/* 回复的目标消息 */}

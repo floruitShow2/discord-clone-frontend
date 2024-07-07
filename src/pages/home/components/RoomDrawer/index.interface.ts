@@ -1,3 +1,5 @@
+import { ReplyChainProps } from '../ReplyChain/index.interface'
+
 export interface RoomDrawerProps {
   /**
    * @description 是否显示
@@ -17,7 +19,7 @@ export enum RoomDrawerContentEnum {
   REPLY_CHAIN = 'replyChain'
 }
 
-export interface RoomDrawerContentProps {
+export interface RoomDrawerContentProps extends ReplyChainProps {
   type: RoomDrawerContentEnum
   roomId?: string
   messageId: string

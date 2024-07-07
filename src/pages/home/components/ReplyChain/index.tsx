@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Empty, Input } from '@arco-design/web-react'
-import { IconClose } from '@arco-design/web-react/icon'
+import { IconClose, IconLocation } from '@arco-design/web-react/icon'
 import { RootState } from '@/store'
 import { FetchReplyChain } from '@/api/chat-message'
+import { MessageTypeEnum } from '@/constants'
 import { cs } from '@/utils/property'
 import UserAvatar from '@/components/userAvatar'
 import { RoomContext } from '../RoomWrapper'
@@ -11,10 +12,9 @@ import MessageList from '../MessageList'
 import { renderMsg } from '../MessageList/components/MessageEntity'
 import type { ReplyChainProps } from './index.interface'
 import styles from './index.module.less'
-import { MessageTypeEnum } from '@/constants'
 
 function ReplyChain(props: ReplyChainProps) {
-  const { className, messageId, onClose } = props
+  const { className, messageId, onClose, onLocate } = props
 
   const { userInfo } = useSelector((state: RootState) => state.user)
 
@@ -65,7 +65,14 @@ function ReplyChain(props: ReplyChainProps) {
         )}
       >
         <h4 className="text-lg">话题</h4>
-        <IconClose className=" cursor-pointer hover:text-blue-500" onClick={onClose}></IconClose>
+        <div className='flex items-center justify-end gap-3'>
+          <IconLocation
+            className='cursor-pointer hover:text-blue-500'
+            onClick={() => onLocate && onLocate(replyChain[0])}
+          ></IconLocation>
+          <span className='w-[1px] h-3 bg-light-l'></span>
+          <IconClose className="cursor-pointer hover:text-blue-500" onClick={onClose}></IconClose>
+        </div>
       </div>
       <div className={cs('w-full p-4 overflow-auto', styles['reply-chain-content'])}>
         {replyChain.length ? (
@@ -82,7 +89,11 @@ function ReplyChain(props: ReplyChainProps) {
               {renderMsg({ msg: replyChain[0] })}
             </div>
             <div className="w-full">
-              <MessageList msgs={replyChain.slice(1)}></MessageList>
+              <MessageList
+                msgs={replyChain.slice(1)}
+                inReplyChain
+                onLocate={onLocate}
+              ></MessageList>
             </div>
           </>
         ) : (

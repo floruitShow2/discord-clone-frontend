@@ -21,4 +21,8 @@ declare namespace Room {
      */
     createTime: string
   }
+
+  interface RoomContextMethod {
+    (msg: Message.Entity): void
+  }
 }

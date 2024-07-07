@@ -14,22 +14,24 @@ const RoomBody = (props: RoomBodyProps) => {
     className,
     showDetails = true,
     roomPage,
+    roomPageRange,
     onPageChange,
     onConfigChange,
     onIsNearBottomChange
   } = props
 
-  const { msgs, handleRecall, handleReply, handleReplyChain } = useContext(RoomContext)
+  const { msgs, locatedId, handleClearLocatedId, handleRecall, handleReply, handleReplyChain } = useContext(RoomContext)
 
   const { userInfo } = useSelector((state: RootState) => state.user)
 
   const msgWrapperRef = useRef<HTMLUListElement>(null)
 
   const page = useRef(roomPage)
+  const pageRange = useRef(roomPageRange)
   useEffect(() => {
-    console.log(roomPage)
     page.current = roomPage
-  }, [roomPage])
+    pageRange.current = roomPageRange
+  }, [roomPage, roomPageRange])
 
   const { run } = useDebounceFn(onPageChange, { wait: 50 })
 
@@ -37,7 +39,7 @@ const RoomBody = (props: RoomBodyProps) => {
     if (!msgWrapperRef.current) return {}
     const { scrollHeight, clientHeight, scrollTop } = msgWrapperRef.current
     const maxScrollTop = scrollHeight - clientHeight
-    const isNearBottomNow = scrollTop >= maxScrollTop - clientHeight * 0.6
+    const isNearBottomNow = scrollTop >= maxScrollTop - clientHeight * 0.2
 
     // console.log({ scrollHeight, clientHeight, maxScrollTop, scrollTop, isNearBottomNow })
 
@@ -55,11 +57,11 @@ const RoomBody = (props: RoomBodyProps) => {
         scrollHeight = 800
       } = getWrapperRect()
       onIsNearBottomChange(isNearBottomNow)
-      const curPage = page.current
-      if (scrollTop < clientHeight * 0.6) {
-        run(curPage + 1)
+      const [prev, next] = pageRange.current
+      if (scrollTop < clientHeight * 0.2) {
+        run(next + 1)
       } else if (scrollTop >= scrollHeight - clientHeight) {
-        run(curPage - 1 <= 0 ? 1 : curPage - 1)
+        run(prev - 1 <= 0 ? 1 : prev - 1)
       }
     }
 
@@ -99,8 +101,10 @@ const RoomBody = (props: RoomBodyProps) => {
           >
             <MessageList
               msgs={msgs}
+              locatedId={locatedId}
               onRecall={handleRecall}
               onReply={handleReply}
+              onClearLocatedId={handleClearLocatedId}
               onClickReplyMsg={handleReplyChain}
             />
           </Watermark>
