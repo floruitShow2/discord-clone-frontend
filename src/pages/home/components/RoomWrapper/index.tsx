@@ -61,10 +61,7 @@ function RoomWrapper(props: RoomWrapperProps) {
       const { pageSize } = pageOptions
       const { data } = await FetchMessageList({ roomId: room.roomId, page: currentPage, pageSize })
       if (!data || !data?.length) {
-        pageRange.current = [
-          pageRange.current[0],
-          currentPage - 1
-        ]
+        pageRange.current = [pageRange.current[0], currentPage - 1]
         return
       }
       // 设置原始消息数据，
@@ -85,6 +82,7 @@ function RoomWrapper(props: RoomWrapperProps) {
   const [socket, setSocket] = useState<Socket>()
   const initSocket = () => {
     // connect the first room by default
+    // const socketInstance = io('http://192.168.124.12:3001', {
     const socketInstance = io('http://localhost:3001', {
       query: { roomId: room?.roomId }
     })
@@ -154,10 +152,9 @@ function RoomWrapper(props: RoomWrapperProps) {
     const { pageSize } = pageOptions
     const prevPage = locatedPage - 1
     const nextPage = locatedPage + 1
-    const { data: prevMessages } =
-      !!prevPage
-        ? await FetchMessageList({ roomId: roomId, page: prevPage, pageSize })
-        : { data: [] }
+    const { data: prevMessages } = !!prevPage
+      ? await FetchMessageList({ roomId: roomId, page: prevPage, pageSize })
+      : { data: [] }
     const { data: curMessages } = await FetchMessageList({
       roomId: roomId,
       page: locatedPage,
@@ -173,14 +170,8 @@ function RoomWrapper(props: RoomWrapperProps) {
     if (!totalMessages.length) return
     setRoomDrawerVisible(false)
     setMessages(totalMessages)
-    setLoadedPages(
-      new Set(
-        prevPage
-          ? [prevPage, locatedPage, nextPage]
-          : [locatedPage, nextPage]
-      )
-    )
-    pageRange.current = [!!prevPage ? prevPage : 1 , nextPage]
+    setLoadedPages(new Set(prevPage ? [prevPage, locatedPage, nextPage] : [locatedPage, nextPage]))
+    pageRange.current = [!!prevPage ? prevPage : 1, nextPage]
     handlePageChange(locatedPage)
     setLocatedId(messageId)
   }
@@ -224,10 +215,7 @@ function RoomWrapper(props: RoomWrapperProps) {
 
   const handlePageChange = async (curPage: number) => {
     const [prev, next] = pageRange.current
-    pageRange.current = [
-      curPage < prev ? curPage : prev,
-      curPage > next ? curPage : next
-    ]
+    pageRange.current = [curPage < prev ? curPage : prev, curPage > next ? curPage : next]
     setPageOptions((prevVal) => ({ ...prevVal, page: curPage }))
   }
 

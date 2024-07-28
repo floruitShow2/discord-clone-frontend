@@ -65,12 +65,12 @@ function ReplyChain(props: ReplyChainProps) {
         )}
       >
         <h4 className="text-lg">话题</h4>
-        <div className='flex items-center justify-end gap-3'>
+        <div className="flex items-center justify-end gap-3">
           <IconLocation
-            className='cursor-pointer hover:text-blue-500'
+            className="cursor-pointer hover:text-blue-500"
             onClick={() => onLocate && onLocate(replyChain[0])}
           ></IconLocation>
-          <span className='w-[1px] h-3 bg-light-l'></span>
+          <span className="w-[1px] h-3 bg-light-l"></span>
           <IconClose className="cursor-pointer hover:text-blue-500" onClick={onClose}></IconClose>
         </div>
       </div>

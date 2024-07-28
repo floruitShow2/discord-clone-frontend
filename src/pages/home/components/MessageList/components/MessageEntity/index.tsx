@@ -252,20 +252,16 @@ export function NormalMessage(props: NormalMessageProps) {
   useEffect(() => {
     setTimeout(() => {
       onClearLocatedId && onClearLocatedId()
-    }, 5000);
+    }, 5000)
   })
 
   return (
     <li
       key={messageId}
-      className={cs(
-        'w-full py-4 mb-3 flex items-start',
-        'transition-colors',
-        {
-          'flex-row-reverse': isSelf(msg, userInfo),
-          [styles['fade-out']]: locatedId === messageId
-        }
-      )}
+      className={cs('w-full py-4 mb-3 flex items-start', 'transition-colors', {
+        'flex-row-reverse': isSelf(msg, userInfo),
+        [styles['fade-out']]: locatedId === messageId
+      })}
       data-id={messageId}
     >
       <UserAvatar

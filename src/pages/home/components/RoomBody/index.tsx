@@ -20,7 +20,8 @@ const RoomBody = (props: RoomBodyProps) => {
     onIsNearBottomChange
   } = props
 
-  const { msgs, locatedId, handleClearLocatedId, handleRecall, handleReply, handleReplyChain } = useContext(RoomContext)
+  const { msgs, locatedId, handleClearLocatedId, handleRecall, handleReply, handleReplyChain } =
+    useContext(RoomContext)
 
   const { userInfo } = useSelector((state: RootState) => state.user)
 

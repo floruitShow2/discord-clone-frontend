@@ -24,7 +24,7 @@ function BaseLayout() {
   const flattenRoutes = useMemo(() => getFlattenRoutes(routes), [routes])
 
   return (
-    <Layout className="h-full">
+    <div className="w-[100vw] h-[100vh]">
       <Header className="h-16">
         <NaviHeader />
       </Header>
@@ -32,7 +32,7 @@ function BaseLayout() {
         <Sider defaultCollapsed={true}>
           <NaviSidebar />
         </Sider>
-        <Content>
+        <Content style={{ width: 'calc(100% - 48px)' }}>
           {/* <Outlet></Outlet> */}
           <Routes>
             <Route path="/" element={<Navigate to={defaultRoute} />}></Route>
@@ -43,7 +43,7 @@ function BaseLayout() {
           </Routes>
         </Content>
       </Layout>
-    </Layout>
+    </div>
   )
 }
 
