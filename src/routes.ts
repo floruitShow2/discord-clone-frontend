@@ -78,7 +78,6 @@ export function getFlattenRoutes(routes: IRoute[]) {
         try {
           res.push(route)
         } catch (e) {
-          console.log(route.key)
           console.error(e)
         }
       }

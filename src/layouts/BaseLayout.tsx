@@ -24,11 +24,11 @@ function BaseLayout() {
   const flattenRoutes = useMemo(() => getFlattenRoutes(routes), [routes])
 
   return (
-    <div className="w-[100vw] h-[100vh]">
-      <Header className="h-16">
+    <div className="w-[100vw] h-[100vh] flex flex-col items-start justify-start">
+      <Header className="w-full h-16">
         <NaviHeader />
       </Header>
-      <Layout>
+      <Layout className='w-full'>
         <Sider defaultCollapsed={true}>
           <NaviSidebar />
         </Sider>

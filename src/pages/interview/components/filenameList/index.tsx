@@ -8,11 +8,11 @@ import './index.less'
 
 function FilenameList(props: FilenameListProps) {
   const { className } = props
-  const { files, selectedFile, setSelectedFile, removeFile } = useContext(PlaygroundContext)
+  const { files, selectedFilename, setSelectedFilename, removeFile } = useContext(PlaygroundContext)
 
   useEffect(() => {
-    console.log('aa', selectedFile)
-  }, [selectedFile])
+    setSelectedFilename(selectedFilename || files[0]?.name || '')
+  }, [files])
 
   return (
     <div
@@ -24,7 +24,12 @@ function FilenameList(props: FilenameListProps) {
         className
       )}
     >
-      <ul className={cs('w-full h-full pr-[24px] overflow-auto', 'gap-x-2 flex items-center justify-start')}>
+      <ul
+        className={cs(
+          'w-full h-full pr-[24px] overflow-auto',
+          'gap-x-2 flex items-center justify-start'
+        )}
+      >
         {files.map((file) => (
           <li
             key={file.name}
@@ -34,16 +39,27 @@ function FilenameList(props: FilenameListProps) {
               'text-xs text-primary-l',
               'cursor-pointer',
               'hover:text-blue-500',
-              selectedFile?.name === file.name ? 'bg-module' : ''
+              selectedFilename === file.name ? 'bg-module' : ''
             )}
-            onClick={() => setSelectedFile(file)}
+            onClick={() => setSelectedFilename(file.name)}
           >
             <span>{file.name}</span>
-            {selectedFile?.name === file.name && <IconClose className="translate-y-[1px]" onClick={() => removeFile(selectedFile.name)} />}
+            {selectedFilename === file.name && (
+              <IconClose
+                className="translate-y-[1px]"
+                onClick={() => removeFile(selectedFilename)}
+              />
+            )}
           </li>
         ))}
       </ul>
-      <div className={cs('absolute top-1/2 right-0 -translate-y-1/2', 'h-full px-2 bg-white', 'flex items-center justify-start')}>
+      <div
+        className={cs(
+          'absolute top-1/2 right-0 -translate-y-1/2',
+          'h-full px-2 bg-white',
+          'flex items-center justify-start'
+        )}
+      >
         <Button size="small" type="text" icon={<IconPlus className="" />}></Button>
       </div>
     </div>

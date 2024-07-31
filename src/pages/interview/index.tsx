@@ -42,7 +42,7 @@ function InterviewPage() {
           {/* <Button onClick={handleCompile}>Play</Button> */}
         </aside>
         <main className={cs('h-full bg-primary', styles['main-wrapper'])}>
-          <FilenameList className='w-full' />
+          <FilenameList className="w-full" />
           <div
             className={cs(
               'w-full h-[500px] py-2',

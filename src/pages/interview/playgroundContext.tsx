@@ -1,8 +1,9 @@
 import { createContext, useEffect, useState } from 'react'
 import type { PropsWithChildren } from 'react'
 import { filename2Language } from '@/utils/file'
-import TemplateTsx from './template/index?raw'
-import TemplateCss from './template/index.module.less?raw'
+import TemplateEntry from './template/index?raw'
+import TemplateTsx from './template/App?raw'
+import TemplateCss from './template/index.css?raw'
 import TemplateInterface from './template/index.interface?raw'
 
 export interface PlaygroundFile {
@@ -16,8 +17,8 @@ export interface PlaygroundContextProps {
   setFiles: (files: PlaygroundFile[]) => void
 
   // 选中文件名
-  selectedFile: PlaygroundFile | null
-  setSelectedFile: (file: PlaygroundFile) => void
+  selectedFilename: string | null
+  setSelectedFilename: (filename: string) => void
 
   // 操作文件
   addFile: (filename: string) => void
@@ -29,10 +30,15 @@ const initialFile: PlaygroundFile[] = [
   {
     name: 'index.tsx',
     language: 'typescript',
+    value: TemplateEntry
+  },
+  {
+    name: 'App.tsx',
+    language: 'typescript',
     value: TemplateTsx
   },
   {
-    name: 'index.module.less',
+    name: 'index.css',
     language: 'css',
     value: TemplateCss
   },
@@ -47,8 +53,8 @@ export const PlaygroundContext = createContext<PlaygroundContextProps>({
   files: [],
   setFiles: () => {},
 
-  selectedFile: null,
-  setSelectedFile: () => {},
+  selectedFilename: '',
+  setSelectedFilename: () => {},
 
   addFile: () => {},
   removeFile: () => {},
@@ -58,7 +64,7 @@ export const PlaygroundProvider = (props: PropsWithChildren) => {
   const { children } = props
 
   const [files, setFiles] = useState<PlaygroundFile[]>(initialFile)
-  const [selectedFile, setSelectedFile] = useState<PlaygroundFile | null>(files[0])
+  const [selectedFilename, setSelectedFilename] = useState<string>(files[0]?.name || '')
 
   const addFile = (filename: string) => {
     const findFile = files.findIndex((f) => f.name === filename)
@@ -81,18 +87,7 @@ export const PlaygroundProvider = (props: PropsWithChildren) => {
       const newFiles = prevFiles.filter((_, index) => index !== findIndex)
       return newFiles
     })
-
-    // 更新选中的文件
-    setSelectedFile(() => {
-      const newSelected = files[findIndex + 1] || null
-      console.log('a', newSelected)
-      return { ...newSelected }
-    })
   }
-
-  useEffect(() => {
-    console.log('b', selectedFile)
-  }, [selectedFile])
 
   const updateFile = (targetFilename: string, file: PlaygroundFile) => {
     const findIndex = files.findIndex((f) => f.name === targetFilename)
@@ -100,10 +95,8 @@ export const PlaygroundProvider = (props: PropsWithChildren) => {
       console.warn('该文件名不存在')
       return
     }
-    setFiles((prev) => {
-      prev.splice(findIndex, 1, file)
-      return prev
-    })
+    files.splice(findIndex, 1, file)
+    setFiles([...files])
   }
 
   return (
@@ -111,8 +104,8 @@ export const PlaygroundProvider = (props: PropsWithChildren) => {
       value={{
         files,
         setFiles,
-        selectedFile,
-        setSelectedFile,
+        selectedFilename,
+        setSelectedFilename,
         addFile,
         removeFile,
         updateFile

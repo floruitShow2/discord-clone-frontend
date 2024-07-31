@@ -38,7 +38,6 @@ function ActionJoin() {
   }, [])
 
   if (user && room) {
-    console.log(user)
     return (
       <div className="w-[100vw] h-[100vh] flex gap-y-5 flex-col items-center justify-center bg-module">
         <div className="w-[24vw] p-8 flex flex-col items-center justify-center bg-primary">

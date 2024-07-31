@@ -1,14 +1,22 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
 import MonacoEditor, { OnMount } from '@monaco-editor/react'
 import { createATA } from '../../ata'
-import { PlaygroundContext } from '../../playgroundContext'
+import { PlaygroundContext, PlaygroundFile } from '../../playgroundContext'
+import { ScriptEditorProps } from './index.interface'
 
-function ScriptEditor() {
+function ScriptEditor(props: ScriptEditorProps) {
+  const { file: modelFile } = props
   const { theme } = useSelector((state: RootState) => state.settings)
 
-  const { selectedFile, updateFile } = useContext(PlaygroundContext)
+  const { files, selectedFilename, updateFile } = useContext(PlaygroundContext)
+
+  const [curFile, setCurFile] = useState<PlaygroundFile | null>()
+  useEffect(() => {
+    const findFile = files.find((f) => f.name === selectedFilename)
+    setCurFile(modelFile || findFile || null)
+  }, [selectedFilename, modelFile])
 
   const handleEditorMount: OnMount = (editor, monaco) => {
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
@@ -21,7 +29,7 @@ function ScriptEditor() {
     })
 
     // 配置 Less 语法
-    monaco.languages.register({ id: 'less' });
+    monaco.languages.register({ id: 'less' })
     monaco.languages.setMonarchTokensProvider('less', {
       // Less 语法规则
       tokenizer: {
@@ -37,7 +45,7 @@ function ScriptEditor() {
           [/"([^"\\]|\\.)*$/, 'string.invalid'],
           [/'([^'\\]|\\.)*$/, 'string.invalid'],
           [/"/, 'string', '@string."'],
-          [/'/, 'string', '@string.\''],
+          [/'/, 'string', "@string.'"]
         ],
         comment: [
           [/[^\/*]+/, 'comment'],
@@ -47,7 +55,10 @@ function ScriptEditor() {
         string: [
           [/[^\\"']+/, 'string'],
           [/\\./, 'string.escape'],
-          [/["']/, { cases: { '$#==$S2': { token: 'string', next: '@pop' }, '@default': 'string' } }]
+          [
+            /["']/,
+            { cases: { '$#==$S2': { token: 'string', next: '@pop' }, '@default': 'string' } }
+          ]
         ]
       }
     })
@@ -63,18 +74,18 @@ function ScriptEditor() {
   }
 
   const handleValueChange = (val?: string) => {
-    if (!selectedFile) return
-    updateFile(selectedFile.name, {
-      ...selectedFile,
+    if (!curFile) return
+    updateFile(curFile.name, {
+      ...curFile,
       value: val || ''
     })
   }
 
   return (
     <MonacoEditor
-      path={'guang.tsx'}
-      language={selectedFile?.language || 'javascript'}
-      value={selectedFile?.value || ''}
+      path={curFile?.name}
+      language={curFile?.language || 'javascript'}
+      value={curFile?.value || ''}
       theme={theme === 'dark' ? 'vs-dark' : 'vs-light'}
       options={{
         fontSize: 16,
