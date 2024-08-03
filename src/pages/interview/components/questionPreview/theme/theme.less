@@ -1,0 +1,49 @@
+#light() {
+  // 文本样式
+  @--lighter-text-color: var(--color-text-3);
+  @--primary-text-color: var(--color-text-2);
+  @--heavy-text-color: var(--color-text-1);
+  // 模块样式
+  @--lighter-bg-color: var(--color-fill-1);
+  @--primary-bg-color: var(--color-fill-2);
+  @--heavy-bg-color: var(--color-fill-3);
+  @--module-bg-color: var(--color-bg-2);
+  // 边框颜色
+  @--primary-border-color: rgb(var(--gray-2));
+  @--heavy-border-color: rgb(var(--gray-3));
+  // 阴影颜色
+  @--primary-shadow-color: rgb(var(--gray-3));
+  // 主题色
+  @--gray-blue-color: var(--color-primary-light-1);
+  @--gray-blue-hover-color: var(--color-primary-light-2);
+  @--lighter-blue-color: var(--color-primary-light-3);
+  @--primary-blue-color: rgb(var(--primary-6));
+  @--heavy-blue-color: rgb(var(--primary-7));
+  // 辅助色
+  // 绿色
+  @--gray-green-color: rgb(var(--green-1));
+  @--lighter-green-color: rgb(var(--green-4));
+  @--primary-green-color: rgb(var(--green-6));
+  // 红色
+  @--gray-red-color: rgb(var(--red-1));
+  @--lighter-red-color: rgb(var(--red-4));
+  @--primary-red-color: rgb(var(--red-6));
+  // 黄色
+  @--gray-yellow-color: rgb(var(--yellow-1));
+  @--lighter-yellow-color: rgb(var(--yellow-4));
+  @--primary-yellow-color: rgb(var(--yellow-6));
+}
+
+// 阴影色配置
+#shadow-color(@y, @x, @blur, @expand, @color) {
+  box-shadow: @y @x @blur @expand #light[@@color];
+//   [arco-theme='dark'] & {
+//     box-shadow: @y @x @blur @expand #dark[@@color];
+//   }
+}
+#color(@key, @color) {
+  @{key}: #light[@@color];
+//   [arco-theme='dark'] & {
+//     @{key}: #dark[@@color];
+//   }
+}

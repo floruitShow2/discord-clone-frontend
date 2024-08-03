@@ -1,0 +1,124 @@
+@import './theme.less';
+@import './mixin.less';
+
+@--gap: 15px;
+
+.markdown-editor-default {
+  // background-image: linear-gradient(90deg,rgba(50,0,0,.07) 3%,transparent 0),linear-gradient(1turn,rgba(50,0,0,.07) 3%,transparent 0);
+  background-size: 20px 20px;
+  background-position: 50%;
+  .markdown-body {
+    padding: 20px;
+    // 初始化
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      margin-block: 0;
+      margin-inline: 0;
+      padding: 0;
+    }
+    // 文本
+    h1, h2, h3, h4, h5, h6 {
+      margin: 16px 0;
+      line-height: 1.25;
+      #color(color, --primary-text-color);
+    }
+    h1, h2, h3 {
+      padding-bottom: 10px;
+      font-weight: 500;
+      border-bottom: solid 1px #eaecef!important;
+    }
+    p {
+      margin: @--gap 0;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 32px;
+      #color(color, --primary-text-color);
+    }
+    blockquote {
+      margin-bottom: @--gap;
+      padding: 2px 16px;
+      border-left: 4px solid;
+      #color(color, --primary-blue-color);
+      #color(border-color, --lighter-blue-color);
+      #color(background-color, --gray-blue-color);
+    }
+    strong {
+      #color(color, --primary-text-color);
+    }
+
+    // 列表
+    ol {
+      list-style: decimal;
+    }
+    ul {
+      list-style: disc;
+    }
+    ol, ul {
+      padding-left: 2em;
+      font-size: 14px;
+      line-height: 28px;
+      #color(color, --primary-text-color);
+      li {
+        word-break: break-all;
+      }
+    }
+
+    table {
+      display: block;
+      position: relative;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 20px 12px;
+      font-weight: 500;
+      border-radius: 6px;
+      font-size: 12px;
+      border: solid 1px;
+      overflow-x: auto;
+      #color(color, --primary-text-color);
+      #color(background-color, --module-bg-color);
+      #color(border-color, --primary-border-color);
+      #shadow-color(0, 0, 4px, 0, --primary-shadow-color);
+      thead {
+        width: 100%;
+        font-weight: bold;
+        #color(color, --primary-text-color);
+        #color(background-color, --heavy-bg-color);
+        tr > th {
+          padding: 8px 15px;
+        }
+      }
+      tbody {
+        width: 100%;
+        tr > td {
+          padding: 8px 15px;
+        }
+        tr:nth-child(2n) {
+          #color(background-color, --lighter-bg-color);
+        }
+      }
+    }
+
+    // 代码块
+    code, a {
+      padding: 4px 8px;
+      border-radius: 2px;
+      #color(color, --primary-blue-color);
+      #color(background-color, --gray-blue-color);
+    }
+    a {
+      #color(background-color, --gray-blue-color);
+    }
+    pre {
+      border-radius: 6px;
+      margin: 14px 0;
+      #shadow-color(0, 0, 12px, 0, --primary-shadow-color);
+    }
+    .language-js,
+    .language-javascript,
+    .language-ts,
+    .language-typescript {
+      #language();
+    }
+  }
+}

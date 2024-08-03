@@ -1,0 +1,25 @@
+#language() {
+    display: block;
+    position: relative;
+    overflow-x: auto;
+    color: #abb2bf;
+    background: #282c34;
+    padding: 4px 12px;
+    padding-top: 32px;
+    font-weight: 500;
+    border-radius: 6px;
+    font-size: 12px;
+    &::before {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        box-shadow: 15px 0 0 0 rgb(var(--yellow-6)),
+                    30px 0 0 0 rgb(var(--green-6));
+        #color(background-color, --primary-red-color);
+    }
+}

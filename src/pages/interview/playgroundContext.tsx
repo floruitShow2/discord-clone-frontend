@@ -9,7 +9,6 @@ import TemplateTsx from './template/App?raw'
 import TemplateCss from './template/index.css?raw'
 import TemplateInterface from './template/index.interface?raw'
 
-
 export interface PlaygroundFile {
   name: string
   value: string

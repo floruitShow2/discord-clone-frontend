@@ -39,7 +39,7 @@ function InterviewPage() {
             'border-0 border-r border-solid border-primary-b'
           )}
         >
-          <QuestionPreview />
+          <QuestionPreview mode="editor" />
           {/* <Button onClick={handleCompile}>Play</Button> */}
         </aside>
         <main className={cs('h-full bg-primary', styles['main-wrapper'])}>
