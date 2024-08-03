@@ -4,6 +4,7 @@ import Preview from './components/preview/index'
 import { PlaygroundProvider } from './playgroundContext'
 import ScriptEditor from './components/scriptEditor'
 import styles from './index.module.less'
+import QuestionPreview from './components/questionPreview'
 
 function InterviewPage() {
   // const handleCompile = () => {
@@ -38,7 +39,7 @@ function InterviewPage() {
             'border-0 border-r border-solid border-primary-b'
           )}
         >
-          侧边栏，预览题目【markdown】
+          <QuestionPreview />
           {/* <Button onClick={handleCompile}>Play</Button> */}
         </aside>
         <main className={cs('h-full bg-primary', styles['main-wrapper'])}>

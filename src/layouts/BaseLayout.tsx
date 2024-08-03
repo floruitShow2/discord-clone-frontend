@@ -28,7 +28,7 @@ function BaseLayout() {
       <Header className="w-full h-16">
         <NaviHeader />
       </Header>
-      <Layout className='w-full'>
+      <Layout className="w-full">
         <Sider defaultCollapsed={true}>
           <NaviSidebar />
         </Sider>

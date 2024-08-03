@@ -134,7 +134,9 @@ export default function XLSXRenderer(props: RendererProps) {
           </ul>
         </>
       ) : (
-        <div className="w-full h-full flex items-center justify-center">Loading...</div>
+        <div className="w-full h-full flex items-center justify-center text-primary-l">
+          Loading...
+        </div>
       )}
     </div>
   )

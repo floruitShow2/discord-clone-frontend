@@ -1,9 +1,10 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import iframeRaw from './iframe.html?raw'
-import { BaseProps } from './index.interface'
 import { PlaygroundContext } from '../../playgroundContext'
 // import ScriptEditor from '../scriptEditor'
-import { compile } from './compile'
+import { UnexpectedPreview } from '../unexpectedPreview'
+import CompileWorker from './compile.worker?worker'
+import { BaseProps, MessageData } from './index.interface'
 
 // const iframeUrl = URL.createObjectURL(new Blob([iframeRaw], { type: 'text/html' }))
 
@@ -37,14 +38,46 @@ const Preview = (props: BaseProps) => {
     setIframeUrl(getIframeUrl())
   }, [compiledCode])
 
+  const compileWorker = useRef<Worker>()
   useEffect(() => {
-    const res = compile(files, 'index.tsx')
-    setCompiledCode(res)
+    if (!compileWorker.current) {
+      compileWorker.current = new CompileWorker()
+      compileWorker.current.addEventListener('message', ({ data }) => {
+        console.log('worker', data)
+        if (data.type === 'COMPILED_CODE') {
+          setError('')
+          setCompiledCode(data.data)
+        } else if (data.type === 'ERROR') {
+          setError(data.data)
+        }
+      })
+    }
+  }, [])
+  useEffect(() => {
+    if (compileWorker.current) {
+      compileWorker.current.postMessage({ files, entry: 'index.tsx' })
+    }
+    // const res = compile(files, 'index.tsx')
+    // setCompiledCode(res)
+    // setError('')
   }, [files])
 
-  // return <iframe className={cs(className)} style={style} src={iframeUrl} />
+  const [error, setError] = useState('')
+  const handleMessage = (msg: MessageData) => {
+    const { type, message } = msg.data
+    if (type === 'ERROR') {
+      setError(message)
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('message', handleMessage)
+    return () => {
+      window.removeEventListener('message', handleMessage)
+    }
+  }, [])
+
   return (
-    <div style={{ height: 'calc(100% - 500px - 40px)' }}>
+    <div className="relative w-full" style={{ height: 'calc(100% - 500px - 40px)' }}>
       <iframe
         src={iframeUrl}
         style={{
@@ -54,6 +87,8 @@ const Preview = (props: BaseProps) => {
           border: 'none'
         }}
       />
+
+      <UnexpectedPreview type="error" content={error} />
       {/* <ScriptEditor
         file={{
           name: 'dist.js',

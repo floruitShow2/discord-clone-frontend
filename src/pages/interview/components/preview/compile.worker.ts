@@ -101,3 +101,17 @@ export const compile = (files: PlaygroundFile[], entry: string) => {
   if (main) return babelTransform(entry, main.value, files)
   return ''
 }
+
+self.addEventListener('message', async ({ data }) => {
+  try {
+    self.postMessage({
+      type: 'COMPILED_CODE',
+      data: compile(data.files, data.entry)
+    })
+  } catch (err) {
+    self.postMessage({
+      type: 'ERROR',
+      data: err
+    })
+  }
+})
