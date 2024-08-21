@@ -80,12 +80,7 @@ function QuestionPreview(props: QuestionPreviewProps) {
       >
         <h4 className="">侧边栏，预览题目【markdown】</h4>
         <div className="flex items-center justify-end">
-          <Button
-            size="small"
-            type="text"
-            icon={<IconSave />}
-            onClick={beforeSave}
-          ></Button>
+          <Button size="small" type="text" icon={<IconSave />} onClick={beforeSave}></Button>
           <Button size="small" type="text" icon={<IconShareAlt />} onClick={handleShare}></Button>
         </div>
       </header>
@@ -105,11 +100,19 @@ function QuestionPreview(props: QuestionPreviewProps) {
         onCancel={() => setVisible(false)}
       >
         <Form form={form} onValuesChange={handleValuesChange}>
-          <FormItem label="题目名称" field="title" rules={[{ required: true, message: '请输入题目名称' }]}>
+          <FormItem
+            label="题目名称"
+            field="title"
+            rules={[{ required: true, message: '请输入题目名称' }]}
+          >
             <Input placeholder="请输入" />
           </FormItem>
-          <FormItem label="题目分类" field="category" rules={[{ required: true, message: '请选择题目分类' }]}>
-            <Select options={['Vue', 'React', 'Javascript', 'Typescript']} placeholder='请选择' />
+          <FormItem
+            label="题目分类"
+            field="category"
+            rules={[{ required: true, message: '请选择题目分类' }]}
+          >
+            <Select options={['Vue', 'React', 'Javascript', 'Typescript']} placeholder="请选择" />
           </FormItem>
         </Form>
       </Modal>

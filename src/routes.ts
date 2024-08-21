@@ -35,9 +35,19 @@ export const routes: IRoute[] = [
     key: 'dashboard',
     children: [
       {
-        path: '/dashboard/home',
-        key: 'dashboard/home',
+        path: '/dashboard/chat',
+        key: 'dashboard/chat',
         component: lazy(() => import('@/pages/home/index.tsx'))
+      },
+      {
+        path: '/dashboard/contact',
+        key: 'dashboard/contact',
+        component: lazy(() => import('@/pages/contact/index.tsx'))
+      },
+      {
+        path: '/dashboard/file',
+        key: 'dashboard/file',
+        component: lazy(() => import('@/pages/file/index.tsx'))
       },
       {
         path: '/dashboard/interview',

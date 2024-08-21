@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Provider, useDispatch } from 'react-redux'
 import { ConfigProvider } from '@arco-design/web-react'
+import { CSSTransition, SwitchTransition } from 'react-transition-group'
 import { store } from '@/store'
 import { setUserInfo } from '@/store/slices/user.slice'
 import { StorageIdEnum } from '@/constants/storage'
@@ -10,7 +11,6 @@ import { FetchUserInfo } from '@/api/auth'
 import { useStorage } from '@/utils/storage'
 import BaseLayout from '@/layouts/BaseLayout'
 import Login from '@/pages/login'
-import GeneralModal from '@/components/modals'
 import useRoute, { getFlattenRoutes } from './routes'
 import { MemberRole } from './gql/graphql'
 import '@arco-design/web-react/dist/css/arco.css'
@@ -60,14 +60,25 @@ const RouterComponent = () => {
   return (
     <Provider store={store}>
       <ProtectRoute>
-        <GeneralModal />
-        <Routes>
-          {getFlattenRoutes(actionRoutes).map((route) => {
-            const { path, key, component: Component } = route
-            return <Route key={key} path={path} Component={Component}></Route>
-          })}
-          <Route path="*" Component={BaseLayout}></Route>
-        </Routes>
+        <SwitchTransition mode="out-in">
+          <CSSTransition
+            key={location.pathname}
+            appear={true}
+            timeout={300}
+            classNames="fade"
+            unmountOnExit
+          >
+            <Suspense>
+              <Routes>
+                {getFlattenRoutes(actionRoutes).map((route) => {
+                  const { path, key, component: Component } = route
+                  return <Route key={key} path={path} Component={Component}></Route>
+                })}
+                <Route path="*" Component={BaseLayout}></Route>
+              </Routes>
+            </Suspense>
+          </CSSTransition>
+        </SwitchTransition>
       </ProtectRoute>
     </Provider>
   )

@@ -1,25 +1,37 @@
+import { useNavigate } from 'react-router-dom'
 import { Button, Tooltip } from '@arco-design/web-react'
-import { IconPlus, IconShareAlt } from '@arco-design/web-react/icon'
+import { IconFolder, IconMessage, IconUserGroup } from '@arco-design/web-react/icon'
 import useLocale from '@/locale/useLocale'
 import type { GroupBtnEntity } from './index.interface'
-import { useModal } from '@/hooks/useModal'
 function NaviSiderbar() {
+  const navigate = useNavigate()
+
   const $t = useLocale()
-  const { openModal } = useModal('CreateServerModal')
 
   const btnsConfig: GroupBtnEntity[] = [
     {
-      tip: 'sidebar.plus.tip',
-      code: 'plus',
-      icon: <IconPlus />,
-      callback: () => {
-        openModal()
+      tip: 'sidebar.chat.tip',
+      code: 'chat',
+      icon: <IconMessage />,
+      callback() {
+        navigate('/dashboard/chat')
       }
     },
     {
-      tip: 'sidebar.share.tip',
-      code: 'share',
-      icon: <IconShareAlt />
+      tip: 'sidebar.contact.tip',
+      code: 'contact',
+      icon: <IconUserGroup />,
+      callback() {
+        navigate('/dashboard/contact')
+      }
+    },
+    {
+      tip: 'sidebar.file.tip',
+      code: 'file',
+      icon: <IconFolder />,
+      callback() {
+        navigate('/dashboard/file')
+      }
     }
   ]
   const genButtons = () => {

@@ -5,8 +5,9 @@ const ZhCN = {
     'settings.theme.toLight': '点击切换为亮色模式',
     'settings.lang.tips': '语言切换至 ',
     // 侧边栏功能提示语
-    'sidebar.plus.tip': '加好友/群',
-    'sidebar.share.tip': '分享'
+    'sidebar.chat.tip': '聊天',
+    'sidebar.contact.tip': '通讯录',
+    'sidebar.file.tip': '聊天文件'
   }
 }
 export default ZhCN

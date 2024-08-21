@@ -5,8 +5,9 @@ const enUS = {
     'settings.theme.toLight': 'Click to use light mode',
     'settings.lang.tips': 'Language switch to ',
     // 侧边栏功能提示语
-    'sidebar.plus.tip': '加好友/群',
-    'sidebar.share.tip': 'Share'
+    'sidebar.chat.tip': 'Chat',
+    'sidebar.contact.tip': 'Contactor',
+    'sidebar.file.tip': 'File'
   }
 }
 export default enUS

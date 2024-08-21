@@ -28,7 +28,7 @@ function BaseLayout() {
       <Header className="w-full h-16">
         <NaviHeader />
       </Header>
-      <Layout className="w-full">
+      <Layout className="w-full" style={{ height: 'calc(100vh - 4rem)' }}>
         <Sider defaultCollapsed={true}>
           <NaviSidebar />
         </Sider>

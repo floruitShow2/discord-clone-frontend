@@ -25,7 +25,7 @@ function LoginPanel() {
       set(tokenKey, data.accessToken)
       const queryParams = new URLSearchParams(location.search)
       // setLoginInfo({ username: '', password: '' })
-      alert(queryParams.get('redirect'))
+      // alert(queryParams.get('redirect'))
       location.pathname = queryParams.get('redirect') ?? '/'
     } catch (err) {
       console.log(err)
