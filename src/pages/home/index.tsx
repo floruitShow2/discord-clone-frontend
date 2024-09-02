@@ -1,18 +1,12 @@
 import { useEffect, useState } from 'react'
 import { produce } from 'immer'
-import { Input, Dropdown, Button, Menu } from '@arco-design/web-react'
-import {
-  IconDelete,
-  IconEdit,
-  IconPlus,
-  IconSearch,
-  IconSettings,
-  IconShareAlt
-} from '@arco-design/web-react/icon'
+import { Input, Dropdown, Button, Menu, Modal } from '@arco-design/web-react'
+import { IconPlus, IconSearch, IconSettings } from '@arco-design/web-react/icon'
 import { FetchRoomList } from '@/api/chat-room'
 import { cs } from '@/utils/property'
 import RoomCard from './components/RoomCard'
 import RoomWrapper from './components/RoomWrapper'
+import CreateChannel from './components/CreateChannel'
 import styles from './index.module.less'
 
 function HomePage() {
@@ -54,36 +48,18 @@ function HomePage() {
 
   const operationConfigs: DropdownItem.Entity[] = [
     {
-      label: 'Invite People',
-      key: '1',
-      icon: <IconShareAlt className="text-primary-l" />,
-      handler() {
-        console.log('invite people')
-      }
-    },
-
-    {
       label: 'Create Channel',
-      key: '2',
+      key: '1',
       icon: <IconPlus className="text-primary-l" />,
       handler() {
         console.log('Create Channel')
-      }
-    },
-    {
-      label: 'Update Server',
-      key: '3',
-      icon: <IconEdit className="text-primary-l" />,
-      handler() {
-        console.log('Update Server')
-      }
-    },
-    {
-      label: 'Delete Server',
-      key: '4',
-      icon: <IconDelete className="text-primary-l" />,
-      handler() {
-        console.log('Delete Server')
+        Modal.info({
+          className: cs('w-[800px]', 'rounded-xl', styles['simple-modal']),
+          icon: null,
+          closable: true,
+          footer: () => <></>,
+          content: <CreateChannel />
+        })
       }
     }
   ]

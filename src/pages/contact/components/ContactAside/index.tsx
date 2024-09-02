@@ -9,7 +9,12 @@ function ContactAside() {
   const { menu, setMenu } = useContext(ContactContext)
 
   return (
-    <div className={cs('w-[280px] h-full p-3 bg-primary', 'border border-r border-r-solid border-primary-b')}>
+    <div
+      className={cs(
+        'w-[280px] h-full p-3 bg-primary',
+        'border border-r border-r-solid border-primary-b'
+      )}
+    >
       <Collapse activeKey={menu} bordered={false} expandIconPosition="right">
         <Collapse.Item
           header="Beijing Toutiao Technology Co., Ltd."

@@ -14,7 +14,8 @@ export default {
         'light-l': 'var(--color-text-3)',
         'heavy-l': 'var(--color-text-1)',
         // border
-        'primary-b': 'rgb(var(--gray-2))'
+        'primary-b': 'rgb(var(--gray-2))',
+        'heavy-b': 'rgb(var(--gray-4))'
       }
     }
   },
