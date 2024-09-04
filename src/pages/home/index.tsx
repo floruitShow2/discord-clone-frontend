@@ -52,13 +52,15 @@ function HomePage() {
       key: '1',
       icon: <IconPlus className="text-primary-l" />,
       handler() {
-        console.log('Create Channel')
-        Modal.info({
+        const info = Modal.info({
           className: cs('w-[800px]', 'rounded-xl', styles['simple-modal']),
           icon: null,
           closable: true,
           footer: () => <></>,
-          content: <CreateChannel />
+          content: <CreateChannel onSave={async () => {
+            await initRooms()
+            info.close()
+          }} />
         })
       }
     }

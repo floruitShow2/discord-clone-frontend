@@ -1,11 +1,16 @@
 import { request } from '@/utils/service'
 
 enum URLs {
+  CreateRoom = '/api/chat/room/createRoom',
   FetchRoomList = '/api/chat/room/getRooms',
   FetchRoomMembers = '/api/chat/room/getMembers',
   FetchInviteCode = '/api/chat/room/getInviteCode',
   JoinRoomByInviteCode = '/api/chat/room/inviteMember',
   GetDetailsByInviteCode = '/api/chat/room/getDetailsByInviteCode'
+}
+
+export const CreateRoom = (data: Room.CreateRoomInput) => {
+  return request.post<Room.RoomEntity>(URLs.CreateRoom, data)
 }
 
 /**

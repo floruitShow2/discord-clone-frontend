@@ -11,38 +11,42 @@ import {
   Input
 } from '@arco-design/web-react'
 import type { ColumnProps } from '@arco-design/web-react/es/Table'
-import type { LabeledValue, OptionInfo } from '@arco-design/web-react/es/Select/interface'
+import type { LabeledValue } from '@arco-design/web-react/es/Select/interface'
 import { IconPlus } from '@arco-design/web-react/icon'
 import { cs } from '@/utils/property'
-import { CreateChannelStepEnum, CreateChannelTypeEnum } from './index.interface'
-import type { CreateChannelInput, ChannelTemplate } from './index.interface'
+import { CreateChannelStepEnum } from './index.interface'
+import type { CreateChannelProps, ChannelTemplate } from './index.interface'
 import './index.less'
+import { isUndefined } from '@/utils/is'
+import { FetchUserByQuery } from '@/api/auth'
+import { CreateRoom } from '@/api/chat-room'
+import { ChatRoomTypeEnum } from '@/enum/chat-room.enum'
 
 // 选择群聊模板
-function TemplateRenderer(props: { onChange: (code: CreateChannelTypeEnum) => void }) {
+function TemplateRenderer(props: { onChange: (code: ChatRoomTypeEnum) => void }) {
   const { onChange } = props
   const availableTemplates: ChannelTemplate[] = [
     {
       name: '默认群组',
-      code: CreateChannelTypeEnum.DEFAULT,
+      code: ChatRoomTypeEnum.NORMAL,
       description: '仅包含基础配置，可根据自己的实际需求添加功能模块',
       disabled: false
     },
     {
       name: '团队群组',
-      code: CreateChannelTypeEnum.TEAM,
+      code: ChatRoomTypeEnum.GROUP,
       description: '适用于团队协作和沟通，提供了团队成员管理、文件共享等功能',
       disabled: true
     },
     {
       name: '项目群组',
-      code: CreateChannelTypeEnum.PROJECT,
+      code: ChatRoomTypeEnum.PROJECT,
       description: '专为项目管理和任务跟踪设计，支持任务分配、文档管理等',
       disabled: true
     }
   ]
 
-  const [selectedTemplate, setSelectedTemplate] = useState<CreateChannelTypeEnum>()
+  const [selectedTemplate, setSelectedTemplate] = useState<ChatRoomTypeEnum>()
   const handleUpdateTemplate = (item: ChannelTemplate) => {
     if (item.disabled) return
     setSelectedTemplate(item.code)
@@ -104,9 +108,9 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
       key: 'username'
     },
     {
-      title: '成员账号',
-      dataIndex: 'userAccount',
-      key: 'userAccount'
+      title: '成员邮箱',
+      dataIndex: 'email',
+      key: 'email'
     },
     {
       title: '群组角色',
@@ -131,33 +135,29 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
     }
   ]
 
-  const [options, setOptions] = useState([])
+  const [options, setOptions] = useState<any[]>([])
   const [fetching, setFetching] = useState(false)
-  const refFetchId = useRef<number>()
-  const debouncedFetchUser = useCallback(() => {
-    refFetchId.current = Date.now()
-    const fetchId = refFetchId.current
+  const debouncedFetchUser = useCallback(async (query: string) => {
     setFetching(true)
     setOptions([])
-    fetch('https://randomuser.me/api/?results=5')
-      .then((response) => response.json())
-      .then((body) => {
-        if (refFetchId.current === fetchId) {
-          const options = body.results.map((user: any) => ({
-            label: (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar size={24} style={{ marginLeft: 6, marginRight: 12 }}>
-                  <img alt="avatar" src={user.picture.thumbnail} />
-                </Avatar>
-                {`${user.name.first} ${user.name.last}`}
-              </div>
-            ),
-            value: user.email
-          }))
-          setFetching(false)
-          setOptions(options)
-        }
-      })
+
+    const { data } = await FetchUserByQuery(query)
+    if (!data) {
+      setOptions([])
+    } else {
+      setOptions(data.map(user => ({
+        label: (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar size={24} style={{ marginLeft: 6, marginRight: 12 }}>
+              <img alt="avatar" src={user.avatar} />
+            </Avatar>
+            {`${user.username}`}
+          </div>
+        ),
+        value: user.email
+      })))
+    }
+    setFetching(false)
   }, [])
 
   const [selectIds, setSelectIds] = useState<Set<string>>(new Set())
@@ -169,22 +169,23 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
   const addFinalIds = () => {
     if (selectIds.size === 0) return
 
-    setFinalIds((prev) => new Set([...prev, ...selectIds]))
+    const result = [...new Set([...finalIds, ...selectIds])]
+    setFinalIds(new Set(result))
+    onChange && onChange(result)
     setSelectIds(new Set())
   }
   const removeFinalIds = (account: string) => {
     const result = [...finalIds].filter((id) => id !== account)
     setFinalIds(new Set(result))
-    console.log(result)
     onChange && onChange(result)
   }
 
   const [finalUsers, setFinalUsers] = useState<any[]>([])
   useEffect(() => {
     setFinalUsers([
-      ...Array.from(finalIds).map((id) => ({
-        username: id,
-        userAccount: id,
+      ...Array.from(finalIds).map(() => ({
+        username: '664aaaaae5d0d07d6de682c0',
+        email: '2320003602@qq.com',
         userRole: 'MEMBER'
       }))
     ])
@@ -241,8 +242,10 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
 }
 
 // 群聊信息填写
-function FormRenderer() {
+function FormRenderer(props: { onChange: (value: Partial<Room.RoomEntity>) => void }) {
   const FormItem = Form.Item
+
+  const { onChange } = props
 
   return (
     <div
@@ -252,18 +255,29 @@ function FormRenderer() {
         'gap-y-1 flex flex-col items-start justify-start'
       )}
     >
-      <Form className={cs('w-full h-full')} layout='vertical'>
-        <div className='w-full flex flex-row items-start justify-start gap-x-2'>
-          <FormItem className='!min-w-[300px] flex-1' label="群聊名称" field="username" rules={[{ required: true }]}>
+      <Form
+        className={cs('w-full h-full')}
+        layout="vertical"
+        onValuesChange={(_, values: Partial<Room.RoomEntity>) => {
+          onChange && onChange(values)
+        }}
+      >
+        <div className="w-full flex flex-row items-start justify-start gap-x-2">
+          <FormItem
+            className="!min-w-[300px] flex-1"
+            label="群聊名称"
+            field="roomName"
+            rules={[{ required: true }]}
+          >
             <Input placeholder="请输入" />
           </FormItem>
-          <FormItem className='!min-w-[300px] flex-1' label="群聊号">
+          <FormItem className="!min-w-[300px] flex-1" label="群聊号">
             <Input disabled />
           </FormItem>
         </div>
-        <div className='w-full'>
-          <FormItem className='w-full' label="群聊简介">
-            <Input.TextArea className='w-full' rows={4} placeholder='请输入' />
+        <div className="w-full">
+          <FormItem className="w-full" label="群聊简介" field="roomDescription">
+            <Input.TextArea className="w-full" autoSize={{ minRows: 4, maxRows: 4 }} placeholder="请输入" />
           </FormItem>
         </div>
       </Form>
@@ -271,9 +285,13 @@ function FormRenderer() {
   )
 }
 
-function CreateChannel() {
-  const [createInput, setCreateInput] = useState<CreateChannelInput>({
-    template: '',
+function CreateChannel(props: CreateChannelProps) {
+  const { onSave } = props
+
+  const [createInput, setCreateInput] = useState<Room.CreateRoomInput>({
+    roomName: '',
+    roomDescription: '',
+    roomType: '',
     members: []
   })
 
@@ -281,13 +299,16 @@ function CreateChannel() {
     CreateChannelStepEnum.TEMPLATE
   )
 
-  const updateCreateInput = (key: keyof CreateChannelInput, value: any) => {
-    console.log(key, value)
-    setCreateInput((prev) => ({ ...prev, [key]: value }))
+  function updateCreateInput(value: any, key?: keyof Room.CreateRoomInput) {
+    if (isUndefined(key)) {
+      setCreateInput((prev) => ({ ...prev, ...value }))
+    } else {
+      setCreateInput((prev) => ({ ...prev, [key]: value }))
+    }
   }
 
   const beforeTemplateSelect = () => {
-    if (createInput.template) {
+    if (createInput.roomType) {
       setCurrentStep(CreateChannelStepEnum.MEMBERS)
       console.log('beforeTemplateSelect', createInput)
     } else {
@@ -295,20 +316,34 @@ function CreateChannel() {
     }
   }
   const beforeMemberSelect = () => {
-    if (createInput.members.length > 0) {
+    if (createInput.members?.length) {
       setCurrentStep(CreateChannelStepEnum.FORM)
       console.log('beforeMemberSelect', createInput)
     } else {
       Message.warning('请选择成员')
     }
   }
-  const handleNextStep = () => {
+
+  const createChannel = async () => {
+    console.log(createInput)
+    try {
+      const { data } = await CreateRoom(createInput)
+      if (data) onSave && onSave()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const handleNextStep = async () => {
     switch (currentStep) {
       case CreateChannelStepEnum.TEMPLATE:
         beforeTemplateSelect()
         break
       case CreateChannelStepEnum.MEMBERS:
         beforeMemberSelect()
+        break
+      case CreateChannelStepEnum.FORM:
+        await createChannel()
         break
     }
   }
@@ -319,13 +354,13 @@ function CreateChannel() {
         return (
           <TemplateRenderer
             key={CreateChannelStepEnum.TEMPLATE}
-            onChange={(val) => updateCreateInput('template', val)}
+            onChange={(val) => updateCreateInput(val, 'roomType')}
           />
         )
       case CreateChannelStepEnum.MEMBERS:
-        return <MembersRenderer onChange={(val) => updateCreateInput('members', val)} />
+        return <MembersRenderer onChange={(val) => updateCreateInput(val, 'members')} />
       case CreateChannelStepEnum.FORM:
-        return <FormRenderer />
+        return <FormRenderer onChange={(val) => updateCreateInput(val)} />
       default:
         return <div>default</div>
     }
@@ -342,7 +377,7 @@ function CreateChannel() {
           className="w-[200px]"
           onClick={handleNextStep}
         >
-          { currentStep === CreateChannelStepEnum.FORM ? '创建' : '下一步' }
+          {currentStep === CreateChannelStepEnum.FORM ? '创建' : '下一步'}
         </Button>
       </div>
     </div>

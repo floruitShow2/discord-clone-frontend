@@ -1,28 +1,31 @@
 declare namespace Room {
+  import { ChatRoomTypeEnum } from '@/enum/chat-room.enum'
   interface RoomEntity {
     roomId: string
-    /**
-     * @description 群聊信息，单聊为对方用户信息，群聊则为完整房间信息
-     */
+    // 群聊信息，单聊为对方用户信息，群聊则为完整房间信息
+    // 群聊名称
     roomName: string
+    // 群聊编号
+    roomNo: string
+    // 群聊封面
     roomCover: string
-
-    /**
-     * @description 免打扰模式
-     */
+    // 群聊描述信息
+    roomDescription: string
+    // 群聊类型
+    roomType: ChatRoomTypeEnum
+    // 是否开启免打扰模式
     noDisturbing: boolean
-    /**
-     * 是否置顶
-     */
+    // 是否置顶
     isPinned: boolean
-
-    /**
-     * @description 房间创建时间
-     */
+    // 房间创建时间
     createTime: string
+    // 成员 id 列表
+    members: string[]
   }
 
   interface RoomContextMethod {
     (msg: Message.Entity): void
   }
+
+  type CreateRoomInput = Partial<RoomEntity>
 }
