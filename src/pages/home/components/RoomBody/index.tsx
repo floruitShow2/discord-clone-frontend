@@ -20,7 +20,7 @@ const RoomBody = (props: RoomBodyProps) => {
     onIsNearBottomChange
   } = props
 
-  const { msgs, locatedId, handleClearLocatedId, handleRecall, handleReply, handleReplyChain } =
+  const { msgs, locatedId, clearLocatedId, recallMessage, replyMessage, openReplyChain } =
     useContext(RoomContext)
 
   const { userInfo } = useSelector((state: RootState) => state.user)
@@ -92,21 +92,24 @@ const RoomBody = (props: RoomBodyProps) => {
       <div className={`${className} relative flex items-start justify-between`}>
         <main ref={msgWrapperRef} className="flex-1 h-full bg-module overflow-auto">
           <Watermark
-            className="w-full min-height-full"
+            className="w-full"
             content={userInfo ? [userInfo.username, userInfo.phone.slice(-4)] : []}
             fontStyle={{
               fontSize: '14px',
               color: 'rgba(0, 0, 0, 0.1)'
+            }}
+            style={{
+              minHeight: '100%'
             }}
             zIndex={1}
           >
             <MessageList
               msgs={msgs}
               locatedId={locatedId}
-              onRecall={handleRecall}
-              onReply={handleReply}
-              onClearLocatedId={handleClearLocatedId}
-              onClickReplyMsg={handleReplyChain}
+              onReply={replyMessage}
+              onRecall={recallMessage}
+              onClickReplyMsg={openReplyChain}
+              onClearLocatedId={clearLocatedId}
             />
           </Watermark>
         </main>

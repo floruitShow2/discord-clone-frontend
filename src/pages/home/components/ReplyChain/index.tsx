@@ -14,11 +14,11 @@ import type { ReplyChainProps } from './index.interface'
 import styles from './index.module.less'
 
 function ReplyChain(props: ReplyChainProps) {
-  const { className, messageId, onClose, onLocate } = props
+  const { className, messageId, onClose } = props
 
   const { userInfo } = useSelector((state: RootState) => state.user)
 
-  const { room, handleCreate } = useContext(RoomContext)
+  const { room, createMessage, locateMessage } = useContext(RoomContext)
 
   const [replyChain, setReplyChain] = useState<Message.Entity[]>([])
   const initReplyChain = async (id: string) => {
@@ -28,10 +28,10 @@ function ReplyChain(props: ReplyChainProps) {
 
   const [value, setValue] = useState('')
   const handleKeyDown = async (e: any) => {
-    if (!room || !handleCreate) return
+    if (!room || !createMessage) return
     const content = e.target.value
     if (!content) return
-    const newMessage = await handleCreate({
+    const newMessage = await createMessage({
       roomId: room.roomId,
       profileId: userInfo?.userId || '',
       replyId: messageId,
@@ -68,7 +68,7 @@ function ReplyChain(props: ReplyChainProps) {
         <div className="flex items-center justify-end gap-3">
           <IconLocation
             className="cursor-pointer hover:text-blue-500"
-            onClick={() => onLocate && onLocate(replyChain[0])}
+            onClick={() => locateMessage && locateMessage(replyChain[0])}
           ></IconLocation>
           <span className="w-[1px] h-3 bg-light-l"></span>
           <IconClose className="cursor-pointer hover:text-blue-500" onClick={onClose}></IconClose>
@@ -89,11 +89,7 @@ function ReplyChain(props: ReplyChainProps) {
               {renderMsg({ msg: replyChain[0] })}
             </div>
             <div className="w-full">
-              <MessageList
-                msgs={replyChain.slice(1)}
-                inReplyChain
-                onLocate={onLocate}
-              ></MessageList>
+              <MessageList msgs={replyChain.slice(1)} inReplyChain></MessageList>
             </div>
           </>
         ) : (

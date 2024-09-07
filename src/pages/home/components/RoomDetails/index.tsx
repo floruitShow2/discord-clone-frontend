@@ -73,7 +73,7 @@ function QrcodeCardWrapper({ info }: { info: Room.RoomEntity }) {
 
 function RoomDetails(props: RoomDetailsProps) {
   const { onConfigChange } = props
-  const { room: info, handleClear } = useContext(RoomContext)
+  const { room: info, clearRecords } = useContext(RoomContext)
 
   const [members, setMembers] = useState<User.UserEntity[]>([])
 
@@ -140,7 +140,7 @@ function RoomDetails(props: RoomDetailsProps) {
                 content: '确认删除所有聊天记录吗？清空后将无法重新找回',
                 onOk() {
                   console.log('ok')
-                  if (info && handleClear) handleClear(info.roomId)
+                  if (info && clearRecords) clearRecords(info.roomId)
                 }
               })
             }
@@ -187,7 +187,7 @@ function RoomDetails(props: RoomDetailsProps) {
               <span className="mr-1 text-sm">{info?.roomName}</span>
               <IconPen className="cursor-pointer hover:text-blue-500" />
             </div>
-            <span className="text-xs text-light-l">Lorem ipsum dolor sit amet</span>
+            <span className="text-xs text-light-l">{info?.roomDescription}</span>
           </div>
         </div>
         <Button

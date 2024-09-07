@@ -25,7 +25,7 @@ function HomePage() {
       console.log(err)
     }
   }
-  const genRooms = () => {
+  const renderRooms = () => {
     return rooms.map((room) => (
       <RoomCard
         className={cs('mb-2', room.roomId === activeRoom?.roomId && 'bg-module')}
@@ -57,10 +57,14 @@ function HomePage() {
           icon: null,
           closable: true,
           footer: () => <></>,
-          content: <CreateChannel onSave={async () => {
-            await initRooms()
-            info.close()
-          }} />
+          content: (
+            <CreateChannel
+              onSave={async () => {
+                await initRooms()
+                info.close()
+              }}
+            />
+          )
         })
       }
     }
@@ -104,7 +108,7 @@ function HomePage() {
           placeholder="Search contacts"
           onChange={setSearchQuery}
         />
-        <ul className="w-full">{genRooms()}</ul>
+        <ul className="w-full">{renderRooms()}</ul>
       </aside>
       <main className={`${styles['home-main']} relative h-full`}>
         <RoomWrapper room={activeRoom} onConfigChange={changeRoomConfig}></RoomWrapper>

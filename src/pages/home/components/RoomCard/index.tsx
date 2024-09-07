@@ -13,8 +13,12 @@ function RoomCard(props: BaseProps) {
       <UserAvatar className="mr-3" username={info.roomName} avatar={info.roomCover} />
       <div className="w-36">
         <div className="flex items-center justify-between">
-          <h4 className="text-md whitespace-nowrap text-heavy-l">{info.roomName}</h4>
-          <span className="text-xs text-light-l">{translateToTimeAgo(info.createTime)}</span>
+          <h4 className="max-w-[80px] overflow-hidden text-ellipsis text-md whitespace-nowrap text-heavy-l">
+            {info.roomName}
+          </h4>
+          <span className="text-xs text-light-l whitespace-nowrap">
+            {translateToTimeAgo(info.createTime)}
+          </span>
         </div>
         <div className="text-xs text-light-l whitespace-nowrap overflow-hidden text-ellipsis">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero sapiente sequi obcaecati,

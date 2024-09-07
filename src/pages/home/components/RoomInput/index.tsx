@@ -19,7 +19,7 @@ import { RoomContext } from '../RoomWrapper'
 import { cs } from '@/utils/property'
 
 function RoomInput() {
-  const { room, replyId, handleCreate, handleReplyCancel } = useContext(RoomContext)
+  const { room, replyId, createMessage, cancelReply } = useContext(RoomContext)
   const [replyMessage, setReplyMessage] = useState<Message.Entity | null>(null)
   const fetchReplyMessage = async () => {
     if (!replyId) return
@@ -29,7 +29,7 @@ function RoomInput() {
     setReplyMessage(data)
   }
   const handleCloseReply = () => {
-    handleReplyCancel && handleReplyCancel()
+    cancelReply && cancelReply()
     setReplyMessage(null)
   }
   useEffect(() => {
@@ -81,10 +81,10 @@ function RoomInput() {
   const inputRef = useRef<RefInputType>(null)
   const [inputValue, setInputValue] = useState('')
   const handleKeyDown = (e: any) => {
-    if (!room || !handleCreate) return
+    if (!room || !createMessage) return
     const content = e.target.value
     if (!content) return
-    handleCreate({
+    createMessage({
       roomId: room.roomId,
       profileId: userInfo?.userId || '',
       replyId,
@@ -93,7 +93,7 @@ function RoomInput() {
       url: ''
     })
     setInputValue('')
-    handleReplyCancel && handleReplyCancel()
+    cancelReply && cancelReply()
   }
 
   const callKitStyle = useMemo<any>(() => {

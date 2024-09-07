@@ -41,10 +41,10 @@ function RoomDrawer(props: RoomDrawerProps) {
 export { RoomDrawerContentEnum } from './index.interface'
 
 export function renderRoomDrawer(props: RoomDrawerContentProps) {
-  const { type, messageId, onClose, onLocate } = props
+  const { type, messageId, onClose } = props
   switch (type) {
     case RoomDrawerContentEnum.REPLY_CHAIN:
-      return <ReplyChain messageId={messageId || ''} onClose={onClose} onLocate={onLocate} />
+      return <ReplyChain messageId={messageId || ''} onClose={onClose} />
     default:
       return <></>
   }

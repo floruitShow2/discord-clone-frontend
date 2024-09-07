@@ -1,14 +1,15 @@
+import { useContext } from 'react'
 import { Button } from '@arco-design/web-react'
 import { IconMoreVertical, IconSearch } from '@arco-design/web-react/icon'
 import UserAvatar from '@/components/userAvatar'
-import type { BaseProps } from './index.interface'
+import { RoomContext } from '../RoomWrapper'
 
-function RoomHeader(props: BaseProps) {
-  const { info } = props
+function RoomHeader() {
+  const { room } = useContext(RoomContext)
 
   return (
     <div className="w-full h-16 p-3 flex items-center justify-between border-b border-primary-b">
-      <UserAvatar username={info.roomName} avatar={info.roomCover} showDetails />
+      {room && <UserAvatar username={room.roomName} avatar={room.roomCover} showDetails />}
 
       <div className="flex items-center justify-end">
         <Button className="!text-primary-l" type="text" icon={<IconSearch />} />

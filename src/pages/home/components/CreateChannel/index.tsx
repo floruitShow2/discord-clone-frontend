@@ -145,17 +145,19 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
     if (!data) {
       setOptions([])
     } else {
-      setOptions(data.map(user => ({
-        label: (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Avatar size={24} style={{ marginLeft: 6, marginRight: 12 }}>
-              <img alt="avatar" src={user.avatar} />
-            </Avatar>
-            {`${user.username}`}
-          </div>
-        ),
-        value: user.email
-      })))
+      setOptions(
+        data.map((user) => ({
+          label: (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Avatar size={24} style={{ marginLeft: 6, marginRight: 12 }}>
+                <img alt="avatar" src={user.avatar} />
+              </Avatar>
+              {`${user.username}`}
+            </div>
+          ),
+          value: user.email
+        }))
+      )
     }
     setFetching(false)
   }, [])
@@ -277,7 +279,11 @@ function FormRenderer(props: { onChange: (value: Partial<Room.RoomEntity>) => vo
         </div>
         <div className="w-full">
           <FormItem className="w-full" label="群聊简介" field="roomDescription">
-            <Input.TextArea className="w-full" autoSize={{ minRows: 4, maxRows: 4 }} placeholder="请输入" />
+            <Input.TextArea
+              className="w-full"
+              autoSize={{ minRows: 4, maxRows: 4 }}
+              placeholder="请输入"
+            />
           </FormItem>
         </div>
       </Form>

@@ -25,14 +25,14 @@ export const RoomContext = createContext<RoomContextProps>({
   msgs: [],
   replyId: '',
   locatedId: '',
-  handleCreate: undefined,
-  handleClear: undefined,
-  handleLocated: undefined,
-  handleClearLocatedId: undefined,
-  handleReply: undefined,
-  handleReplyChain: undefined,
-  handleReplyCancel: undefined,
-  handleRecall: undefined
+  createMessage: undefined,
+  clearRecords: undefined,
+  locateMessage: undefined,
+  clearLocatedId: undefined,
+  replyMessage: undefined,
+  openReplyChain: undefined,
+  cancelReply: undefined,
+  recallMessage: undefined
 })
 
 const RoomProvider = (props: RoomProviderProps) => {
@@ -112,6 +112,7 @@ function RoomWrapper(props: RoomWrapperProps) {
   const handleMessageReceive = (msgs: Message.Entity[]) => {
     const totalMessages = [...messages, ...msgs]
     setMessages((prev) => [...prev, ...msgs])
+    console.log('aaa', msgs)
     const hasNewMsg = totalMessages.some(
       (msg) => msg.profile.userId !== currentUser.current?.userId
     )
@@ -172,7 +173,7 @@ function RoomWrapper(props: RoomWrapperProps) {
     setMessages(totalMessages)
     setLoadedPages(new Set(prevPage ? [prevPage, locatedPage, nextPage] : [locatedPage, nextPage]))
     pageRange.current = [!!prevPage ? prevPage : 1, nextPage]
-    handlePageChange(locatedPage)
+    onPageChange(locatedPage)
     setLocatedId(messageId)
   }
   // 回复消息
@@ -188,8 +189,7 @@ function RoomWrapper(props: RoomWrapperProps) {
     setRoomDrawerProps({
       type: RoomDrawerContentEnum.REPLY_CHAIN,
       messageId: message.messageId,
-      roomId: message.roomId,
-      onLocate: onLocateMessage
+      roomId: message.roomId
     })
   }
   // 撤回消息
@@ -213,7 +213,7 @@ function RoomWrapper(props: RoomWrapperProps) {
     }
   }
 
-  const handlePageChange = async (curPage: number) => {
+  const onPageChange = async (curPage: number) => {
     const [prev, next] = pageRange.current
     pageRange.current = [curPage < prev ? curPage : prev, curPage > next ? curPage : next]
     setPageOptions((prevVal) => ({ ...prevVal, page: curPage }))
@@ -233,7 +233,10 @@ function RoomWrapper(props: RoomWrapperProps) {
   }, [pageOptions])
 
   useEffect(() => {
-    setPageOptions({ page: 1, pageSize: 15 })
+    // 房间号发生变化，清空已加载数据
+    setMessages([])
+    setLoadedPages(new Set())
+    setPageOptions((prev) => ({ ...prev, page: 1, pageSize: 15 }))
     initSocket()
   }, [room])
 
@@ -248,21 +251,21 @@ function RoomWrapper(props: RoomWrapperProps) {
         msgs={formatMessages}
         replyId={curReplyId}
         locatedId={locatedId}
-        handleCreate={onMessageCreate}
-        handleClear={onRecordsClear}
-        handleLocated={onLocateMessage}
-        handleClearLocatedId={onClearLocatedId}
-        handleRecall={onMessageRecall}
-        handleReply={onMessageReply}
-        handleReplyCancel={onReplyCancel}
-        handleReplyChain={onSearchReplyChain}
+        replyMessage={onMessageReply}
+        recallMessage={onMessageRecall}
+        createMessage={onMessageCreate}
+        locateMessage={onLocateMessage}
+        clearRecords={onRecordsClear}
+        clearLocatedId={onClearLocatedId}
+        cancelReply={onReplyCancel}
+        openReplyChain={onSearchReplyChain}
       >
-        <RoomHeader info={room} />
+        <RoomHeader />
         <RoomBody
           className={styles['room-body']}
           roomPage={pageOptions.page}
           roomPageRange={pageRange.current}
-          onPageChange={handlePageChange}
+          onPageChange={onPageChange}
           onConfigChange={onConfigChange}
           onIsNearBottomChange={handleAllowScrollChange}
         />

@@ -9,7 +9,6 @@ export enum CreateChannelStepEnum {
   FORM = '3'
 }
 
-
 export interface ChannelTemplate {
   name: string
   code: ChatRoomTypeEnum

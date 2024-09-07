@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Image, Button, Dropdown, Menu, Message } from '@arco-design/web-react'
 import {
@@ -15,6 +15,7 @@ import { cs } from '@/utils/property'
 import UserAvatar from '@/components/userAvatar'
 import type { NormalMessageProps, DropdownListProps } from './index.interface'
 import styles from './index.module.less'
+import { RoomContext } from '../../../RoomWrapper'
 
 const isSelf = (msg: Message.Entity, userInfo: User.UserEntity | null) => {
   if (!userInfo) return false
@@ -124,7 +125,7 @@ export function renderMsg(props: NormalMessageProps) {
     return <Image width={200} src={msg.url} preview={!disabled} alt="lamp" />
   }
 
-  const handleFileDownload = (msg: Message.Entity) => {
+  const handleFileDownload = async (msg: Message.Entity) => {
     if (disabled) return
     const a = document.createElement('a')
     a.href = msg.url
@@ -234,12 +235,10 @@ export function NormalMessage(props: NormalMessageProps) {
     disabled = false,
     inReplyChain = false,
     onPreview,
-    onRecall,
-    onReply,
-    onClickReplyMsg,
-    onLocate,
-    onClearLocatedId
+    onClickReplyMsg
   } = props
+
+  const { replyMessage, recallMessage, locateMessage, clearLocatedId } = useContext(RoomContext)
   const { messageId, profile, createTime } = msg
 
   const { userInfo } = useSelector((state: RootState) => state.user)
@@ -251,7 +250,7 @@ export function NormalMessage(props: NormalMessageProps) {
 
   useEffect(() => {
     setTimeout(() => {
-      onClearLocatedId && onClearLocatedId()
+      clearLocatedId && clearLocatedId()
     }, 5000)
   })
 
@@ -294,9 +293,9 @@ export function NormalMessage(props: NormalMessageProps) {
             inReplyChain,
             disabled,
             userInfo,
-            onReply,
-            onRecall,
-            onLocate
+            onReply: replyMessage,
+            onRecall: recallMessage,
+            onLocate: locateMessage
           })}
         >
           {/* 回复的目标消息 */}

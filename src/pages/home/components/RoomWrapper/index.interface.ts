@@ -5,19 +5,21 @@ export interface RoomContextProps {
   replyId: string
   locatedId: string
   // 发送消息
-  handleCreate?: (createMessageInput: Message.CreateMessageInput) => Promise<Message.Entity | null>
+  createMessage?: (createMessageInput: Message.CreateMessageInput) => Promise<Message.Entity | null>
   // 清空聊天记录
-  handleClear?: (roomId: string) => void
-  handleLocated?: Room.RoomContextMethod
-  handleClearLocatedId?: () => void
+  clearRecords?: (roomId: string) => void
+  // 定位消息
+  locateMessage?: Room.RoomContextMethod
+  // 清空定位消息，取消它的样式
+  clearLocatedId?: () => void
   // 回复消息
-  handleReply?: Room.RoomContextMethod
+  replyMessage?: Room.RoomContextMethod
   // 查询回复消息链路
-  handleReplyChain?: Room.RoomContextMethod
+  openReplyChain?: Room.RoomContextMethod
   // 取消回复消息
-  handleReplyCancel?: () => void
+  cancelReply?: () => void
   // 撤回消息
-  handleRecall?: Room.RoomContextMethod
+  recallMessage?: Room.RoomContextMethod
 }
 
 export interface RoomProviderProps extends RoomContextProps {

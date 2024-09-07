@@ -9,13 +9,6 @@ export interface NormalMessageProps extends HTMLAttributes<HTMLElement> {
   inReplyChain?: boolean
   // 预览文件
   onPreview?: Room.RoomContextMethod
-  // 定位消息
-  onLocate?: Room.RoomContextMethod
-  onClearLocatedId?: () => void
-  // 撤回消息
-  onRecall?: Room.RoomContextMethod
-  // 回复消息
-  onReply?: Room.RoomContextMethod
   // 点击回复的目标消息
   onClickReplyMsg?: Room.RoomContextMethod
 }
