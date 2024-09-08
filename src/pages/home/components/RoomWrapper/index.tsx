@@ -269,7 +269,7 @@ function RoomWrapper(props: RoomWrapperProps) {
           onConfigChange={onConfigChange}
           onIsNearBottomChange={handleAllowScrollChange}
         />
-        <RoomInput />
+        <RoomInput className="h-40" />
         <RoomDrawer visible={roomDrawerVisible} onClose={() => setRoomDrawerVisible(false)}>
           {renderRoomDrawer({
             ...roomDrawerProps,

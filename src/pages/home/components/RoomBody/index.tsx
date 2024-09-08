@@ -103,14 +103,7 @@ const RoomBody = (props: RoomBodyProps) => {
             }}
             zIndex={1}
           >
-            <MessageList
-              msgs={msgs}
-              locatedId={locatedId}
-              onReply={replyMessage}
-              onRecall={recallMessage}
-              onClickReplyMsg={openReplyChain}
-              onClearLocatedId={clearLocatedId}
-            />
+            <MessageList msgs={msgs} locatedId={locatedId} onClickReplyMsg={openReplyChain} />
           </Watermark>
         </main>
         {showDetails && <RoomDetails onConfigChange={onConfigChange} />}

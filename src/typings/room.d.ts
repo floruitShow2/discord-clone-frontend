@@ -20,7 +20,7 @@ declare namespace Room {
     // 房间创建时间
     createTime: string
     // 成员 id 列表
-    members: string[]
+    members: User.UserEntity[]
   }
 
   interface RoomContextMethod {

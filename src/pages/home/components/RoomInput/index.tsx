@@ -15,10 +15,14 @@ import * as GenerateTestUserSig from '@/debug/GenerateTestUserSig-es'
 import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
 import { CreateFilesMessage, FetchMessageById } from '@/api/chat-message'
-import { RoomContext } from '../RoomWrapper'
 import { cs } from '@/utils/property'
+import { RoomContext } from '../RoomWrapper'
+import ChatInput from '../ChatInput'
+import type { RoomInputProps } from './index.interface'
+import { IMention } from '../ChatInput/index.interface'
 
-function RoomInput() {
+function RoomInput(props: RoomInputProps) {
+  const { className } = props
   const { room, replyId, createMessage, cancelReply } = useContext(RoomContext)
   const [replyMessage, setReplyMessage] = useState<Message.Entity | null>(null)
   const fetchReplyMessage = async () => {
@@ -133,11 +137,26 @@ function RoomInput() {
     setFileList([])
   }
 
+  const loadMembers = (query: string): Promise<User.UserEntity[]> => {
+    return new Promise((resolve) => {
+      const members = room?.members || []
+      resolve(
+        members.filter(
+          (member) => member.username.indexOf(query) !== -1 && member.userId !== userInfo?.userId
+        )
+      )
+    })
+  }
+  const onInputChange = (value: string, mentionList: IMention[]) => {
+    console.log(value, mentionList)
+  }
+
   return (
     <>
       <TUICallKit style={callKitStyle}></TUICallKit>
       <div
         className={cs(
+          className,
           'relative w-full px-3 py-2',
           'flex flex-col items-start justify-between',
           'border-t border-primary-b'
@@ -173,6 +192,7 @@ function RoomInput() {
             </div>
           </div>
         )}
+        {/* 工具栏 */}
         <div className="w-full py-2 flex gap-x-2 items-center justify-start text-xl text-light-l">
           <IconFaceSmileFill className={iconBtnCls} />
           <Upload
@@ -196,12 +216,14 @@ function RoomInput() {
             <IconVideoCamera className={iconBtnCls} onClick={call} />
           </Tooltip>
         </div>
-        <Input
+        {/* 输入框 */}
+        {/* <Input
           ref={inputRef}
           value={inputValue}
           onChange={(val) => setInputValue(val)}
           onPressEnter={handleKeyDown}
-        />
+        /> */}
+        <ChatInput loadMembers={loadMembers} onInputChange={onInputChange} />
       </div>
     </>
   )
