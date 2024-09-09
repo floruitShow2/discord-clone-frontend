@@ -140,11 +140,8 @@ function RoomInput(props: RoomInputProps) {
   const loadMembers = (query: string): Promise<User.UserEntity[]> => {
     return new Promise((resolve) => {
       const members = room?.members || []
-      resolve(
-        members.filter(
-          (member) => member.username.indexOf(query) !== -1 && member.userId !== userInfo?.userId
-        )
-      )
+      //  && member.userId !== userInfo?.userId
+      resolve(members.filter((member) => member.username.indexOf(query) !== -1))
     })
   }
   const onInputChange = (value: string, mentionList: IMention[]) => {

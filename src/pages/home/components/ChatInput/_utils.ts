@@ -80,6 +80,29 @@ export const getSelectionCoords = () => {
   return { x, y }
 }
 
+export function isBeforeButtonWithSpace(container: any, offset: number) {
+  // 检查光标前是否为按钮，光标后是否为空格
+  if (container.nodeType === Node.TEXT_NODE) {
+    // 按钮在文本中间
+    const text = container.textContent
+    const btnNode = container.parentNode.childNodes[offset]
+    return text.startsWith('\u00A0') && btnNode?.tagName.toLowerCase() === 'button'
+  } else if (container.nodeType === Node.ELEMENT_NODE) {
+    // 按钮在末尾
+    const lastNode = container.childNodes[offset]
+    if (lastNode && lastNode.nodeType === Node.TEXT_NODE && !lastNode.textContent) {
+      offset -= 1
+    }
+    // 如果是元素节点，检查其文本内容
+    const textNode = container.childNodes[offset]
+    const btnNode = container.childNodes[offset - 1]
+    if (textNode && textNode.nodeType === Node.TEXT_NODE && btnNode) {
+      const text = textNode.textContent
+      return text.startsWith('\u00A0') && btnNode.tagName.toLowerCase() === 'button'
+    }
+  }
+  return false
+}
 /**
  * @description 创建@按钮
  * @param mention
@@ -101,6 +124,30 @@ export const createMentionBtn = (mention: IMention) => {
   )
 
   return btn
+}
+
+export function removeMentionBtn(container: any, offset: number) {
+  if (container.nodeType === Node.TEXT_NODE) {
+    const text = container.textContent
+    const btnNode = container.parentNode.childNodes[offset]
+    if (text.startsWith('\u00A0')) {
+      container.deleteData(0, 1)
+    }
+    if (btnNode && btnNode.tagName.toLowerCase() === 'button') {
+      container.removeChild(btnNode)
+    }
+  } else if (container.nodeType === Node.ELEMENT_NODE) {
+    // 如果是元素节点，删除元素及其后的空格
+    // 如果是元素节点，检查其文本内容
+    const textNode = container.childNodes[offset - 1]
+    const btnNode = container.childNodes[offset - 2]
+    if (textNode && textNode.nodeType === Node.TEXT_NODE && textNode.textContent === '\u00A0') {
+      container.removeChild(textNode)
+    }
+    if (btnNode && btnNode.tagName.toLowerCase() === 'button') {
+      container.removeChild(btnNode)
+    }
+  }
 }
 
 /**

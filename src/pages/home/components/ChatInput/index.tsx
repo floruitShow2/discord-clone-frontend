@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { cs } from '@/utils/property'
 import {
-  hasNextSibling,
   createMentionBtn,
   getEditorRange,
   getSelectionCoords,
   transformMentionDataToNodeList,
-  transformNodeListToMentionData
+  transformNodeListToMentionData,
+  isBeforeButtonWithSpace,
+  removeMentionBtn
 } from './_utils'
 import { ChatInputProps, EditorRange, IMention, INode, NodeType } from './index.interface'
 
@@ -15,11 +16,13 @@ function ChatInput(props: ChatInputProps) {
     className,
     value = '',
     metions = [],
+    placeholder = '请输入',
     disabled = false,
     loadMembers,
     onInputChange,
     onFocus,
-    onBlur
+    onBlur,
+    onConfirm
   } = props
 
   const [isInitialized, setIsInitialized] = useState(false)
@@ -130,7 +133,8 @@ function ChatInput(props: ChatInputProps) {
   }, [popoverVisible])
 
   // @成员
-  const [activeUserId, setActiveUserId] = useState('')
+  const POPOVER_ELEMENT_ID = 'at-mentions-popover'
+  const [activeIndex, setActiveIndex] = useState(0)
   const [members, setMembers] = useState<IMention[]>([])
   const insertHtmlAtCaret = (btn: HTMLButtonElement, bSpaceNode: Text) => {
     if (!editorRange.current) return
@@ -280,20 +284,6 @@ function ChatInput(props: ChatInputProps) {
         frag.appendChild(extraBreak)
       }
 
-      // const containerParent = container.parentNode
-      // if (
-      //   containerParent &&
-      //   range.startOffset === container.length &&
-      //   containerParent.lastChild === container &&
-      //   containerParent.lastChild.nodeName !== 'BR'
-      // ) {
-      //   const extraBreak = createBrWrapper()
-      //   lastNode = extraBreak
-      //   frag.appendChild(extraBreak)
-      // } else if (container.nodeType === Node.ELEMENT_NODE) {
-      //   console.log(container.lastChild?.innerHTML)
-      // }
-
       range.insertNode(frag)
 
       // 移动光标到最后一个换行节点
@@ -305,12 +295,72 @@ function ChatInput(props: ChatInputProps) {
   }
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     console.log('key down', e)
+
+    // 拦截 backsapce 删除
+    if (e.code === 'Backspace') {
+      const rangeInfo = getEditorRange()
+      if (!rangeInfo) return
+
+      const { selection, range } = rangeInfo
+      if (selection && selection.rangeCount) {
+        const container = range.startContainer
+        const offset = range.startOffset
+
+        if (isBeforeButtonWithSpace(container, offset)) {
+          removeMentionBtn(container, offset)
+          e.preventDefault()
+        }
+
+        // 如果光标在文本节点的最后一个字符，且文本节点的父节点是 div，则删除 div
+        // if (container.nodeName === '#text' && offset === container.textContent?.length && container.parentNode)
+      }
+    }
+
+    // 拦截 arrowDown | arrowUp 上移、下移
+    if (popoverVisible && members.length > 0) {
+      const itemHeight = 50
+      const popoverMaxHeight = 300
+      if (e.code === 'ArrowDown') {
+        e.preventDefault()
+        let newIndex = activeIndex + 1
+        if (newIndex === members.length) {
+          newIndex = 0
+        }
+        setActiveIndex(newIndex)
+        const nowScrollTop = document.getElementById(POPOVER_ELEMENT_ID)!.scrollTop
+        // 调整滚动条的位置
+        if ((newIndex + 1) * itemHeight > popoverMaxHeight + nowScrollTop) {
+          document.getElementById(POPOVER_ELEMENT_ID)!.scrollTop =
+            (newIndex + 1) * itemHeight - popoverMaxHeight
+        }
+      }
+      if (e.code === 'ArrowUp') {
+        e.preventDefault()
+        let newIndex = activeIndex - 1
+        if (newIndex < 0) {
+          newIndex = members.length - 1
+        }
+        setActiveIndex(newIndex)
+        const nowScrollTop = document.getElementById(POPOVER_ELEMENT_ID)!.scrollTop
+        if (newIndex * itemHeight < nowScrollTop) {
+          document.getElementById(POPOVER_ELEMENT_ID)!.scrollTop =
+            newIndex === 0 ? 0 : newIndex * itemHeight
+        }
+      }
+    }
+
+    // 拦截 enter 回车
     if (e.code === 'Enter') {
       // 阻止默认的回车事件，避免换行
       e.preventDefault()
       // 触发自定义回车事件
+      if (popoverVisible && members.length > 0) {
+        onSelectMember(members[activeIndex])
+      } else {
+        onConfirm && onConfirm(e)
+      }
     }
-    // ctrl + enter 触发换行
+    // 拦截 ctrl + enter 触发换行
     if (e.ctrlKey && e.code === 'Enter') {
       createBrElement()
     }
@@ -323,8 +373,10 @@ function ChatInput(props: ChatInputProps) {
     }
     onInputDataChange()
   }
+  const [isFocus, setIsFocus] = useState(false)
   const onInputFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
     onFocus && onFocus(e)
+    setIsFocus(true)
     // fix: 加上延时处理，避免 getEditorRange 获取到错误的节点
     setTimeout(() => {
       checkIsShowSelectPopover()
@@ -332,14 +384,14 @@ function ChatInput(props: ChatInputProps) {
   }
   const onInputBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
     onBlur && onBlur(e)
+    setIsFocus(false)
     // 设置延时，避免选择 @成员 时，弹窗直接消失
     setTimeout(() => {
       closeMembersPopover()
     }, 200)
   }
-
   return (
-    <div className={cs('w-full h-full', className)}>
+    <div className={cs('relative w-full h-full', className)}>
       {/* 输入框 */}
       <div
         ref={editorRef}
@@ -348,7 +400,7 @@ function ChatInput(props: ChatInputProps) {
           'border border-solid border-module rounded-sm',
           'text-primary-l break-all',
           'focus-within:bg-white focus-within:border-blue-600',
-          'transition-all',
+          'overflow-auto transition-all',
           {
             'cursor-not-allowed bg-module': disabled
           }
@@ -363,18 +415,20 @@ function ChatInput(props: ChatInputProps) {
       {/* @成员弹窗 */}
       {popoverVisible && (
         <div
+          id={POPOVER_ELEMENT_ID}
           className={cs(
             'fixed z-[1090]',
-            `w-[${popoverWidth}px] max-h-[300px] overflow-auto`,
+            `max-h-[300px] overflow-auto`,
             'border border-solid border-primary-b',
             'bg-white shadow-md'
           )}
           style={{
+            width: `${popoverWidth}px`,
             top: `${popoverPosition.y - 8 - members.length * 50}px`,
             left: `${popoverPosition.x}px`
           }}
         >
-          {members.map((member) => (
+          {members.map((member, index) => (
             <div
               className={cs(
                 'w-full p-2',
@@ -382,7 +436,7 @@ function ChatInput(props: ChatInputProps) {
                 'border-b border-solid border-primary-b last:border-transparent',
                 'cursor-pointer hover:bg-module',
                 {
-                  'bg-module': member.userId === activeUserId
+                  'bg-module': index === activeIndex
                 }
               )}
               key={member.userId}
@@ -393,6 +447,10 @@ function ChatInput(props: ChatInputProps) {
             </div>
           ))}
         </div>
+      )}
+      {/* placeholder展示 */}
+      {!(inputValue && inputValue.length > 0 && inputValue !== '\n') && !isFocus && placeholder.length > 0 && (
+        <div className={cs('absolute top-2 left-2', 'text-light-l pointer-events-none')}>{placeholder}</div>
       )}
     </div>
   )

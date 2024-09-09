@@ -33,6 +33,7 @@ export interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {
   value?: string
   metions?: IMention[]
 
+  placeholder?: string
   disabled?: boolean
 
   loadMembers?: (query: string) => Promise<IMember[]>
@@ -40,4 +41,5 @@ export interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {
   onInputChange?: (value: string, mentions: IMention[]) => void
   onFocus?: (event: React.FocusEvent<HTMLDivElement, Element>) => void
   onBlur?: (event: React.FocusEvent<HTMLDivElement, Element>) => void
+  onConfirm?: (event: React.KeyboardEvent<HTMLDivElement>) => void
 }
