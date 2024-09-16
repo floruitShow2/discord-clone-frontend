@@ -1,6 +1,10 @@
 declare namespace Message {
   import { MessageTypeEnum } from '@/constants'
 
+  interface Mention extends Pick<User.UserEntity, 'userId' | 'username' | 'avatar'> {
+    offset: number
+  }
+
   interface Entity {
     /**
      * @description 消息的唯一标识符
@@ -25,7 +29,7 @@ declare namespace Message {
     /**
      * @description 消息提及的用户
      */
-    metions: User.UserEntity[]
+    mentions: Mention[]
     /**
      * @description 消息内容
      */
@@ -38,18 +42,6 @@ declare namespace Message {
     createTime: string
   }
 
-  // interface TextMessage extends BaseMessage {
-  //     content: string
-  // }
-
-  // interface ImageMessage extends BaseMessage {
-  //     url: string
-  // }
-
-  // type MessageEntity =
-  //     | { type: MessageTypeEnum.TEXT; content: TextMessage }
-  //     | { type: MessageTypeEnum.IMAGE; content: ImageMessage }
-
   /**
    * @description 接口请求参数格式
    */
@@ -57,8 +49,7 @@ declare namespace Message {
     roomId: string
   }
 
-  interface CreateMessageInput
-    extends Omit<Entity, 'messageId' | 'metions' | 'createTime' | 'profile'> {
+  interface CreateMessageInput extends Omit<Entity, 'messageId' | 'createTime' | 'profile'> {
     profileId: string
   }
 

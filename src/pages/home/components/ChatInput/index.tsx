@@ -9,13 +9,13 @@ import {
   isBeforeButtonWithSpace,
   removeMentionBtn
 } from './_utils'
-import { ChatInputProps, EditorRange, IMention, INode, NodeType } from './index.interface'
+import { ChatInputProps, EditorRange, INode, NodeType } from './index.interface'
 
 function ChatInput(props: ChatInputProps) {
   const {
     className,
     value = '',
-    metions = [],
+    mentions = [],
     placeholder = '请输入',
     disabled = false,
     loadMembers,
@@ -29,7 +29,7 @@ function ChatInput(props: ChatInputProps) {
   const init = () => {
     const editor = editorRef.current
     if (!editor) return
-    const nodeList = transformMentionDataToNodeList(value, metions)
+    const nodeList = transformMentionDataToNodeList(value, mentions)
     nodeList.forEach((node) => {
       if (node.type === NodeType.MENTION) {
         const btn = createMentionBtn(node.data)
@@ -48,6 +48,13 @@ function ChatInput(props: ChatInputProps) {
       init()
     }
 
+    // 首次加载 value 为空时，单独处理下
+    if (!(value && value.length > 0) && !isInitialized) {
+      setTimeout(() => {
+        init()
+      }, 500)
+    }
+
     // 清空输入
     if (!value && isInitialized && editorRef.current) {
       while (editorRef.current?.firstChild) {
@@ -56,7 +63,7 @@ function ChatInput(props: ChatInputProps) {
     }
 
     setInputValue(value)
-  }, [value, metions])
+  }, [value, mentions])
 
   const editorRef = useRef<HTMLDivElement>(null)
   const editorRange = useRef<EditorRange | null>(null)
@@ -135,7 +142,7 @@ function ChatInput(props: ChatInputProps) {
   // @成员
   const POPOVER_ELEMENT_ID = 'at-mentions-popover'
   const [activeIndex, setActiveIndex] = useState(0)
-  const [members, setMembers] = useState<IMention[]>([])
+  const [members, setMembers] = useState<Message.Mention[]>([])
   const insertHtmlAtCaret = (btn: HTMLButtonElement, bSpaceNode: Text) => {
     if (!editorRange.current) return
     let { selection, range } = editorRange.current
@@ -164,7 +171,7 @@ function ChatInput(props: ChatInputProps) {
       }
     }
   }
-  const onSelectMember = (member: IMention) => {
+  const onSelectMember = (member: Message.Mention) => {
     closeMembersPopover()
     const editor = editorRef.current
     if (!editor) return
@@ -198,7 +205,14 @@ function ChatInput(props: ChatInputProps) {
   useEffect(() => {
     loadMembers &&
       loadMembers(searchQuery).then((res) => {
-        setMembers(res)
+        setMembers(
+          res.map((item) => ({
+            username: item.username,
+            userId: item.userId,
+            avatar: item.avatar,
+            offset: 0
+          }))
+        )
       })
   }, [searchQuery])
 
@@ -293,8 +307,18 @@ function ChatInput(props: ChatInputProps) {
       selection.addRange(range)
     }
   }
+
+  const lastKeyPressTime = useRef(0)
+  const [isComposing, setIsComposing] = useState(false)
+  const onInputCompositionStart = () => {
+    setIsComposing(true)
+  }
+  const onInputCompositionEnd = () => {
+    setIsComposing(false)
+  }
+
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log('key down', e)
+    // console.log('key down', e)
 
     // 拦截 backsapce 删除
     if (e.code === 'Backspace') {
@@ -353,10 +377,12 @@ function ChatInput(props: ChatInputProps) {
     if (e.code === 'Enter') {
       // 阻止默认的回车事件，避免换行
       e.preventDefault()
+      const currentTime = new Date().getTime()
+
       // 触发自定义回车事件
       if (popoverVisible && members.length > 0) {
         onSelectMember(members[activeIndex])
-      } else {
+      } else if (!isComposing && currentTime - lastKeyPressTime.current > 100) {
         onConfirm && onConfirm(e)
       }
     }
@@ -408,6 +434,8 @@ function ChatInput(props: ChatInputProps) {
         contentEditable
         onKeyUp={onInputKeyUp}
         onKeyDown={onInputKeyDown}
+        onCompositionStart={onInputCompositionStart}
+        onCompositionEnd={onInputCompositionEnd}
         onFocus={onInputFocus}
         onInput={onInput}
         onBlur={onInputBlur}
@@ -449,9 +477,13 @@ function ChatInput(props: ChatInputProps) {
         </div>
       )}
       {/* placeholder展示 */}
-      {!(inputValue && inputValue.length > 0 && inputValue !== '\n') && !isFocus && placeholder.length > 0 && (
-        <div className={cs('absolute top-2 left-2', 'text-light-l pointer-events-none')}>{placeholder}</div>
-      )}
+      {!(inputValue && inputValue.length > 0 && inputValue !== '\n') &&
+        !isFocus &&
+        placeholder.length > 0 && (
+          <div className={cs('absolute top-2 left-2', 'text-light-l pointer-events-none')}>
+            {placeholder}
+          </div>
+        )}
     </div>
   )
 }

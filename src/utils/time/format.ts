@@ -7,7 +7,7 @@ const genTimestampMessage = (message: Message.Entity) => {
     messageId: new Date(createTime).getTime().toString(),
     roomId,
     profile,
-    metions: [],
+    mentions: [],
     content: translateToDateTime(createTime, 'MM月DD日 HH:mm'),
     url: '',
     type: MessageTypeEnum.ACTION,

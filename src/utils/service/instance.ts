@@ -14,6 +14,8 @@ class CustomAxiosInstance {
 
   storage: UseStorageEntity
 
+  cozeUrls: string[] = ['/v3/chat']
+
   constructor(
     axiosConfig: AxiosRequestConfig,
     backendConfig: Service.BackendResultConfig = {
@@ -36,11 +38,15 @@ class CustomAxiosInstance {
   setInterceptor() {
     this.instance.interceptors.request.use(
       async (config) => {
-        const tokenKey = this.storage.genKey(StorageIdEnum.USER_TOKEN)
-        const userToken = this.storage.get<string>(tokenKey)
-        if (userToken) {
-          config.headers.Authorization = `Bearer ${userToken}`
-          config.headers.user_token = userToken
+        if (!this.cozeUrls.includes(config.url || '')) {
+          const tokenKey = this.storage.genKey(StorageIdEnum.USER_TOKEN)
+          const userToken = this.storage.get<string>(tokenKey)
+          if (userToken) {
+            config.headers.user_token = userToken
+            config.headers.Authorization = `Bearer ${userToken}`
+          }
+        } else {
+          config.headers.Authorization = `Bearer pat_WdSvHl87B0VA9NsDSB2xP75tPVpbgUa1RJRL7AjqySYBz5yJhA2HCzERLWDySewx`
         }
 
         return config

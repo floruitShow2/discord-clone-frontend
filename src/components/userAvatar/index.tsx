@@ -2,10 +2,12 @@ import { Avatar } from '@arco-design/web-react'
 import { cs } from '@/utils/property'
 import styles from './index.module.less'
 import type { UserAvatarProps } from './index.interface'
+import { isString } from '@/utils/is'
 
 function UserAvatar(props: UserAvatarProps) {
   const {
     className,
+    avatarClassName,
     username,
     description,
     avatar,
@@ -30,11 +32,11 @@ function UserAvatar(props: UserAvatarProps) {
         )}
       >
         <Avatar
-          className="bg-primary rounded-md cursor-pointer transition-colors"
+          className={cs('bg-module rounded-md cursor-pointer transition-colors', avatarClassName)}
           shape="square"
           size={40}
         >
-          <img src={avatar} alt="" />
+          {isString(avatar) ? <img src={avatar} alt="" /> : avatar}
         </Avatar>
       </div>
       {showDetails && (

@@ -1,12 +1,13 @@
 import UserAvatar from '@/components/userAvatar'
-import type { BaseProps } from './index.interface'
 import { cs } from '@/utils/property'
+import type { BaseProps } from './index.interface'
+import { IconPlus } from '@arco-design/web-react/icon'
 
 function MemeberList(props: BaseProps) {
   const { className, members = [] } = props
 
   const genMembersCard = () => {
-    return members.slice(0, 15).map((member) => {
+    const memberList = members.slice(0, 14).map((member) => {
       return (
         <li className="flex flex-col items-center justify-center" key={member.userId}>
           <UserAvatar
@@ -18,6 +19,17 @@ function MemeberList(props: BaseProps) {
         </li>
       )
     })
+
+    return <>
+      {memberList}
+      <li className="flex flex-col items-center justify-center" key='plus'>
+        <UserAvatar
+          avatarClassName='hover:bg-module-2'
+          avatar={<IconPlus />}
+          showState={false}
+        ></UserAvatar>
+      </li>
+    </>
   }
 
   return (

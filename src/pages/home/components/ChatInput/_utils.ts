@@ -1,4 +1,4 @@
-import { EditorRange, IMember, IMention, INode, NodeType } from './index.interface'
+import { EditorRange, INode, NodeType } from './index.interface'
 
 export const hasNextSibling = (node: any) => {
   if (node.nextElementSibling) {
@@ -108,7 +108,7 @@ export function isBeforeButtonWithSpace(container: any, offset: number) {
  * @param mention
  * @returns
  */
-export const createMentionBtn = (mention: IMention) => {
+export const createMentionBtn = (mention: Message.Mention) => {
   const btn = document.createElement('button')
   btn.dataset.info = JSON.stringify(mention)
   btn.textContent = `@${mention.username}`
@@ -155,9 +155,9 @@ export function removeMentionBtn(container: any, offset: number) {
  */
 export const transformNodeListToMentionData = (
   nodeList: INode[]
-): { pureString: string; mentionList: IMention[] } => {
+): { pureString: string; mentionList: Message.Mention[] } => {
   let pureString = ''
-  const mentionList: IMention[] = []
+  const mentionList: Message.Mention[] = []
 
   nodeList.forEach((item) => {
     if (item.type === NodeType.TEXT || item.type === NodeType.BR) {
@@ -165,7 +165,7 @@ export const transformNodeListToMentionData = (
       console.log('a', item)
     }
     if (item.type === NodeType.MENTION) {
-      const { userId, username, avatar } = item.data as IMember
+      const { userId, username, avatar } = item.data
       mentionList.push({
         userId,
         username,
@@ -184,7 +184,7 @@ export const transformNodeListToMentionData = (
  */
 export const transformMentionDataToNodeList = (
   pureString: string,
-  mentionList: IMention[]
+  mentionList: Message.Mention[]
 ): INode[] => {
   let cutStart: number = 0
   const nodeList: INode[] = []
@@ -206,7 +206,8 @@ export const transformMentionDataToNodeList = (
         data: {
           userId: item.userId,
           username: item.username,
-          avatar: item.avatar
+          avatar: item.avatar,
+          offset: item.offset || 0
         }
       })
 

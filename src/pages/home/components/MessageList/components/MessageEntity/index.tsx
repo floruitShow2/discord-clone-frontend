@@ -113,7 +113,39 @@ export function renderMsg(props: NormalMessageProps) {
    * @returns
    */
   const genTextMsg = (msg: Message.Entity) => {
-    return <p className="text-sm break-all text-primary-l">{msg.content}</p>
+    const { content, mentions } = msg
+
+    let idx = 0
+    let result: JSX.Element = <></>
+    if (mentions && mentions.length > 0) {
+      mentions
+        .sort((a, b) => a.offset - b.offset)
+        .forEach((item) => {
+          const { offset, username } = item
+          const len = username.length
+          result = (
+            <>
+              {result}
+              <span className="text-sm break-all text-primary-l">{content.slice(idx, offset)}</span>
+              <div
+                className={cs('text-blue-500')}
+                onClick={() => {
+                  console.log('mention', item)
+                }}
+              >
+                @{username}
+              </div>
+            </>
+          )
+          idx = idx + offset + len
+          // const reg = new RegExp(`@${item.username}`, 'g')
+          // content = content.replace(reg, <span class="text-blue-400">@{item.username}</span>)
+        })
+
+      return <div className="flex items-center justify-start flex-wrap">{result}</div>
+    } else {
+      return <p className="text-sm break-all text-primary-l">{content}</p>
+    }
   }
 
   /**

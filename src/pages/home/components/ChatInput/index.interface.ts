@@ -5,15 +5,6 @@ export interface EditorRange {
   selection: Selection
 }
 
-export interface IMember {
-  userId: string
-  username: string
-  avatar: string
-}
-export interface IMention extends IMember {
-  offset?: number
-}
-
 export enum NodeType {
   TEXT = 'text',
   BR = 'br',
@@ -25,20 +16,20 @@ interface TextNode {
 }
 interface MentionNode {
   type: NodeType.MENTION
-  data: IMention
+  data: Message.Mention
 }
 export type INode = TextNode | MentionNode
 
 export interface ChatInputProps extends HTMLAttributes<HTMLDivElement> {
   value?: string
-  metions?: IMention[]
+  mentions?: Message.Mention[]
 
   placeholder?: string
   disabled?: boolean
 
-  loadMembers?: (query: string) => Promise<IMember[]>
+  loadMembers?: (query: string) => Promise<User.UserEntity[]>
 
-  onInputChange?: (value: string, mentions: IMention[]) => void
+  onInputChange?: (value: string, mentions: Message.Mention[]) => void
   onFocus?: (event: React.FocusEvent<HTMLDivElement, Element>) => void
   onBlur?: (event: React.FocusEvent<HTMLDivElement, Element>) => void
   onConfirm?: (event: React.KeyboardEvent<HTMLDivElement>) => void

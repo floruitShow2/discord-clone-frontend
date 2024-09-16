@@ -19,7 +19,6 @@ import { cs } from '@/utils/property'
 import { RoomContext } from '../RoomWrapper'
 import ChatInput from '../ChatInput'
 import type { RoomInputProps } from './index.interface'
-import { IMention } from '../ChatInput/index.interface'
 
 function RoomInput(props: RoomInputProps) {
   const { className } = props
@@ -84,21 +83,7 @@ function RoomInput(props: RoomInputProps) {
 
   const inputRef = useRef<RefInputType>(null)
   const [inputValue, setInputValue] = useState('')
-  const handleKeyDown = (e: any) => {
-    if (!room || !createMessage) return
-    const content = e.target.value
-    if (!content) return
-    createMessage({
-      roomId: room.roomId,
-      profileId: userInfo?.userId || '',
-      replyId,
-      type: MessageTypeEnum.TEXT,
-      content,
-      url: ''
-    })
-    setInputValue('')
-    cancelReply && cancelReply()
-  }
+  const [inputMentions, setInputMentions] = useState<Message.Mention[]>([])
 
   const callKitStyle = useMemo<any>(() => {
     if (TUIGlobal.isPC) {
@@ -132,8 +117,7 @@ function RoomInput(props: RoomInputProps) {
     files.forEach((file) => {
       if (file.originFile) fd.append('files', file.originFile)
     })
-    const res = await CreateFilesMessage(fd)
-    console.log(res, uploadRef.current)
+    await CreateFilesMessage(fd)
     setFileList([])
   }
 
@@ -144,8 +128,28 @@ function RoomInput(props: RoomInputProps) {
       resolve(members.filter((member) => member.username.indexOf(query) !== -1))
     })
   }
-  const onInputChange = (value: string, mentionList: IMention[]) => {
-    console.log(value, mentionList)
+  const onInputChange = async (value: string, mentionList: Message.Mention[]) => {
+    try {
+      setInputValue(value)
+      setInputMentions(mentionList)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const onInputConfirm = () => {
+    if (!room || !createMessage) return
+    if (!inputValue) return
+    createMessage({
+      roomId: room.roomId,
+      profileId: userInfo?.userId || '',
+      replyId,
+      type: MessageTypeEnum.TEXT,
+      content: inputValue,
+      mentions: inputMentions,
+      url: ''
+    })
+    setInputValue('')
+    cancelReply && cancelReply()
   }
 
   return (
@@ -220,7 +224,13 @@ function RoomInput(props: RoomInputProps) {
           onChange={(val) => setInputValue(val)}
           onPressEnter={handleKeyDown}
         /> */}
-        <ChatInput loadMembers={loadMembers} onInputChange={onInputChange} />
+        <ChatInput
+          value={inputValue}
+          mentions={inputMentions}
+          loadMembers={loadMembers}
+          onInputChange={onInputChange}
+          onConfirm={onInputConfirm}
+        />
       </div>
     </>
   )

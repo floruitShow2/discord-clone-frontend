@@ -37,6 +37,7 @@ function ReplyChain(props: ReplyChainProps) {
       replyId: messageId,
       type: MessageTypeEnum.TEXT,
       content,
+      mentions: [],
       url: ''
     })
     setValue('')
