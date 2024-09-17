@@ -8,15 +8,19 @@ import {
   IconPlayCircle,
   IconLocation
 } from '@arco-design/web-react/icon'
+import { Viewer } from '@bytemd/react'
+import 'bytemd/dist/index.css'
+
 import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
-import { isFunction, isUndefined } from '@/utils/is'
+import { useCoze } from '@/hooks/actions/useCoze'
 import { cs } from '@/utils/property'
+import { isFunction, isUndefined } from '@/utils/is'
 import UserAvatar from '@/components/userAvatar'
+import { RoomContext } from '../../../RoomWrapper'
 import type { NormalMessageProps, DropdownListProps } from './index.interface'
 import styles from './index.module.less'
-import { RoomContext } from '../../../RoomWrapper'
-
+import './index.less'
 const isSelf = (msg: Message.Entity, userInfo: User.UserEntity | null) => {
   if (!userInfo) return false
   return msg.profile?.userId === userInfo.userId
@@ -99,7 +103,7 @@ export function MarkerMessage(props: { msg: Message.Entity }) {
   return <li className="w-full text-xs text-light-l text-center leading-10">{msg.content}</li>
 }
 
-export function renderMsg(props: NormalMessageProps) {
+export function RenderMsg(props: NormalMessageProps) {
   const { msg, disabled = false, onPreview } = props
 
   const handlePreview = (msg: Message.Entity) => {
@@ -141,6 +145,14 @@ export function renderMsg(props: NormalMessageProps) {
           // const reg = new RegExp(`@${item.username}`, 'g')
           // content = content.replace(reg, <span class="text-blue-400">@{item.username}</span>)
         })
+      
+      // 补上剩余文本内容
+      result = (
+        <>
+          {result}
+          <span className="text-sm break-all text-primary-l">{content.slice(idx)}</span>
+        </>
+      )
 
       return <div className="flex items-center justify-start flex-wrap">{result}</div>
     } else {
@@ -246,6 +258,21 @@ export function renderMsg(props: NormalMessageProps) {
     )
   }
 
+  const ChatMessage = (props: { msg: Message.Entity }) => {
+    const { content } = props.msg
+
+    const { answer, isReading, callCozeChat } = useCoze()
+    const { room } = useContext(RoomContext)
+    
+    if (!room) return <></>
+
+    useEffect(() => {
+      if (!isReading.current) callCozeChat(room.roomId, content)
+    }, [])
+
+    return <Viewer value={answer} />
+  }
+
   switch (msg.type) {
     case MessageTypeEnum.TEXT:
       return genTextMsg(msg)
@@ -257,6 +284,10 @@ export function renderMsg(props: NormalMessageProps) {
       return genVideoMessage(msg)
     case MessageTypeEnum.AUDIO:
       return genAudioMessage(msg)
+    case MessageTypeEnum.CHAT:
+      return <ChatMessage msg={msg} />
+    default:
+      return <></>
   }
 }
 
@@ -343,11 +374,11 @@ export function NormalMessage(props: NormalMessageProps) {
                 onClick={() => handleClickReplyMessage(msg)}
               >
                 <span className="text-xs text-light-l">{msg.replyMessage.profile.username}: </span>
-                {renderMsg({ msg: msg.replyMessage, disabled: true, onPreview })}
+                <RenderMsg msg={msg.replyMessage} disabled onPreview={onPreview} />
               </div>
             )}
             {/* 消息本身 */}
-            {renderMsg({ msg, disabled, onPreview })}
+            <RenderMsg msg={msg} disabled={disabled} onPreview={onPreview} />
           </div>
         </Dropdown>
       </div>

@@ -4,7 +4,8 @@ export enum MessageTypeEnum {
   VIDEO = 'video',
   AUDIO = 'audio',
   FILE = 'file',
-  ACTION = 'action'
+  ACTION = 'action',
+  CHAT = 'chat'
 }
 
 export enum SocketEmitEvents {

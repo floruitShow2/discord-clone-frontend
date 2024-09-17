@@ -162,7 +162,6 @@ export const transformNodeListToMentionData = (
   nodeList.forEach((item) => {
     if (item.type === NodeType.TEXT || item.type === NodeType.BR) {
       pureString += item.data
-      console.log('a', item)
     }
     if (item.type === NodeType.MENTION) {
       const { userId, username, avatar } = item.data

@@ -112,7 +112,6 @@ function RoomWrapper(props: RoomWrapperProps) {
   const handleMessageReceive = (msgs: Message.Entity[]) => {
     const totalMessages = [...messages, ...msgs]
     setMessages((prev) => [...prev, ...msgs])
-    console.log('aaa', msgs)
     const hasNewMsg = totalMessages.some(
       (msg) => msg.profile.userId !== currentUser.current?.userId
     )
@@ -132,7 +131,8 @@ function RoomWrapper(props: RoomWrapperProps) {
       if (item) {
         item.scrollIntoView()
       }
-    }, 100)
+      // 延时时间长点，避免 滚动到底事件 与 定位事件 冲突
+    }, 300)
   }, [locatedId])
   const onClearLocatedId = () => {
     setLocatedId('')

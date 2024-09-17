@@ -9,7 +9,7 @@ import { cs } from '@/utils/property'
 import UserAvatar from '@/components/userAvatar'
 import { RoomContext } from '../RoomWrapper'
 import MessageList from '../MessageList'
-import { renderMsg } from '../MessageList/components/MessageEntity'
+import { RenderMsg } from '../MessageList/components/MessageEntity'
 import type { ReplyChainProps } from './index.interface'
 import styles from './index.module.less'
 
@@ -87,7 +87,8 @@ function ReplyChain(props: ReplyChainProps) {
                 showDetails
                 showState={false}
               />
-              {renderMsg({ msg: replyChain[0] })}
+              <RenderMsg msg={replyChain[0]} />
+              {/* {renderMsg({ msg: replyChain[0] })} */}
             </div>
             <div className="w-full">
               <MessageList msgs={replyChain.slice(1)} inReplyChain></MessageList>

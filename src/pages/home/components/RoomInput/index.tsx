@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Tooltip, Upload, Message, Input } from '@arco-design/web-react'
+import { Tooltip, Upload, Message, Input, Mentions } from '@arco-design/web-react'
 import {
   IconFaceSmileFill,
   IconFolderAdd,
@@ -124,8 +124,11 @@ function RoomInput(props: RoomInputProps) {
   const loadMembers = (query: string): Promise<User.UserEntity[]> => {
     return new Promise((resolve) => {
       const members = room?.members || []
-      //  && member.userId !== userInfo?.userId
-      resolve(members.filter((member) => member.username.indexOf(query) !== -1))
+      resolve(
+        members.filter(
+          (member) => member.username.indexOf(query) !== -1 && member.userId !== userInfo?.userId
+        )
+      )
     })
   }
   const onInputChange = async (value: string, mentionList: Message.Mention[]) => {
@@ -136,6 +139,7 @@ function RoomInput(props: RoomInputProps) {
       console.log(err)
     }
   }
+
   const onInputConfirm = () => {
     if (!room || !createMessage) return
     if (!inputValue) return
@@ -148,6 +152,21 @@ function RoomInput(props: RoomInputProps) {
       mentions: inputMentions,
       url: ''
     })
+    const hasCozeRobot = inputMentions.some(
+      (mention) => mention.userId === '664aaaaae5d0d07d6de682c0'
+    )
+    if (hasCozeRobot) {
+      createMessage({
+        roomId: room.roomId,
+        profileId: '664aaaaae5d0d07d6de682c0',
+        replyId,
+        type: MessageTypeEnum.CHAT,
+        content: inputValue,
+        mentions: [],
+        url: ''
+      })
+    }
+
     setInputValue('')
     cancelReply && cancelReply()
   }

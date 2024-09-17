@@ -44,6 +44,9 @@ dependencies:
   axios:
     specifier: ^1.7.2
     version: 1.7.2
+  bytemd:
+    specifier: ^1.21.0
+    version: 1.21.0
   crypto-js:
     specifier: ^4.2.0
     version: 4.2.0
@@ -2303,21 +2306,21 @@ packages:
   /@tencentcloud/call-uikit-react@3.2.9:
     resolution: {integrity: sha512-ioJuDbknPZ+rLwHvjjc1/AhiPrCsSY1kCoor4J94aQERnKdVyif49hYKaPnPZq6U0jOyKhnFgijNnvN95pK2yA==}
     dependencies:
-      '@tencentcloud/chat': 3.4.2
-      '@tencentcloud/tui-core': 2.2.4
-      tuicall-engine-webrtc: 3.1.2
+      '@tencentcloud/chat': 3.4.3
+      '@tencentcloud/tui-core': 2.2.7
+      tuicall-engine-webrtc: 3.1.5
     dev: false
 
-  /@tencentcloud/chat@3.4.2:
-    resolution: {integrity: sha512-9Fl5LoTdwfuoCVVkDp+zRH+ntti3RCVOGfvmLPplOIMr9fyvLsPXMeNjJQj1OEosjvkQWZKfDpw6Y9KswYwwWg==}
+  /@tencentcloud/chat@3.4.3:
+    resolution: {integrity: sha512-NMVmUMLvtdZdjZGOV1cBwX4pr2O/lo3/S3eSfylqU2lg2pqLufyoJoX1nOr+ZmDmYlqXxtcIhtXxCFVVzXfmOA==}
     dev: false
 
-  /@tencentcloud/tui-core@2.2.4:
-    resolution: {integrity: sha512-HK0yBxmu6nJGyIN+/qSSI93gYI88Keg/avExVH23ajCEvxcu3CMo4QkY9rbVmXnfTR0DrC/RzrlkP7nUr8qM/g==}
+  /@tencentcloud/tui-core@2.2.7:
+    resolution: {integrity: sha512-6s4qiAVO1rseiEOOelvFVAoBti8Z8CkKmMo0YmCak8gQ4xATf+lvlKf28Pydgr9Tu6hxvh1bCutPPAau2ptl8Q==}
     dependencies:
-      '@tencentcloud/chat': 3.4.2
+      '@tencentcloud/chat': 3.4.3
       tim-profanity-filter-plugin: 1.1.0
-      tim-upload-plugin: 1.3.0
+      tim-upload-plugin: 1.4.0
     dev: false
 
   /@tsconfig/node10@1.0.11:
@@ -6901,8 +6904,8 @@ packages:
     resolution: {integrity: sha512-+49p+n5LJs18rSPBvJFyq/m6ib8wiXvPEx2/Sz3M7hhDXAz69WuZ8cB/painNrN0MKAETf6G5cWa6xtVZfAK7A==}
     dev: false
 
-  /tim-upload-plugin@1.3.0:
-    resolution: {integrity: sha512-meoGeB3vOs3FvtBh+ik7zlOj8C03tC6MZEkjc8BKYvgTrCzBWVDXZi9a3X8AM/YtoyuTaeLuEmaLQj1O/5luuw==}
+  /tim-upload-plugin@1.4.0:
+    resolution: {integrity: sha512-o+/y6J2MKVZbt+sL3Rpby0yqT2t/doZfZSmjx1RBbe1aRPGDPYHfukArKcd93IV+p1ZsJr2RBH8WmaN1pJwJEQ==}
     dev: false
 
   /tiny-emitter@2.1.0:
@@ -7035,10 +7038,10 @@ packages:
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
-  /tuicall-engine-webrtc@3.1.2:
-    resolution: {integrity: sha512-QbAyb0dlQ8Jd8Z0KKldwn7cTAM92vqUF11kQibV0+KG6aIPixcLZMgsAVzHOI/+atKnaTCk6FMbHG5aBrlDabg==}
+  /tuicall-engine-webrtc@3.1.5:
+    resolution: {integrity: sha512-9N1zMmjnjT4di69aKbT9B1Wx0+UTiqajqJX3BUvt0nHYj+nnocyhEaFvcGfKXwbGE2lOZcV+0pEoRL9F1yRmgA==}
     dependencies:
-      '@tencentcloud/chat': 3.4.2
+      '@tencentcloud/chat': 3.4.3
       rtc-ai-denoiser: 1.1.7
       trtc-cloud-js-sdk: 2.4.3
     dev: false

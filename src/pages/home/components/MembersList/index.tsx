@@ -20,16 +20,18 @@ function MemeberList(props: BaseProps) {
       )
     })
 
-    return <>
-      {memberList}
-      <li className="flex flex-col items-center justify-center" key='plus'>
-        <UserAvatar
-          avatarClassName='hover:bg-module-2'
-          avatar={<IconPlus />}
-          showState={false}
-        ></UserAvatar>
-      </li>
-    </>
+    return (
+      <>
+        {memberList}
+        <li className="flex flex-col items-center justify-center" key="plus">
+          <UserAvatar
+            avatarClassName="hover:bg-module-2"
+            avatar={<IconPlus />}
+            showState={false}
+          ></UserAvatar>
+        </li>
+      </>
+    )
   }
 
   return (
