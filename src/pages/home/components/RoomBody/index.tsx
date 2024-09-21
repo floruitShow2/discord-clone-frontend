@@ -20,10 +20,10 @@ const RoomBody = (props: RoomBodyProps) => {
     onIsNearBottomChange
   } = props
 
-  const { msgs, locatedId, clearLocatedId, recallMessage, replyMessage, openReplyChain } =
-    useContext(RoomContext)
+  const { msgs, locatedId, openReplyChain } = useContext(RoomContext)
 
   const { userInfo } = useSelector((state: RootState) => state.user)
+  const { isReading } = useSelector((state: RootState) => state.coze)
 
   const msgWrapperRef = useRef<HTMLUListElement>(null)
 
@@ -50,7 +50,7 @@ const RoomBody = (props: RoomBodyProps) => {
   // 监听消息列表的滚动事件
   useEffect(() => {
     const handleScroll = () => {
-      if (!msgWrapperRef.current) return
+      if (!msgWrapperRef.current || isReading) return
       const {
         scrollTop = 0,
         isNearBottomNow = true,

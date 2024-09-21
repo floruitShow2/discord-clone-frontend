@@ -153,18 +153,20 @@ function RoomInput(props: RoomInputProps) {
       url: ''
     })
     const hasCozeRobot = inputMentions.some(
-      (mention) => mention.userId === '664aaaaae5d0d07d6de682c0'
+      (mention) => mention.userId === '66ec4c9631b1d49faf0e429d'
     )
     if (hasCozeRobot) {
-      createMessage({
-        roomId: room.roomId,
-        profileId: '664aaaaae5d0d07d6de682c0',
-        replyId,
-        type: MessageTypeEnum.CHAT,
-        content: inputValue,
-        mentions: [],
-        url: ''
-      })
+      setTimeout(() => {
+        createMessage({
+          roomId: room.roomId,
+          profileId: '66ec4c9631b1d49faf0e429d',
+          replyId,
+          type: MessageTypeEnum.CHAT,
+          content: inputValue.replace('@test', '').trim(),
+          mentions: [],
+          url: ''
+        })
+      }, 500);
     }
 
     setInputValue('')

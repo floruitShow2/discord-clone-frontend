@@ -5,7 +5,9 @@ export enum MessageTypeEnum {
   AUDIO = 'audio',
   FILE = 'file',
   ACTION = 'action',
-  CHAT = 'chat'
+  // ai 回复中
+  CHAT = 'chat',
+  MARKDOWN = 'markdown'
 }
 
 export enum SocketEmitEvents {

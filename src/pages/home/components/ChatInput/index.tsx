@@ -388,6 +388,7 @@ function ChatInput(props: ChatInputProps) {
     }
     // 拦截 ctrl + enter 触发换行
     if (e.ctrlKey && e.code === 'Enter') {
+      e.preventDefault()
       createBrElement()
     }
   }

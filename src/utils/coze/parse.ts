@@ -4,13 +4,15 @@ export function parseDataString(dataString: string): Coze.MessagwEntity | null {
   const trimmedString = dataString.replace(/^data:/, '').trim()
 
   // 2. 去除字符串中的转义字符 (主要是处理双引号)
-  const unescapedString = trimmedString.replace(/\\"/g, '"')
+  // const unescapedString = trimmedString.replace(/\\"/g, '"').trim()
 
   // 3. 解析 JSON 字符串为对象
   try {
-    return JSON.parse(unescapedString)
+    console.log('正常解析', JSON.parse(trimmedString))
+    return JSON.parse(trimmedString)
   } catch (error) {
     console.error('Error parsing JSON:', error)
+    console.log(trimmedString)
     return null
   }
 }

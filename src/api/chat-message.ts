@@ -7,6 +7,7 @@ enum URLs {
   FetchLocatedPage = '/api/chat/message/getLocatedPage',
   CreateNormalMessage = '/api/chat/message/createMessage',
   CreateFileMessage = '/api/chat/message/createFileMessage',
+  UpdateMessage = '/api/chat/message/updateMessage',
   RecallMessage = '/api/chat/message/recall',
   ClearRecords = '/api/chat/message/clear'
 }
@@ -38,6 +39,10 @@ export const CreateNormalMessage = (data: Message.CreateMessageInput) => {
 
 export const CreateFilesMessage = (formData: FormData) => {
   return request.post(URLs.CreateFileMessage, formData)
+}
+
+export const UpdateMessage = (data: Message.UpdateMessageInput) => {
+  return request.post<Message.Entity>(URLs.UpdateMessage, data)
 }
 
 export const RecallMessage = (data: Message.RecallMessageInput) => {

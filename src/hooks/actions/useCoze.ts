@@ -4,26 +4,29 @@ import { RootState } from '@/store'
 import { CozeConversationStatusEnum } from '@/constants/coze.enum'
 import { setAnswer, setCoze, setIsReading } from '@/store/slices/coze.slice'
 import { parseDataString } from '@/utils/coze'
-import { isUndefined } from '@/utils/is'
 
 export function useCoze() {
   const dispatch = useDispatch()
-  
+
   useEffect(() => {
     dispatch(setCoze(null))
   }, [dispatch])
 
   const answer = useSelector((state: RootState) => state.coze.answer)
+  const isReading = useSelector((state: RootState) => state.coze.isReading)
   const userInfo = useSelector((state: RootState) => state.user.userInfo)
 
-  const isReading = useRef(false)
+  const localReading = useRef(false)
 
-  const callCozeChat = async (conversationId: string, question: string) => {
+  const callCozeChat = async (
+    conversationId: string,
+    question: string,
+  ) => {
     if (!userInfo) return
     console.log(conversationId)
     const data = {
       bot_id: import.meta.env.VITE_COZE_BOT_ID,
-      user_id: userInfo.userId,
+      user_id: '66012d0cce3d3a44541b6d01',
       stream: true,
       additional_messages: [
         {
@@ -63,7 +66,7 @@ export function useCoze() {
                     switch (item) {
                       case CozeConversationStatusEnum.CREATED:
                         // console.log('created')
-                        isReading.current = true
+                        localReading.current = true
                         dispatch(setIsReading(true))
                         break
                       case CozeConversationStatusEnum.IN_PROGRESS:
@@ -74,18 +77,19 @@ export function useCoze() {
                         break
                       case CozeConversationStatusEnum.COMPLETE:
                         console.log('complete')
-                        isReading.current = false
+                        localReading.current = false
                         dispatch(setIsReading(false))
                         break
                       default:
-                        if (isReading.current) {
+                        if (localReading.current) {
                           const message = parseDataString(item)
                           dispatch(setAnswer(message?.content || ''))
                         }
                         break
                     }
                   })
-                if (isReading.current) pump()
+                
+                if (localReading.current) pump()
               })
             }
             pump()

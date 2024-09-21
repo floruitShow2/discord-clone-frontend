@@ -8,7 +8,8 @@ import {
   CreateNormalMessage,
   FetchLocatedPage,
   FetchMessageList,
-  RecallMessage
+  RecallMessage,
+  UpdateMessage
 } from '@/api/chat-message'
 import { SocketOnEvents } from '@/constants'
 import { transalteMessagesByTime } from '@/utils/time'
@@ -107,6 +108,20 @@ function RoomWrapper(props: RoomWrapperProps) {
   const onMessageCreate = async (createMessageInput: Message.CreateMessageInput) => {
     const { data } = await CreateNormalMessage(createMessageInput)
     return data
+  }
+  // 更新消息
+  const onMessageUpdate = async (updateMessageInput: Message.UpdateMessageInput) => {
+    try {
+      const { data } = await UpdateMessage(updateMessageInput)
+      if (!data) console.warn('消息更新失败')
+
+      const { messageId, content, type } = updateMessageInput
+      setMessages(prevMessages =>
+        prevMessages.map(message => message.messageId === messageId ? { ...message, content, type } : message)
+      )
+    } catch (err) {
+      console.log(err)
+    }
   }
   // 接收消息
   const handleMessageReceive = (msgs: Message.Entity[]) => {
@@ -254,6 +269,7 @@ function RoomWrapper(props: RoomWrapperProps) {
         replyMessage={onMessageReply}
         recallMessage={onMessageRecall}
         createMessage={onMessageCreate}
+        updateMessage={onMessageUpdate}
         locateMessage={onLocateMessage}
         clearRecords={onRecordsClear}
         clearLocatedId={onClearLocatedId}

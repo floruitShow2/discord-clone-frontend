@@ -2,7 +2,6 @@ import { Button } from '@arco-design/web-react'
 import { useCoze } from '@/hooks/actions/useCoze'
 
 function DashboardFile() {
-
   const { answer, callCozeChat } = useCoze()
 
   const onClick = async () => {

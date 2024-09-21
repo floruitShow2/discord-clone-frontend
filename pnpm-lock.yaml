@@ -14,6 +14,9 @@ dependencies:
   '@babel/standalone':
     specifier: ^7.24.5
     version: 7.24.5
+  '@bytemd/plugin-highlight':
+    specifier: ^1.21.0
+    version: 1.21.0(bytemd@1.21.0)
   '@bytemd/react':
     specifier: ^1.21.0
     version: 1.21.0(react@18.2.0)
@@ -68,6 +71,9 @@ dependencies:
   handsontable:
     specifier: ^14.3.0
     version: 14.3.0
+  highlight.js:
+    specifier: 11.9.0
+    version: 11.9.0
   hyperformula:
     specifier: ^2.7.0
     version: 2.7.0
@@ -925,6 +931,15 @@ packages:
       '@babel/helper-validator-identifier': 7.24.5
       to-fast-properties: 2.0.0
     dev: true
+
+  /@bytemd/plugin-highlight@1.21.0(bytemd@1.21.0):
+    resolution: {integrity: sha512-JM9rwzj9pFBXVwxmD9mgGIQPO4cTFVHvDhffS93IMK+tqvo0Vw76zDIqJWT3f421j8iNxffGsVQQs6389u3Z9A==}
+    peerDependencies:
+      bytemd: ^1.5.0
+    dependencies:
+      bytemd: 1.21.0
+      highlight.js: 11.9.0
+    dev: false
 
   /@bytemd/react@1.21.0(react@18.2.0):
     resolution: {integrity: sha512-WYb+XlFHWraK9KWuNUlWMZoKlI55wDj4388E40zCsxaN/O6UUnCGdrE+6ZiVGPN3ZiqfQ1iceGIzmJ2PiB2T9w==}
@@ -2306,19 +2321,25 @@ packages:
   /@tencentcloud/call-uikit-react@3.2.9:
     resolution: {integrity: sha512-ioJuDbknPZ+rLwHvjjc1/AhiPrCsSY1kCoor4J94aQERnKdVyif49hYKaPnPZq6U0jOyKhnFgijNnvN95pK2yA==}
     dependencies:
-      '@tencentcloud/chat': 3.4.3
+      '@tencentcloud/chat': 3.4.4
       '@tencentcloud/tui-core': 2.2.7
       tuicall-engine-webrtc: 3.1.5
     dev: false
 
-  /@tencentcloud/chat@3.4.3:
-    resolution: {integrity: sha512-NMVmUMLvtdZdjZGOV1cBwX4pr2O/lo3/S3eSfylqU2lg2pqLufyoJoX1nOr+ZmDmYlqXxtcIhtXxCFVVzXfmOA==}
+  /@tencentcloud/chat@3.4.4:
+    resolution: {integrity: sha512-zKUQlon4fiu3+viGS7qQn0P0Yy0M8Q+9vZDRpNH+JMkrhJdWgmTLtXfJV6Vg06AojA4t5ieCqZ4aNvlH0V/y4A==}
+    dependencies:
+      '@tencentcloud/react-native-push': 0.1.0
+    dev: false
+
+  /@tencentcloud/react-native-push@0.1.0:
+    resolution: {integrity: sha512-WZlriEgETExMmvUL2x55ytmf64uS49rkXDemypSIsBt4rcONI5HGqonbonH01E0kvbpxbKn61oVzh7ANxQf5Ng==}
     dev: false
 
   /@tencentcloud/tui-core@2.2.7:
     resolution: {integrity: sha512-6s4qiAVO1rseiEOOelvFVAoBti8Z8CkKmMo0YmCak8gQ4xATf+lvlKf28Pydgr9Tu6hxvh1bCutPPAau2ptl8Q==}
     dependencies:
-      '@tencentcloud/chat': 3.4.3
+      '@tencentcloud/chat': 3.4.4
       tim-profanity-filter-plugin: 1.1.0
       tim-upload-plugin: 1.4.0
     dev: false
@@ -4528,6 +4549,11 @@ packages:
       capital-case: 1.0.4
       tslib: 2.6.2
     dev: true
+
+  /highlight.js@11.9.0:
+    resolution: {integrity: sha512-fJ7cW7fQGCYAkgv4CPfwFHrfd/cLS4Hau96JuJ+ZTOWhjnhoeN1ub1tFmALm/+lW5z4WCAuAV9bm05AP0mS6Gw==}
+    engines: {node: '>=12.0.0'}
+    dev: false
 
   /hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
@@ -7041,7 +7067,7 @@ packages:
   /tuicall-engine-webrtc@3.1.5:
     resolution: {integrity: sha512-9N1zMmjnjT4di69aKbT9B1Wx0+UTiqajqJX3BUvt0nHYj+nnocyhEaFvcGfKXwbGE2lOZcV+0pEoRL9F1yRmgA==}
     dependencies:
-      '@tencentcloud/chat': 3.4.3
+      '@tencentcloud/chat': 3.4.4
       rtc-ai-denoiser: 1.1.7
       trtc-cloud-js-sdk: 2.4.3
     dev: false

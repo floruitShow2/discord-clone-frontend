@@ -16,7 +16,7 @@ const CozeSlice = createSlice({
     },
     setAnswer(state, action: PayloadAction<string>) {
       state.answer += action.payload
-      console.log(state.answer)
+      // console.log(state.answer)
     },
     setCoze(state, action) {
       if (!action.payload) {

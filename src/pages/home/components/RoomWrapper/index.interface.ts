@@ -6,6 +6,8 @@ export interface RoomContextProps {
   locatedId: string
   // 发送消息
   createMessage?: (createMessageInput: Message.CreateMessageInput) => Promise<Message.Entity | null>
+  // 更新消息
+  updateMessage?: (updateMessageInput: Message.UpdateMessageInput) => void
   // 清空聊天记录
   clearRecords?: (roomId: string) => void
   // 定位消息

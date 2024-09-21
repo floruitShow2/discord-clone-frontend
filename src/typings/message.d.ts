@@ -53,5 +53,7 @@ declare namespace Message {
     profileId: string
   }
 
+  interface UpdateMessageInput extends Pick<Entity, 'messageId' | 'content' | 'type'> {}
+
   interface RecallMessageInput extends Pick<Entity, 'messageId'> {}
 }

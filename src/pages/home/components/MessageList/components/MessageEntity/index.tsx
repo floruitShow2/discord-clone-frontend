@@ -1,6 +1,6 @@
-import { useContext, useEffect } from 'react'
+import { memo, useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Image, Button, Dropdown, Menu, Message } from '@arco-design/web-react'
+import { Image, Button, Dropdown, Menu, Message, Spin } from '@arco-design/web-react'
 import {
   IconCopy,
   IconUndo,
@@ -9,8 +9,10 @@ import {
   IconLocation
 } from '@arco-design/web-react/icon'
 import { Viewer } from '@bytemd/react'
+// @ts-ignore
+import highlight from '@bytemd/plugin-highlight'
 import 'bytemd/dist/index.css'
-
+import 'highlight.js/styles/monokai-sublime.css'
 import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
 import { useCoze } from '@/hooks/actions/useCoze'
@@ -105,6 +107,7 @@ export function MarkerMessage(props: { msg: Message.Entity }) {
 
 export function RenderMsg(props: NormalMessageProps) {
   const { msg, disabled = false, onPreview } = props
+  const { answer, isReading, callCozeChat } = useCoze()
 
   const handlePreview = (msg: Message.Entity) => {
     if (disabled || !onPreview) return
@@ -145,7 +148,7 @@ export function RenderMsg(props: NormalMessageProps) {
           // const reg = new RegExp(`@${item.username}`, 'g')
           // content = content.replace(reg, <span class="text-blue-400">@{item.username}</span>)
         })
-      
+
       // 补上剩余文本内容
       result = (
         <>
@@ -258,20 +261,40 @@ export function RenderMsg(props: NormalMessageProps) {
     )
   }
 
-  const ChatMessage = (props: { msg: Message.Entity }) => {
-    const { content } = props.msg
+  const ChatMessage = memo((props: { msg: Message.Entity }) => {
+    const { content, messageId } = props.msg
+    const plugins = [highlight()]
 
-    const { answer, isReading, callCozeChat } = useCoze()
-    const { room } = useContext(RoomContext)
-    
+    const { room, updateMessage } = useContext(RoomContext)
+
     if (!room) return <></>
 
     useEffect(() => {
-      if (!isReading.current) callCozeChat(room.roomId, content)
-    }, [])
+      if (!isReading)
+        callCozeChat(room.roomId, content)
+    }, [content])
 
-    return <Viewer value={answer} />
+    useEffect(() => {
+      if (!isReading && answer?.length) {
+        try {
+          if (!updateMessage) return
+          updateMessage({ messageId, type: MessageTypeEnum.MARKDOWN, content: answer })
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    }, [isReading])
+
+    return <Viewer value={answer || '... ...'} plugins={plugins} />
+  })
+
+  const genMarkdownMessage = (msg: Message.Entity) => {
+    const { content } = msg
+    const plugins = [highlight()]
+
+    return <Viewer value={content} plugins={plugins} />
   }
+
 
   switch (msg.type) {
     case MessageTypeEnum.TEXT:
@@ -286,6 +309,8 @@ export function RenderMsg(props: NormalMessageProps) {
       return genAudioMessage(msg)
     case MessageTypeEnum.CHAT:
       return <ChatMessage msg={msg} />
+    case MessageTypeEnum.MARKDOWN:
+      return genMarkdownMessage(msg)
     default:
       return <></>
   }

@@ -86,7 +86,7 @@ export function isBeforeButtonWithSpace(container: any, offset: number) {
     // 按钮在文本中间
     const text = container.textContent
     const btnNode = container.parentNode.childNodes[offset]
-    return text.startsWith('\u00A0') && btnNode?.tagName.toLowerCase() === 'button'
+    return text.startsWith('\u00A0') && btnNode?.tagName?.toLowerCase?.() === 'button'
   } else if (container.nodeType === Node.ELEMENT_NODE) {
     // 按钮在末尾
     const lastNode = container.childNodes[offset]
