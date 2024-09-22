@@ -137,9 +137,10 @@ export function RenderMsg(props: NormalMessageProps) {
 
       entities.forEach((entity, index) => {
         if (entity.offset > lastIndex) {
+          const label = text.slice(lastIndex, entity.offset)
           result.push(
-            <span className="text-sm break-all text-primary-l">
-              {text.slice(lastIndex, entity.offset)}
+            <span key={`label-${lastIndex}-${label}`} className="text-sm break-all text-primary-l">
+              {label}
             </span>
           )
         }
@@ -147,6 +148,7 @@ export function RenderMsg(props: NormalMessageProps) {
         if (entity.type === 'mention') {
           result.push(
             <div
+              key={`mention-${index}-${entity.userId}`}
               className={cs('text-blue-500')}
               onClick={() => {
                 console.log('mention', entity)
@@ -159,7 +161,7 @@ export function RenderMsg(props: NormalMessageProps) {
         } else if (entity.type === 'emoji') {
           result.push(
             <img
-              key={`emoji-${index}`}
+              key={`emoji-${index}-${entity.url}`}
               src={entity.url}
               alt="emoji"
               className="inline-block w-5 h-5 mx-[2px] align-text-bottom"
@@ -170,8 +172,11 @@ export function RenderMsg(props: NormalMessageProps) {
       })
 
       if (lastIndex < text.length) {
+        const label = text.slice(lastIndex)
         result.push(
-          <span className="text-sm break-all text-primary-l">{text.slice(lastIndex)}</span>
+          <span key={`label-${lastIndex}-${label}`} className="text-sm break-all text-primary-l">
+            {label}
+          </span>
         )
       }
 

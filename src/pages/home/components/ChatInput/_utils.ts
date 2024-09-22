@@ -198,7 +198,7 @@ export function createEmoji(data: Message.Emoji) {
   emoji.dataset.info = JSON.stringify(data)
   emoji.setAttribute('src', data.url)
   emoji.setAttribute('style', 'display:inline-block;width:20px;height:20px;margin-right:2px;')
-  emoji.contentEditable = 'false'
+  emoji.contentEditable = 'true'
   emoji.tabIndex = 0
 
   return emoji

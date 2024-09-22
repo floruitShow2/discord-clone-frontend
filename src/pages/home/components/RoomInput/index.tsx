@@ -29,6 +29,8 @@ function EmojiTool(props: { onSelect: (url: string) => void }) {
   const tokenKey = genKey(StorageIdEnum.EMOJI)
   const [commonUsedEmoji, setCommonUsedEmoji] = useState<string[]>([])
 
+  const [popupVisible, setPopupVisible] = useState(false)
+
   useEffect(() => {
     setCommonUsedEmoji(get(tokenKey) || [])
   }, [])
@@ -38,6 +40,8 @@ function EmojiTool(props: { onSelect: (url: string) => void }) {
     set(tokenKey, newCommonUsedEmoji)
 
     props.onSelect && props.onSelect(url)
+
+    setPopupVisible(false)
   }
 
   const renderPopoverContent = () => {
@@ -106,7 +110,13 @@ function EmojiTool(props: { onSelect: (url: string) => void }) {
   }
 
   return (
-    <Popover className="emoji-icon-popover" trigger="click" content={renderPopoverContent()}>
+    <Popover
+      className="emoji-icon-popover"
+      popupVisible={popupVisible}
+      trigger="click"
+      content={renderPopoverContent()}
+      onVisibleChange={setPopupVisible}
+    >
       <IconFaceSmileFill className={iconBtnCls} />
     </Popover>
   )

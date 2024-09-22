@@ -193,9 +193,6 @@ const ChatInput = forwardRef((props: ChatInputProps, ref: ForwardedRef<ChatInput
     if (!rangeInfo) return
     let { selection, range } = rangeInfo
     if (selection.rangeCount) {
-      const frag = document.createDocumentFragment()
-      frag.appendChild(emoji)
-
       if (cachedPosition.current) {
         range.setStart(cachedPosition.current.startContainer, cachedPosition.current.startOffset)
         range.setEnd(cachedPosition.current.endContainer, cachedPosition.current.endOffset)
@@ -204,11 +201,12 @@ const ChatInput = forwardRef((props: ChatInputProps, ref: ForwardedRef<ChatInput
         range.collapse(false) // 移动光标到末尾
       }
 
-      range.insertNode(frag)
+      range.insertNode(emoji)
 
       range = range.cloneRange()
       range.setStartAfter(emoji)
-      range.collapse(true)
+      // range.setEndAfter(frag);
+      range.collapse(false)
       selection.removeAllRanges()
       selection.addRange(range)
     }
