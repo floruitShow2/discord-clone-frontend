@@ -1,5 +1,10 @@
 import { EditorRange, INode, NodeType } from './index.interface'
 
+/**
+ * @description 判断当前节点是否有相邻节点
+ * @param node
+ * @returns
+ */
 export const hasNextSibling = (node: any) => {
   if (node.nextElementSibling) {
     return true
@@ -103,11 +108,7 @@ export function isBeforeButtonWithSpace(container: any, offset: number) {
   }
   return false
 }
-/**
- * @description 创建@按钮
- * @param mention
- * @returns
- */
+// 创建@按钮
 export const createMentionBtn = (mention: Message.Mention) => {
   const btn = document.createElement('button')
   btn.dataset.info = JSON.stringify(mention)
@@ -125,7 +126,7 @@ export const createMentionBtn = (mention: Message.Mention) => {
 
   return btn
 }
-
+// 移除@按钮
 export function removeMentionBtn(container: any, offset: number) {
   if (container.nodeType === Node.TEXT_NODE) {
     const text = container.textContent
@@ -150,14 +151,68 @@ export function removeMentionBtn(container: any, offset: number) {
   }
 }
 
+// 创建一个换行符
+export const createBrElement = () => {
+  function createBrWrapper() {
+    const el = document.createElement('div')
+    const br = document.createElement('br')
+    el.appendChild(br)
+    return el
+  }
+
+  const rangeInfo = getEditorRange()
+  if (!rangeInfo) return
+  const { selection, range } = rangeInfo
+  if (selection && selection.rangeCount) {
+    const frag = document.createDocumentFragment()
+
+    // 创建一个被 div 包裹的 br 标签【模拟默认换行行为】
+    const el = createBrWrapper()
+    let lastNode = el
+    frag.appendChild(el)
+
+    // 如果有选中文本，则在换行前先删除选中文本
+    range.deleteContents()
+
+    // 如果容器是元素节点，且没有子节点，则多插入一个 br
+    const container = range.startContainer
+    if (container.nodeName !== '#text' && container.childNodes.length === 0) {
+      const extraBreak = createBrWrapper()
+      lastNode = extraBreak
+      frag.appendChild(extraBreak)
+    }
+
+    range.insertNode(frag)
+
+    // 移动光标到最后一个换行节点
+    range.setStartAfter(lastNode)
+    range.collapse(true)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
+}
+
+// 创建表情图片
+export function createEmoji(data: Message.Emoji) {
+  const emoji = document.createElement('img')
+  emoji.dataset.info = JSON.stringify(data)
+  emoji.setAttribute('src', data.url)
+  emoji.setAttribute('style', 'display:inline-block;width:20px;height:20px;margin-right:2px;')
+  emoji.contentEditable = 'false'
+  emoji.tabIndex = 0
+
+  return emoji
+}
+
 /**
  * @description NodeList => IMention[]
  */
-export const transformNodeListToMentionData = (
+export const transformNodeListToData = (
   nodeList: INode[]
-): { pureString: string; mentionList: Message.Mention[] } => {
+): { pureString: string; mentionList: Message.Mention[]; emojiList: Message.Emoji[] } => {
   let pureString = ''
   const mentionList: Message.Mention[] = []
+  const emojiList: Message.Emoji[] = []
 
   nodeList.forEach((item) => {
     if (item.type === NodeType.TEXT || item.type === NodeType.BR) {
@@ -173,17 +228,27 @@ export const transformNodeListToMentionData = (
       })
       pureString += '@' + username
     }
+
+    if (item.type === NodeType.EMOJI) {
+      const { url } = item.data
+      emojiList.push({
+        url,
+        offset: pureString.length
+      })
+      pureString += `<emoji src="${url}">`
+    }
   })
 
-  return { pureString, mentionList }
+  return { pureString, mentionList, emojiList }
 }
 
 /**
  * @description IMention[] => NodeList
  */
-export const transformMentionDataToNodeList = (
+export const transformDataToNodeList = (
   pureString: string,
-  mentionList: Message.Mention[]
+  mentionList: Message.Mention[],
+  emojiList: Message.Emoji[]
 ): INode[] => {
   let cutStart: number = 0
   const nodeList: INode[] = []
@@ -220,6 +285,32 @@ export const transformMentionDataToNodeList = (
         data: remainText
       })
     }
+  } else if (emojiList.length > 0) {
+    emojiList.forEach((item) => {
+      const { offset } = item
+      const textPart = pureString.slice(cutStart, offset)
+      if (textPart.length > 0) {
+        nodeList.push({
+          type: NodeType.TEXT,
+          data: textPart
+        })
+      }
+
+      nodeList.push({
+        type: NodeType.EMOJI,
+        data: item
+      })
+      const regex = /<emoji\s+src="(.*?)">/
+      pureString = pureString.replace(regex, '')
+      cutStart = offset || 0
+    })
+    const remainText = pureString.slice(cutStart)
+    if (remainText.length) {
+      nodeList.push({
+        type: NodeType.TEXT,
+        data: remainText
+      })
+    }
   } else {
     if (pureString.length > 0) {
       nodeList.push({
@@ -229,5 +320,6 @@ export const transformMentionDataToNodeList = (
     }
   }
 
+  console.log(nodeList)
   return nodeList
 }

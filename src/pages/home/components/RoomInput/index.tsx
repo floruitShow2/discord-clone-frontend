@@ -1,34 +1,129 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Tooltip, Upload, Message, Input, Mentions } from '@arco-design/web-react'
+import { Tooltip, Upload, Message, Popover } from '@arco-design/web-react'
 import {
   IconFaceSmileFill,
   IconFolderAdd,
   IconVideoCamera,
   IconCloseCircle
 } from '@arco-design/web-react/icon'
-import type { RefInputType } from '@arco-design/web-react/es/Input'
 import type { UploadInstance, UploadItem } from '@arco-design/web-react/es/Upload'
 import { TUICallKit, TUICallKitServer, TUIGlobal } from '@tencentcloud/call-uikit-react'
 // @ts-ignore
 import * as GenerateTestUserSig from '@/debug/GenerateTestUserSig-es'
 import { RootState } from '@/store'
-import { MessageTypeEnum } from '@/constants'
+import { MessageTypeEnum, StorageIdEnum } from '@/constants'
 import { CreateFilesMessage, FetchMessageById } from '@/api/chat-message'
 import { cs } from '@/utils/property'
+import { useStorage } from '@/utils/storage'
 import { RoomContext } from '../RoomWrapper'
 import ChatInput from '../ChatInput'
+import { ChatInputMethod } from '../ChatInput/index.interface'
 import type { RoomInputProps } from './index.interface'
+import './index.less'
+
+const iconBtnCls = 'text-light-l cursor-pointer hover:text-blue-500'
+
+function EmojiTool(props: { onSelect: (url: string) => void }) {
+  const { genKey, get, set } = useStorage()
+  const tokenKey = genKey(StorageIdEnum.EMOJI)
+  const [commonUsedEmoji, setCommonUsedEmoji] = useState<string[]>([])
+
+  useEffect(() => {
+    setCommonUsedEmoji(get(tokenKey) || [])
+  }, [])
+  const handleEmojiClick = (url: string) => {
+    const newCommonUsedEmoji = [...new Set([url, ...commonUsedEmoji])].slice(0, 20)
+    setCommonUsedEmoji(newCommonUsedEmoji)
+    set(tokenKey, newCommonUsedEmoji)
+
+    props.onSelect && props.onSelect(url)
+  }
+
+  const renderPopoverContent = () => {
+    return (
+      <div className="w-[340px]">
+        {/* 当前分类下表情包列表 */}
+        <div className="w-full h-[220px] p-3 bg-white overflow-auto">
+          {/* 最近常用 */}
+          {commonUsedEmoji.length > 0 && (
+            <div className={cs('w-full mb-1', 'gap-y-1 flex flex-col items-start justify-start')}>
+              <h4>最近使用</h4>
+              <ul
+                className={cs(
+                  'w-full',
+                  'gap-3 flex flex-wrap items-start justify-start content-start'
+                )}
+              >
+                {commonUsedEmoji.map((url, index) => (
+                  <li
+                    key={index}
+                    className={cs(
+                      'w-7 h-7 p-1 rounded-sm',
+                      'bg-cover bg-center',
+                      'cursor-pointer hover:bg-module'
+                    )}
+                    onClick={() => handleEmojiClick(url)}
+                  >
+                    <img src={url} alt="" />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {/* 默认表情 */}
+          <div className="w-full gap-y-1 flex flex-col items-start justify-start">
+            <h4>默认表情</h4>
+            <ul
+              className={cs(
+                'w-full',
+                'gap-3 flex flex-wrap items-start justify-start content-start'
+              )}
+            >
+              {new Array(130).fill(0).map((_, index) => {
+                const url = `${import.meta.env.VITE_SERVICE_URL}/static/emojis/${index}.png`
+                return (
+                  <li
+                    key={index}
+                    className={cs(
+                      'w-7 h-7 p-1 rounded-sm',
+                      'bg-cover bg-center',
+                      'cursor-pointer hover:bg-module'
+                    )}
+                    onClick={() => handleEmojiClick(url)}
+                  >
+                    <img src={url} alt="" />
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </div>
+        {/* 表情包分类 */}
+        <ul className="w-full h-[40px] bg-module"></ul>
+      </div>
+    )
+  }
+
+  return (
+    <Popover className="emoji-icon-popover" trigger="click" content={renderPopoverContent()}>
+      <IconFaceSmileFill className={iconBtnCls} />
+    </Popover>
+  )
+}
 
 function RoomInput(props: RoomInputProps) {
   const { className } = props
+  const { userInfo } = useSelector((state: RootState) => state.user)
+
+  // reply
   const { room, replyId, createMessage, cancelReply } = useContext(RoomContext)
   const [replyMessage, setReplyMessage] = useState<Message.Entity | null>(null)
   const fetchReplyMessage = async () => {
     if (!replyId) return
     const { data } = await FetchMessageById(replyId)
     if (!data) return
-    inputRef.current && inputRef.current.focus()
+    chatInputRef.current && chatInputRef.current.focus()
     setReplyMessage(data)
   }
   const handleCloseReply = () => {
@@ -39,10 +134,7 @@ function RoomInput(props: RoomInputProps) {
     fetchReplyMessage()
   }, [replyId])
 
-  const { userInfo } = useSelector((state: RootState) => state.user)
-
-  const iconBtnCls = 'text-light-l cursor-pointer hover:text-blue-500'
-
+  // trtc audio & video
   const callData = {
     // SDKAppID: 1600038806,
     // SecretKey: '0f97219de275acfe9e25d9411f362c57dfdf0e80a2ef1e04c976c536edf4aeca'
@@ -81,10 +173,6 @@ function RoomInput(props: RoomInputProps) {
     init()
   }, [userInfo])
 
-  const inputRef = useRef<RefInputType>(null)
-  const [inputValue, setInputValue] = useState('')
-  const [inputMentions, setInputMentions] = useState<Message.Mention[]>([])
-
   const callKitStyle = useMemo<any>(() => {
     if (TUIGlobal.isPC) {
       return {
@@ -108,6 +196,7 @@ function RoomInput(props: RoomInputProps) {
     }
   }, [TUIGlobal.isPC])
 
+  // file upload
   const uploadRef = useRef<UploadInstance>(null)
   const [fileList, setFileList] = useState<UploadItem[]>([])
   const handleChangeFiles = async (files: UploadItem[]) => {
@@ -121,6 +210,20 @@ function RoomInput(props: RoomInputProps) {
     setFileList([])
   }
 
+  // emoji
+  const onEmojiSelect = (url: string) => {
+    chatInputRef.current?.focus()
+    setTimeout(() => {
+      chatInputRef.current?.createEmoji(url)
+    }, 200)
+  }
+
+  // chat input
+  const chatInputRef = useRef<ChatInputMethod>(null)
+  const [inputValue, setInputValue] = useState('')
+  const [inputMentions, setInputMentions] = useState<Message.Mention[]>([])
+  const [inputEmojis, setInputEmojis] = useState<Message.Emoji[]>([])
+
   const loadMembers = (query: string): Promise<User.UserEntity[]> => {
     return new Promise((resolve) => {
       const members = room?.members || []
@@ -131,18 +234,23 @@ function RoomInput(props: RoomInputProps) {
       )
     })
   }
-  const onInputChange = async (value: string, mentionList: Message.Mention[]) => {
+  const onInputChange = async (
+    value: string,
+    mentionList: Message.Mention[],
+    emojis: Message.Emoji[]
+  ) => {
     try {
       setInputValue(value)
       setInputMentions(mentionList)
+      setInputEmojis(emojis)
     } catch (err) {
       console.log(err)
     }
   }
-
   const onInputConfirm = () => {
     if (!room || !createMessage) return
     if (!inputValue) return
+
     createMessage({
       roomId: room.roomId,
       profileId: userInfo?.userId || '',
@@ -150,6 +258,7 @@ function RoomInput(props: RoomInputProps) {
       type: MessageTypeEnum.TEXT,
       content: inputValue,
       mentions: inputMentions,
+      emojis: inputEmojis,
       url: ''
     })
     const hasCozeRobot = inputMentions.some(
@@ -164,9 +273,10 @@ function RoomInput(props: RoomInputProps) {
           type: MessageTypeEnum.CHAT,
           content: inputValue.replace('@test', '').trim(),
           mentions: [],
+          emojis: [],
           url: ''
         })
-      }, 500);
+      }, 500)
     }
 
     setInputValue('')
@@ -216,7 +326,7 @@ function RoomInput(props: RoomInputProps) {
         )}
         {/* 工具栏 */}
         <div className="w-full py-2 flex gap-x-2 items-center justify-start text-xl text-light-l">
-          <IconFaceSmileFill className={iconBtnCls} />
+          <EmojiTool onSelect={onEmojiSelect} />
           <Upload
             ref={uploadRef}
             multiple
@@ -239,15 +349,11 @@ function RoomInput(props: RoomInputProps) {
           </Tooltip>
         </div>
         {/* 输入框 */}
-        {/* <Input
-          ref={inputRef}
-          value={inputValue}
-          onChange={(val) => setInputValue(val)}
-          onPressEnter={handleKeyDown}
-        /> */}
         <ChatInput
+          ref={chatInputRef}
           value={inputValue}
           mentions={inputMentions}
+          emojis={inputEmojis}
           loadMembers={loadMembers}
           onInputChange={onInputChange}
           onConfirm={onInputConfirm}

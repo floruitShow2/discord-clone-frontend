@@ -100,6 +100,7 @@ function DropdownList(props: DropdownListProps) {
   )
 }
 
+// 消息撤回、拍一拍等标记类型的消息
 export function MarkerMessage(props: { msg: Message.Entity }) {
   const { msg } = props
   return <li className="w-full text-xs text-light-l text-center leading-10">{msg.content}</li>
@@ -120,47 +121,63 @@ export function RenderMsg(props: NormalMessageProps) {
    * @returns
    */
   const genTextMsg = (msg: Message.Entity) => {
-    const { content, mentions } = msg
+    const { content, mentions, emojis } = msg
 
-    let idx = 0
-    let result: JSX.Element = <></>
-    if (mentions && mentions.length > 0) {
-      mentions
-        .sort((a, b) => a.offset - b.offset)
-        .forEach((item) => {
-          const { offset, username } = item
-          const len = username.length
-          result = (
-            <>
-              {result}
-              <span className="text-sm break-all text-primary-l">{content.slice(idx, offset)}</span>
-              <div
-                className={cs('text-blue-500')}
-                onClick={() => {
-                  console.log('mention', item)
-                }}
-              >
-                @{username}
-              </div>
-            </>
+    const formatMessage = (text: string) => {
+      type MentionEntity = Message.Mention & { type: 'mention' }
+      type EmojiEntity = Message.Emoji & { type: 'emoji' }
+
+      const entities = [
+        ...(mentions || []).map((mention) => ({ ...mention, type: 'mention' })),
+        ...(emojis || []).map((emoji) => ({ ...emoji, type: 'emoji' }))
+      ].sort((a, b) => a.offset - b.offset) as Array<MentionEntity | EmojiEntity>
+
+      const result: (string | JSX.Element)[] = []
+      let lastIndex = 0
+
+      entities.forEach((entity, index) => {
+        if (entity.offset > lastIndex) {
+          result.push(
+            <span className="text-sm break-all text-primary-l">
+              {text.slice(lastIndex, entity.offset)}
+            </span>
           )
-          idx = idx + offset + len
-          // const reg = new RegExp(`@${item.username}`, 'g')
-          // content = content.replace(reg, <span class="text-blue-400">@{item.username}</span>)
-        })
+        }
 
-      // 补上剩余文本内容
-      result = (
-        <>
-          {result}
-          <span className="text-sm break-all text-primary-l">{content.slice(idx)}</span>
-        </>
-      )
+        if (entity.type === 'mention') {
+          result.push(
+            <div
+              className={cs('text-blue-500')}
+              onClick={() => {
+                console.log('mention', entity)
+              }}
+            >
+              @{entity.username}
+            </div>
+          )
+          lastIndex = entity.offset + entity.username.length + 1
+        } else if (entity.type === 'emoji') {
+          result.push(
+            <img
+              key={`emoji-${index}`}
+              src={entity.url}
+              alt="emoji"
+              className="inline-block w-5 h-5 mx-[2px] align-text-bottom"
+            />
+          )
+          lastIndex = entity.offset + `<emoji src="${entity.url}">`.length
+        }
+      })
 
-      return <div className="flex items-center justify-start flex-wrap">{result}</div>
-    } else {
-      return <p className="text-sm break-all text-primary-l">{content}</p>
+      if (lastIndex < text.length) {
+        result.push(
+          <span className="text-sm break-all text-primary-l">{text.slice(lastIndex)}</span>
+        )
+      }
+
+      return result
     }
+    return <div className="flex items-center justify-start flex-wrap">{formatMessage(content)}</div>
   }
 
   /**
@@ -270,8 +287,7 @@ export function RenderMsg(props: NormalMessageProps) {
     if (!room) return <></>
 
     useEffect(() => {
-      if (!isReading)
-        callCozeChat(room.roomId, content)
+      if (!isReading) callCozeChat(room.roomId, content)
     }, [content])
 
     useEffect(() => {
@@ -294,7 +310,6 @@ export function RenderMsg(props: NormalMessageProps) {
 
     return <Viewer value={content} plugins={plugins} />
   }
-
 
   switch (msg.type) {
     case MessageTypeEnum.TEXT:

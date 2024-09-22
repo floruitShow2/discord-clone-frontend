@@ -18,10 +18,7 @@ export function useCoze() {
 
   const localReading = useRef(false)
 
-  const callCozeChat = async (
-    conversationId: string,
-    question: string,
-  ) => {
+  const callCozeChat = async (conversationId: string, question: string) => {
     if (!userInfo) return
     console.log(conversationId)
     const data = {
@@ -88,7 +85,7 @@ export function useCoze() {
                         break
                     }
                   })
-                
+
                 if (localReading.current) pump()
               })
             }

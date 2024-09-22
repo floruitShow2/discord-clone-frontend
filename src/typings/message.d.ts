@@ -5,6 +5,11 @@ declare namespace Message {
     offset: number
   }
 
+  interface Emoji {
+    url: string
+    offset: number
+  }
+
   interface Entity {
     /**
      * @description 消息的唯一标识符
@@ -30,6 +35,10 @@ declare namespace Message {
      * @description 消息提及的用户
      */
     mentions: Mention[]
+    /**
+     * @description 消息用到的表情
+     */
+    emojis: Emoji[]
     /**
      * @description 消息内容
      */

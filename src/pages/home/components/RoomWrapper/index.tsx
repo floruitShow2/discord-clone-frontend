@@ -116,8 +116,10 @@ function RoomWrapper(props: RoomWrapperProps) {
       if (!data) console.warn('消息更新失败')
 
       const { messageId, content, type } = updateMessageInput
-      setMessages(prevMessages =>
-        prevMessages.map(message => message.messageId === messageId ? { ...message, content, type } : message)
+      setMessages((prevMessages) =>
+        prevMessages.map((message) =>
+          message.messageId === messageId ? { ...message, content, type } : message
+        )
       )
     } catch (err) {
       console.log(err)

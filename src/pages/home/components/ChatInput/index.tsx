@@ -1,21 +1,25 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react'
+import type { ForwardedRef } from 'react'
 import { cs } from '@/utils/property'
 import {
+  createEmoji,
+  createBrElement,
   createMentionBtn,
   getEditorRange,
   getSelectionCoords,
-  transformMentionDataToNodeList,
-  transformNodeListToMentionData,
+  transformDataToNodeList,
+  transformNodeListToData,
   isBeforeButtonWithSpace,
   removeMentionBtn
 } from './_utils'
-import { ChatInputProps, EditorRange, INode, NodeType } from './index.interface'
+import { ChatInputMethod, ChatInputProps, EditorRange, INode, NodeType } from './index.interface'
 
-function ChatInput(props: ChatInputProps) {
+const ChatInput = forwardRef((props: ChatInputProps, ref: ForwardedRef<ChatInputMethod>) => {
   const {
     className,
     value = '',
     mentions = [],
+    emojis = [],
     placeholder = '请输入',
     disabled = false,
     loadMembers,
@@ -29,11 +33,14 @@ function ChatInput(props: ChatInputProps) {
   const init = () => {
     const editor = editorRef.current
     if (!editor) return
-    const nodeList = transformMentionDataToNodeList(value, mentions)
+    const nodeList = transformDataToNodeList(value, mentions, emojis)
     nodeList.forEach((node) => {
       if (node.type === NodeType.MENTION) {
         const btn = createMentionBtn(node.data)
         editor.appendChild(btn)
+      } else if (node.type === NodeType.EMOJI) {
+        const emoji = createEmoji(node.data)
+        editor.appendChild(emoji)
       } else {
         const textNode = document.createTextNode(node.data)
         editor.appendChild(textNode)
@@ -63,7 +70,7 @@ function ChatInput(props: ChatInputProps) {
     }
 
     setInputValue(value)
-  }, [value, mentions])
+  }, [value, mentions, emojis])
 
   const editorRef = useRef<HTMLDivElement>(null)
   const editorRange = useRef<EditorRange | null>(null)
@@ -108,14 +115,23 @@ function ChatInput(props: ChatInputProps) {
             data: personInfo
           })
         }
+        // emoji 表情
+        if (element.nodeName === 'IMG') {
+          const emojiInfo = JSON.parse(element.dataset.info || '')
+          nodeList.push({
+            type: NodeType.EMOJI,
+            data: emojiInfo
+          })
+        }
       })
     }
 
-    const { pureString, mentionList } = transformNodeListToMentionData(nodeList)
+    const { pureString, mentionList, emojiList } = transformNodeListToData(nodeList)
     if (pureString.length > 0 && pureString.charAt(pureString.length - 1) === '\n') {
-      onInputChange && onInputChange(pureString.substring(0, pureString.length - 1), mentionList)
+      onInputChange &&
+        onInputChange(pureString.substring(0, pureString.length - 1), mentionList, emojiList)
     } else {
-      onInputChange && onInputChange(pureString, mentionList)
+      onInputChange && onInputChange(pureString, mentionList, emojiList)
     }
   }
 
@@ -170,6 +186,34 @@ function ChatInput(props: ChatInputProps) {
         selection.addRange(range)
       }
     }
+  }
+  const insertEmoji = (emoji: HTMLImageElement) => {
+    if (!editorRef.current) return
+    const rangeInfo = getEditorRange()
+    if (!rangeInfo) return
+    let { selection, range } = rangeInfo
+    if (selection.rangeCount) {
+      const frag = document.createDocumentFragment()
+      frag.appendChild(emoji)
+
+      if (cachedPosition.current) {
+        range.setStart(cachedPosition.current.startContainer, cachedPosition.current.startOffset)
+        range.setEnd(cachedPosition.current.endContainer, cachedPosition.current.endOffset)
+      } else {
+        range.selectNodeContents(editorRef.current)
+        range.collapse(false) // 移动光标到末尾
+      }
+
+      range.insertNode(frag)
+
+      range = range.cloneRange()
+      range.setStartAfter(emoji)
+      range.collapse(true)
+      selection.removeAllRanges()
+      selection.addRange(range)
+    }
+
+    onInputDataChange()
   }
   const onSelectMember = (member: Message.Mention) => {
     closeMembersPopover()
@@ -268,46 +312,6 @@ function ChatInput(props: ChatInputProps) {
     }
   }
 
-  const createBrElement = () => {
-    function createBrWrapper() {
-      const el = document.createElement('div')
-      const br = document.createElement('br')
-      el.appendChild(br)
-      return el
-    }
-
-    const rangeInfo = getEditorRange()
-    if (!rangeInfo) return
-    const { selection, range } = rangeInfo
-    if (selection && selection.rangeCount) {
-      const frag = document.createDocumentFragment()
-
-      // 创建一个被 div 包裹的 br 标签【模拟默认换行行为】
-      const el = createBrWrapper()
-      let lastNode = el
-      frag.appendChild(el)
-
-      // 如果有选中文本，则在换行前先删除选中文本
-      range.deleteContents()
-
-      // 如果容器是元素节点，且没有子节点，则多插入一个 br
-      const container = range.startContainer
-      if (container.nodeName !== '#text' && container.childNodes.length === 0) {
-        const extraBreak = createBrWrapper()
-        lastNode = extraBreak
-        frag.appendChild(extraBreak)
-      }
-
-      range.insertNode(frag)
-
-      // 移动光标到最后一个换行节点
-      range.setStartAfter(lastNode)
-      range.collapse(true)
-      selection.removeAllRanges()
-      selection.addRange(range)
-    }
-  }
-
   const lastKeyPressTime = useRef(0)
   const [isComposing, setIsComposing] = useState(false)
   const onInputCompositionStart = () => {
@@ -316,7 +320,6 @@ function ChatInput(props: ChatInputProps) {
   const onInputCompositionEnd = () => {
     setIsComposing(false)
   }
-
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // console.log('key down', e)
 
@@ -380,7 +383,7 @@ function ChatInput(props: ChatInputProps) {
       const currentTime = new Date().getTime()
 
       // 触发自定义回车事件
-      if (popoverVisible && members.length > 0) {
+      if (popoverVisible && members.length > 0 && !isComposing) {
         onSelectMember(members[activeIndex])
       } else if (!isComposing && currentTime - lastKeyPressTime.current > 100) {
         onConfirm && onConfirm(e)
@@ -392,7 +395,6 @@ function ChatInput(props: ChatInputProps) {
       createBrElement()
     }
   }
-
   const onInput = () => {
     if (editorRef.current) {
       const text = editorRef.current.innerText
@@ -400,6 +402,7 @@ function ChatInput(props: ChatInputProps) {
     }
     onInputDataChange()
   }
+
   const [isFocus, setIsFocus] = useState(false)
   const onInputFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
     onFocus && onFocus(e)
@@ -409,14 +412,40 @@ function ChatInput(props: ChatInputProps) {
       checkIsShowSelectPopover()
     }, 0)
   }
+
+  const cachedPosition = useRef<Range | null>(null)
   const onInputBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
     onBlur && onBlur(e)
+
+    if (editorRef.current) {
+      const rangeInfo = getEditorRange()
+      cachedPosition.current = rangeInfo?.range || null
+    }
+
     setIsFocus(false)
     // 设置延时，避免选择 @成员 时，弹窗直接消失
     setTimeout(() => {
       closeMembersPopover()
     }, 200)
   }
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        focus() {
+          // 延时，避免光标定位到输入框的最前面
+          editorRef.current?.focus()
+        },
+        createEmoji(url: string) {
+          const emoji = createEmoji({ url, offset: 0 })
+          insertEmoji(emoji)
+        }
+      }
+    },
+    []
+  )
+
   return (
     <div className={cs('relative w-full h-full', className)}>
       {/* 输入框 */}
@@ -487,6 +516,6 @@ function ChatInput(props: ChatInputProps) {
         )}
     </div>
   )
-}
+})
 
 export default ChatInput
