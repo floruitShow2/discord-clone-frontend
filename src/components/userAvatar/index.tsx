@@ -11,6 +11,7 @@ function UserAvatar(props: UserAvatarProps) {
     username,
     description,
     avatar,
+    triggerIcon,
     state,
     showDetails = false,
     showState = true
@@ -35,6 +36,10 @@ function UserAvatar(props: UserAvatarProps) {
           className={cs('bg-module rounded-md cursor-pointer transition-colors', avatarClassName)}
           shape="square"
           size={40}
+          triggerIcon={triggerIcon}
+          triggerIconStyle={{
+            color: '#3B82F6'
+          }}
         >
           {isString(avatar) ? <img src={avatar} alt="" /> : avatar}
         </Avatar>

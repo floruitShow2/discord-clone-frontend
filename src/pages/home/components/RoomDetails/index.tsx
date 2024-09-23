@@ -170,7 +170,7 @@ function RoomDetails(props: RoomDetailsProps) {
 
   useEffect(() => {
     initRoomMembers()
-  }, [])
+  }, [info])
 
   return (
     <aside className="w-80 h-full p-4 border-l border-primary-b overflow-auto">

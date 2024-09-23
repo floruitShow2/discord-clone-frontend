@@ -48,7 +48,7 @@ function HomePage() {
 
   const operationConfigs: DropdownItem.Entity[] = [
     {
-      label: 'Create Channel',
+      label: 'Create Room',
       key: '1',
       icon: <IconPlus className="text-primary-l" />,
       handler() {

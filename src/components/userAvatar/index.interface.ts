@@ -5,6 +5,7 @@ export interface UserAvatarProps extends HTMLAttributes<HTMLElement> {
   avatarClassName?: string
   description?: string
   avatar: string | JSX.Element
+  triggerIcon?: JSX.Element
   state?: User.UserEntity['state']
   showDetails?: boolean
   showState?: boolean

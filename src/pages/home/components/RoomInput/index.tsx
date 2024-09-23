@@ -208,6 +208,7 @@ function RoomInput(props: RoomInputProps) {
 
   // file upload
   const uploadRef = useRef<UploadInstance>(null)
+  // 用于清空上传组件缓存的文件
   const [fileList, setFileList] = useState<UploadItem[]>([])
   const handleChangeFiles = async (files: UploadItem[]) => {
     if (!room) return

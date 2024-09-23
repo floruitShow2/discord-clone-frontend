@@ -50,6 +50,9 @@ dependencies:
   bytemd:
     specifier: ^1.21.0
     version: 1.21.0
+  cropperjs:
+    specifier: ^1.6.2
+    version: 1.6.2
   crypto-js:
     specifier: ^4.2.0
     version: 4.2.0
@@ -101,6 +104,9 @@ dependencies:
   react:
     specifier: ^18.2.0
     version: 18.2.0
+  react-cropper:
+    specifier: ^2.3.3
+    version: 2.3.3(react@18.2.0)
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
@@ -2341,7 +2347,7 @@ packages:
     dependencies:
       '@tencentcloud/chat': 3.4.4
       tim-profanity-filter-plugin: 1.1.0
-      tim-upload-plugin: 1.4.0
+      tim-upload-plugin: 1.4.1
     dev: false
 
   /@tsconfig/node10@1.0.11:
@@ -3590,6 +3596,10 @@ packages:
   /create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
+
+  /cropperjs@1.6.2:
+    resolution: {integrity: sha512-nhymn9GdnV3CqiEHJVai54TULFAE3VshJTXSqSJKa8yXAKyBKDWdhHarnlIPrshJ0WMFTGuFvG02YjLXfPiuOA==}
+    dev: false
 
   /cross-fetch@3.1.8:
     resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
@@ -6130,6 +6140,15 @@ packages:
       react: 18.2.0
     dev: false
 
+  /react-cropper@2.3.3(react@18.2.0):
+    resolution: {integrity: sha512-zghiEYkUb41kqtu+2jpX2Ntigf+Jj1dF9ew4lAobPzI2adaPE31z0p+5TcWngK6TvmWQUwK3lj4G+NDh1PDQ1w==}
+    peerDependencies:
+      react: '>=17.0.2'
+    dependencies:
+      cropperjs: 1.6.2
+      react: 18.2.0
+    dev: false
+
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -6930,8 +6949,8 @@ packages:
     resolution: {integrity: sha512-+49p+n5LJs18rSPBvJFyq/m6ib8wiXvPEx2/Sz3M7hhDXAz69WuZ8cB/painNrN0MKAETf6G5cWa6xtVZfAK7A==}
     dev: false
 
-  /tim-upload-plugin@1.4.0:
-    resolution: {integrity: sha512-o+/y6J2MKVZbt+sL3Rpby0yqT2t/doZfZSmjx1RBbe1aRPGDPYHfukArKcd93IV+p1ZsJr2RBH8WmaN1pJwJEQ==}
+  /tim-upload-plugin@1.4.1:
+    resolution: {integrity: sha512-3hkyO2HTwo8oeIW6+LffWRk3jwVNYOQI2Ls/rerDWFKbcmScsrgjce/d1WdGn+hiL7AL1nv2B67mojRN0eFVCA==}
     dev: false
 
   /tiny-emitter@2.1.0:

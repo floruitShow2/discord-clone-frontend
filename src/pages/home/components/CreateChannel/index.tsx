@@ -108,14 +108,15 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
       key: 'username'
     },
     {
+      title: '成员简介',
+      dataIndex: 'introduction',
+      key: 'introduction',
+      width: 250
+    },
+    {
       title: '成员邮箱',
       dataIndex: 'email',
       key: 'email'
-    },
-    {
-      title: '群组角色',
-      dataIndex: 'userRole',
-      key: 'userRole'
     },
     {
       title: '操作',
@@ -135,6 +136,7 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
     }
   ]
 
+  const [users, setUsers] = useState<User.UserEntity[]>([])
   const [options, setOptions] = useState<any[]>([])
   const [fetching, setFetching] = useState(false)
   const debouncedFetchUser = useCallback(async (query: string) => {
@@ -145,6 +147,7 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
     if (!data) {
       setOptions([])
     } else {
+      setUsers((prev) => [...prev, ...data])
       setOptions(
         data.map((user) => ({
           label: (
@@ -155,7 +158,7 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
               {`${user.username}`}
             </div>
           ),
-          value: user.email
+          value: user.userId
         }))
       )
     }
@@ -184,13 +187,8 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
 
   const [finalUsers, setFinalUsers] = useState<any[]>([])
   useEffect(() => {
-    setFinalUsers([
-      ...Array.from(finalIds).map(() => ({
-        username: '664aaaaae5d0d07d6de682c0',
-        email: '2320003602@qq.com',
-        userRole: 'MEMBER'
-      }))
-    ])
+    console.log(users, finalIds)
+    setFinalUsers(users.filter((user) => finalIds.has(user.userId)))
   }, [finalIds])
 
   return (
@@ -236,7 +234,7 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
           columns={columns}
           data={finalUsers}
           pagination={false}
-          rowKey={(record) => record.userAccount}
+          rowKey={(record) => record.userId}
         ></Table>
       </div>
     </div>
@@ -264,28 +262,17 @@ function FormRenderer(props: { onChange: (value: Partial<Room.RoomEntity>) => vo
           onChange && onChange(values)
         }}
       >
-        <div className="w-full flex flex-row items-start justify-start gap-x-2">
-          <FormItem
-            className="!min-w-[300px] flex-1"
-            label="群聊名称"
-            field="roomName"
-            rules={[{ required: true }]}
-          >
-            <Input placeholder="请输入" />
-          </FormItem>
-          <FormItem className="!min-w-[300px] flex-1" label="群聊号">
-            <Input disabled />
-          </FormItem>
-        </div>
-        <div className="w-full">
-          <FormItem className="w-full" label="群聊简介" field="roomDescription">
-            <Input.TextArea
-              className="w-full"
-              autoSize={{ minRows: 4, maxRows: 4 }}
-              placeholder="请输入"
-            />
-          </FormItem>
-        </div>
+        <FormItem className="w-full" label="群聊封面" field="roomCover"></FormItem>
+        <FormItem className="w-full" label="群聊名称" field="roomName" rules={[{ required: true }]}>
+          <Input placeholder="请输入" />
+        </FormItem>
+        <FormItem className="w-full" label="群聊简介" field="roomDescription">
+          <Input.TextArea
+            className="w-full"
+            autoSize={{ minRows: 4, maxRows: 4 }}
+            placeholder="请输入"
+          />
+        </FormItem>
       </Form>
     </div>
   )

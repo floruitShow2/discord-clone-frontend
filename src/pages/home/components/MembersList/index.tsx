@@ -15,7 +15,15 @@ function MemeberList(props: BaseProps) {
             avatar={member.avatar}
             showState={false}
           ></UserAvatar>
-          <span className="text-xs text-primary-l mt-1">{member.username}</span>
+          <span
+            className={cs(
+              'w-10 mt-1 overflow-hidden',
+              'text-xs text-primary-l whitespace-nowrap text-ellipsis'
+            )}
+            title={member.username}
+          >
+            {member.username}
+          </span>
         </li>
       )
     })
