@@ -5,18 +5,15 @@ import { Login } from '@/api/auth'
 import { useStorage } from '@/utils/storage'
 import { StorageIdEnum } from '@/constants/storage'
 import './index.less'
-import { useLocation } from 'react-router-dom'
 
 const FormItem = Form.Item
 
 function LoginPanel() {
-  const { search } = useLocation()
-
   const { genKey, set } = useStorage()
   const tokenKey = genKey(StorageIdEnum.USER_TOKEN)
 
   const formRef = useRef<FormInstance>(null)
-  const [loginInfo, setLoginInfo] = useState<User.LoginInput>({ username: '', password: '' })
+  const [loginInfo] = useState<User.LoginInput>({ username: '', password: '' })
 
   const handleLogin = async (info: User.LoginInput) => {
     try {

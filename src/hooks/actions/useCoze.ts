@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store'
-import { CozeConversationStatusEnum } from '@/constants/coze.enum'
+import { CozeConversationStatusEnum, CozeRobot2UserEnum, CozeRobots } from '@/constants/coze.enum'
 import { setAnswer, setCoze, setIsReading } from '@/store/slices/coze.slice'
 import { parseDataString } from '@/utils/coze'
 
@@ -18,12 +18,13 @@ export function useCoze() {
 
   const localReading = useRef(false)
 
-  const callCozeChat = async (conversationId: string, question: string) => {
+  const callCozeChat = async (robotUserId: string, question: string) => {
     if (!userInfo) return
-    console.log(conversationId)
+    console.log(robotUserId)
+    const { bot_id } = CozeRobots[robotUserId as CozeRobot2UserEnum]
     const data = {
-      bot_id: import.meta.env.VITE_COZE_BOT_ID,
-      user_id: '66012d0cce3d3a44541b6d01',
+      bot_id: bot_id,
+      user_id: robotUserId,
       stream: true,
       additional_messages: [
         {

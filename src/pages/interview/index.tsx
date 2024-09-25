@@ -3,8 +3,8 @@ import FilenameList from './components/filenameList'
 import Preview from './components/preview/index'
 import { PlaygroundProvider } from './playgroundContext'
 import ScriptEditor from './components/scriptEditor'
-import styles from './index.module.less'
 import QuestionPreview from './components/questionPreview'
+import styles from './index.module.less'
 
 function InterviewPage() {
   // const handleCompile = () => {

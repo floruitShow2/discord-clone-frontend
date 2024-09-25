@@ -80,7 +80,7 @@ function RoomWrapper(props: RoomWrapperProps) {
     }
   }
 
-  const [socket, setSocket] = useState<Socket>()
+  const [_socket, setSocket] = useState<Socket>()
   const initSocket = () => {
     // connect the first room by default
     // const socketInstance = io('http://192.168.124.12:3001', {

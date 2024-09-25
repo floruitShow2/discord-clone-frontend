@@ -6,7 +6,7 @@ import { ContactContext } from '../../index'
 import { ContactItemEnum } from '../../index.interface'
 
 function ContactAside() {
-  const { menu, setMenu } = useContext(ContactContext)
+  const { menu } = useContext(ContactContext)
 
   return (
     <div

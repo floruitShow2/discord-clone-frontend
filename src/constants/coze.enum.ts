@@ -8,3 +8,14 @@ export enum CozeConversationStatusEnum {
   // 会话完成
   COMPLETE = 'event:conversation.message.completed'
 }
+
+// 对应 Coze 机器人的本地用户
+export enum CozeRobot2UserEnum {
+  MELEON_UI = '66f03381afa51fe0d15bcec5'
+}
+export const CozeUsers: string[] = [CozeRobot2UserEnum.MELEON_UI]
+export const CozeRobots: Record<CozeRobot2UserEnum, { bot_id: string }> = {
+  [CozeRobot2UserEnum.MELEON_UI]: {
+    bot_id: '7415948447243092006'
+  }
+}

@@ -21,6 +21,7 @@ import ChatInput from '../ChatInput'
 import { ChatInputMethod } from '../ChatInput/index.interface'
 import type { RoomInputProps } from './index.interface'
 import './index.less'
+import { CozeUsers } from '@/constants/coze.enum'
 
 const iconBtnCls = 'text-light-l cursor-pointer hover:text-blue-500'
 
@@ -273,13 +274,13 @@ function RoomInput(props: RoomInputProps) {
       url: ''
     })
     const hasCozeRobot = inputMentions.some(
-      (mention) => mention.userId === '66ec4c9631b1d49faf0e429d'
+      (mention) => CozeUsers.indexOf(mention.userId) !== -1
     )
     if (hasCozeRobot) {
       setTimeout(() => {
         createMessage({
           roomId: room.roomId,
-          profileId: '66ec4c9631b1d49faf0e429d',
+          profileId: inputMentions[0].userId,
           replyId,
           type: MessageTypeEnum.CHAT,
           content: inputValue.replace('@test', '').trim(),

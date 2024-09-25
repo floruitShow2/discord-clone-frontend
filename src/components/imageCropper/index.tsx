@@ -1,22 +1,23 @@
+// 头像裁剪更新
 import { createRef, useState } from 'react'
-import { UploadItem } from '@arco-design/web-react/es/Upload'
 import Cropper, { type ReactCropperElement } from 'react-cropper'
-import 'cropperjs/dist/cropper.css'
-import UserAvatar from '../userAvatar'
-import { IconEdit } from '@arco-design/web-react/icon'
 import { Button, Modal, Upload } from '@arco-design/web-react'
-import { cs } from '@/utils/property'
+import { UploadItem } from '@arco-design/web-react/es/Upload'
+import { IconEdit } from '@arco-design/web-react/icon'
+import 'cropperjs/dist/cropper.css'
 import { UploadDataUrl } from '@/api/file'
+import { cs } from '@/utils/property'
 import { readFileAsDataurl } from '@/utils/file'
+import UserAvatar from '../userAvatar'
 import { ImageCropperProps } from './index.interface'
 
 export default function ImageCropper(props: ImageCropperProps) {
-    const { url, onChange } = props
+  const { url, onChange } = props
 
   const [visible, setVisible] = useState(false)
 
   const [fileList, setFileList] = useState<UploadItem[]>([])
-  
+
   // 原始图片文件
   const [image, setImage] = useState(url)
 
@@ -41,7 +42,7 @@ export default function ImageCropper(props: ImageCropperProps) {
     } catch (err) {
       console.log(err)
     } finally {
-        setFileList([])
+      setFileList([])
     }
   }
   const handleRevert = () => {
@@ -95,7 +96,14 @@ export default function ImageCropper(props: ImageCropperProps) {
             guides={true}
           />
           <div className={cs('w-1/2 h-full', 'gap-y-4 flex flex-col items-center justify-center')}>
-            <div className={cs('img-preview', '!w-[128px]', 'border border-solid border-gray-200', 'overflow-hidden rounded-md bg-module')}></div>
+            <div
+              className={cs(
+                'img-preview',
+                '!w-[128px]',
+                'border border-solid border-gray-200',
+                'overflow-hidden rounded-md bg-module'
+              )}
+            ></div>
             <Upload
               accept=".jpg,.png,.jpeg,.webp"
               autoUpload={false}
@@ -105,7 +113,9 @@ export default function ImageCropper(props: ImageCropperProps) {
             >
               <Button>选择本地图片</Button>
             </Upload>
-            <Button disabled={image === localImage} onClick={handleRevert}>恢复初始头像</Button>
+            <Button disabled={image === localImage} onClick={handleRevert}>
+              恢复初始头像
+            </Button>
           </div>
         </div>
       </Modal>

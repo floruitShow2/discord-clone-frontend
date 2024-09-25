@@ -87,7 +87,7 @@ export function useDebounceFn<T extends AnyFunction>(
     cancelTimer()
   }, [invokeFunc, cancelTimer])
 
-  const debounced = useCallback(
+  const debounced = useCallback<any>(
     (...args: Parameters<T>) => {
       const time = Date.now()
       lastArgs.current = args

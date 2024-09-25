@@ -1,15 +1,15 @@
 import { useContext, useEffect, useRef, useState } from 'react'
-import iframeRaw from './iframe.html?raw'
+import { cs } from '@/utils/property'
 import { PlaygroundContext } from '../../playgroundContext'
-// import ScriptEditor from '../scriptEditor'
 import { UnexpectedPreview } from '../unexpectedPreview'
+import iframeRaw from './iframe.html?raw'
 import CompileWorker from './compile.worker?worker'
 import { BaseProps, MessageData } from './index.interface'
 
 // const iframeUrl = URL.createObjectURL(new Blob([iframeRaw], { type: 'text/html' }))
 
 const Preview = (props: BaseProps) => {
-  // const { className, url, style } = props
+  const { className } = props
   // console.log(url)
   const { files } = useContext(PlaygroundContext)
   const [compiledCode, setCompiledCode] = useState('')
@@ -40,8 +40,8 @@ const Preview = (props: BaseProps) => {
 
   const compileWorker = useRef<Worker>()
   useEffect(() => {
-    if (!compileWorker.current) {
-      compileWorker.current = new CompileWorker()
+    compileWorker.current = new CompileWorker()
+    if (compileWorker.current) {
       compileWorker.current.addEventListener('message', ({ data }) => {
         console.log('worker', data)
         if (data.type === 'COMPILED_CODE') {
@@ -77,7 +77,7 @@ const Preview = (props: BaseProps) => {
   }, [])
 
   return (
-    <div className="relative w-full" style={{ height: 'calc(100% - 500px - 40px)' }}>
+    <div className={cs('relative w-full', className)} style={{ height: 'calc(100% - 500px - 40px)' }}>
       <iframe
         src={iframeUrl}
         style={{

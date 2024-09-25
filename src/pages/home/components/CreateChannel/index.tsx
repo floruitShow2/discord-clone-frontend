@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Button,
   Radio,
@@ -13,14 +13,14 @@ import {
 import type { ColumnProps } from '@arco-design/web-react/es/Table'
 import type { LabeledValue } from '@arco-design/web-react/es/Select/interface'
 import { IconPlus } from '@arco-design/web-react/icon'
-import { cs } from '@/utils/property'
-import { CreateChannelStepEnum } from './index.interface'
-import type { CreateChannelProps, ChannelTemplate } from './index.interface'
-import './index.less'
-import { isUndefined } from '@/utils/is'
 import { FetchUserByQuery } from '@/api/auth'
 import { CreateRoom } from '@/api/chat-room'
 import { ChatRoomTypeEnum } from '@/enum/chat-room.enum'
+import { cs } from '@/utils/property'
+import { isUndefined } from '@/utils/is'
+import { CreateChannelStepEnum } from './index.interface'
+import type { CreateChannelProps, ChannelTemplate } from './index.interface'
+import './index.less'
 
 // 选择群聊模板
 function TemplateRenderer(props: { onChange: (code: ChatRoomTypeEnum) => void }) {
@@ -234,7 +234,7 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
           columns={columns}
           data={finalUsers}
           pagination={false}
-          rowKey={(record) => record.userId}
+          rowKey={(record: User.UserEntity) => record.userId}
         ></Table>
       </div>
     </div>

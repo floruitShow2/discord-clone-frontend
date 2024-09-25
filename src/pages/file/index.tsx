@@ -18,7 +18,7 @@ function DashboardFile() {
       <Button onClick={onClick}>调用 coze 接口</Button>
       <p>{answer}</p>
 
-      <ImageCropper url='http://127.0.0.1:3000/static/avatar/avatar_2.png' />
+      <ImageCropper url="http://127.0.0.1:3000/static/avatar/avatar_2.png" />
     </div>
   )
 }

@@ -38,6 +38,7 @@ function ReplyChain(props: ReplyChainProps) {
       type: MessageTypeEnum.TEXT,
       content,
       mentions: [],
+      emojis: [],
       url: ''
     })
     setValue('')

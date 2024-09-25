@@ -1,6 +1,6 @@
 import { memo, useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Image, Button, Dropdown, Menu, Message, Spin } from '@arco-design/web-react'
+import { Image, Button, Dropdown, Menu, Message } from '@arco-design/web-react'
 import {
   IconCopy,
   IconUndo,
@@ -284,7 +284,7 @@ export function RenderMsg(props: NormalMessageProps) {
   }
 
   const ChatMessage = memo((props: { msg: Message.Entity }) => {
-    const { content, messageId } = props.msg
+    const { content, messageId, profile } = props.msg
     const plugins = [highlight()]
 
     const { room, updateMessage } = useContext(RoomContext)
@@ -292,7 +292,7 @@ export function RenderMsg(props: NormalMessageProps) {
     if (!room) return <></>
 
     useEffect(() => {
-      if (!isReading) callCozeChat(room.roomId, content)
+      if (!isReading) callCozeChat(profile.userId, content)
     }, [content])
 
     useEffect(() => {

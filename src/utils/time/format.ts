@@ -8,6 +8,7 @@ const genTimestampMessage = (message: Message.Entity) => {
     roomId,
     profile,
     mentions: [],
+    emojis: [],
     content: translateToDateTime(createTime, 'MM月DD日 HH:mm'),
     url: '',
     type: MessageTypeEnum.ACTION,
@@ -32,7 +33,7 @@ export const transalteMessagesByTime = (
   const messageIdSet = new Set<string>([])
 
   for (let i = 1; i < messages.length; i++) {
-    const lastEle = result.at(-1)
+    const lastEle = result[result.length - 1]
     if (!lastEle) return result
 
     const curEle = messages[i]

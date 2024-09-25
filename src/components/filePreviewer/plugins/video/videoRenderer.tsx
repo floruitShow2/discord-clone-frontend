@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useDebounceFn } from 'ahooks'
 import Plyr from 'plyr'
 import useLoadCSS from '@/hooks/sources/useLoadCSS'
 import { FetchVideoFrame } from '@/api/file'
@@ -7,7 +8,6 @@ import { translateSecondsToTimeCount } from '@/utils/time'
 import type { RendererProps } from '@/components/filePreviewer/index.interface'
 import styles from './index.module.less'
 import './index.less'
-import { useDebounceFn } from '@/hooks/useDebounce'
 
 export default function VideoRenderer(props: RendererProps) {
   const { url } = props
@@ -29,7 +29,7 @@ export default function VideoRenderer(props: RendererProps) {
 
   const [currentTime, setCurrentTime] = useState<number>(0)
 
-  const updateFrameShoot = useDebounceFn(
+  const updateFrameShoot: any = useDebounceFn(
     async (seconds: number) => {
       try {
         const { data } = await FetchVideoFrame({ url, seconds })
