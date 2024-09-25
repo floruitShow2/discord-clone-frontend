@@ -1,4 +1,4 @@
-import { memo, useContext, useEffect } from 'react'
+import { memo, useContext, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Image, Button, Dropdown, Menu, Message } from '@arco-design/web-react'
 import {
@@ -23,6 +23,7 @@ import { RoomContext } from '../../../RoomWrapper'
 import type { NormalMessageProps, DropdownListProps } from './index.interface'
 import styles from './index.module.less'
 import './index.less'
+
 const isSelf = (msg: Message.Entity, userInfo: User.UserEntity | null) => {
   if (!userInfo) return false
   return msg.profile?.userId === userInfo.userId
@@ -106,7 +107,7 @@ export function MarkerMessage(props: { msg: Message.Entity }) {
   return <li className="w-full text-xs text-light-l text-center leading-10">{msg.content}</li>
 }
 
-export function RenderMsg(props: NormalMessageProps) {
+export const RenderMsg = memo((props: NormalMessageProps) => {
   const { msg, disabled = false, onPreview } = props
   const { answer, isReading, callCozeChat } = useCoze()
 
@@ -292,7 +293,9 @@ export function RenderMsg(props: NormalMessageProps) {
     if (!room) return <></>
 
     useEffect(() => {
-      if (!isReading) callCozeChat(profile.userId, content)
+      if (!isReading && content) {
+        callCozeChat(profile.userId, content)
+      }
     }, [content])
 
     useEffect(() => {
@@ -306,7 +309,7 @@ export function RenderMsg(props: NormalMessageProps) {
       }
     }, [isReading])
 
-    return <Viewer value={answer || '... ...'} plugins={plugins} />
+    return <Viewer value={answer || '......'} plugins={plugins} />
   })
 
   const genMarkdownMessage = (msg: Message.Entity) => {
@@ -334,7 +337,7 @@ export function RenderMsg(props: NormalMessageProps) {
     default:
       return <></>
   }
-}
+})
 
 export function NormalMessage(props: NormalMessageProps) {
   const {

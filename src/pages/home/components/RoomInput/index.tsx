@@ -273,9 +273,7 @@ function RoomInput(props: RoomInputProps) {
       emojis: inputEmojis,
       url: ''
     })
-    const hasCozeRobot = inputMentions.some(
-      (mention) => CozeUsers.indexOf(mention.userId) !== -1
-    )
+    const hasCozeRobot = inputMentions.some((mention) => CozeUsers.indexOf(mention.userId) !== -1)
     if (hasCozeRobot) {
       setTimeout(() => {
         createMessage({

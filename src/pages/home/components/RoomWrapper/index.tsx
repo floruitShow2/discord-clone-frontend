@@ -80,19 +80,23 @@ function RoomWrapper(props: RoomWrapperProps) {
     }
   }
 
-  const [_socket, setSocket] = useState<Socket>()
+  const socket = useRef<Socket>()
   const initSocket = () => {
     // connect the first room by default
     // const socketInstance = io('http://192.168.124.12:3001', {
-    const socketInstance = io('http://localhost:3001', {
-      query: { roomId: room?.roomId }
-    })
-    setSocket(socketInstance)
-    socketInstance.on(SocketOnEvents.SOCKET_CONNECT, () => {
-      socketInstance.on(SocketOnEvents.MSG_CREATE, (msg) => {
+    if (!socket.current) {
+      const socketInstance = io('http://localhost:3001', {
+        query: { roomId: room?.roomId }
+      })
+      socket.current = socketInstance
+    }
+
+    socket.current.on(SocketOnEvents.SOCKET_CONNECT, () => {
+      if (!socket.current) return
+      socket.current.on(SocketOnEvents.MSG_CREATE, (msg) => {
         handleMessageReceive(msg)
       })
-      socketInstance.on(SocketOnEvents.MSG_RECALL, (messageId: string, msgs: Message.Entity[]) => {
+      socket.current.on(SocketOnEvents.MSG_RECALL, (messageId: string, msgs: Message.Entity[]) => {
         handleMessageRecall(messageId, msgs)
       })
     })
@@ -254,7 +258,7 @@ function RoomWrapper(props: RoomWrapperProps) {
     setMessages([])
     setLoadedPages(new Set())
     setPageOptions((prev) => ({ ...prev, page: 1, pageSize: 15 }))
-    initSocket()
+    if (room) initSocket()
   }, [room])
 
   useEffect(() => {

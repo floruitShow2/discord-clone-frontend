@@ -20,7 +20,6 @@ export function useCoze() {
 
   const callCozeChat = async (robotUserId: string, question: string) => {
     if (!userInfo) return
-    console.log(robotUserId)
     const { bot_id } = CozeRobots[robotUserId as CozeRobot2UserEnum]
     const data = {
       bot_id: bot_id,

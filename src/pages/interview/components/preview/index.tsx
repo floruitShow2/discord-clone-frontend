@@ -77,7 +77,10 @@ const Preview = (props: BaseProps) => {
   }, [])
 
   return (
-    <div className={cs('relative w-full', className)} style={{ height: 'calc(100% - 500px - 40px)' }}>
+    <div
+      className={cs('relative w-full', className)}
+      style={{ height: 'calc(100% - 500px - 40px)' }}
+    >
       <iframe
         src={iframeUrl}
         style={{

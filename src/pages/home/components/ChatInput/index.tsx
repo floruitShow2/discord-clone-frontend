@@ -427,22 +427,18 @@ const ChatInput = forwardRef((props: ChatInputProps, ref: ForwardedRef<ChatInput
     }, 200)
   }
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        focus() {
-          // 延时，避免光标定位到输入框的最前面
-          editorRef.current?.focus()
-        },
-        createEmoji(url: string) {
-          const emoji = createEmoji({ url, offset: 0 })
-          insertEmoji(emoji)
-        }
+  useImperativeHandle(ref, () => {
+    return {
+      focus() {
+        // 延时，避免光标定位到输入框的最前面
+        editorRef.current?.focus()
+      },
+      createEmoji(url: string) {
+        const emoji = createEmoji({ url, offset: 0 })
+        insertEmoji(emoji)
       }
-    },
-    []
-  )
+    }
+  }, [])
 
   return (
     <div className={cs('relative w-full h-full', className)}>

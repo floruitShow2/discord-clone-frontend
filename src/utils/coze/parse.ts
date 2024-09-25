@@ -8,7 +8,7 @@ export function parseDataString(dataString: string): Coze.MessagwEntity | null {
 
   // 3. 解析 JSON 字符串为对象
   try {
-    console.log('正常解析', JSON.parse(trimmedString))
+    // console.log('正常解析', JSON.parse(trimmedString).content)
     return JSON.parse(trimmedString)
   } catch (error) {
     console.error('Error parsing JSON:', error)
