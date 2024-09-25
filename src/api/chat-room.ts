@@ -6,6 +6,7 @@ enum URLs {
   FetchRoomMembers = '/api/chat/room/getMembers',
   FetchInviteCode = '/api/chat/room/getInviteCode',
   JoinRoomByInviteCode = '/api/chat/room/inviteMember',
+  JoinRoomByUserIds = '/api/chat/room/inviteMemberByUserId',
   GetDetailsByInviteCode = '/api/chat/room/getDetailsByInviteCode'
 }
 
@@ -54,4 +55,8 @@ export const GetDetailsByInviteCode = (inviteCode: string) => {
     URLs.GetDetailsByInviteCode,
     { params: { inviteCode } }
   )
+}
+
+export const JoinRoomByUserIds = (data: { roomId: string; userIds: string[] }) => {
+  return request.post<string>(URLs.JoinRoomByUserIds, data)
 }

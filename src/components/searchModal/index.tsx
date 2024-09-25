@@ -13,10 +13,9 @@ export default function SearchModal(props: SearchModalProps) {
     setIsSearchPanelShow(true)
   }
 
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery] = useState('')
   const handleInput: FormEventHandler<HTMLInputElement> = (e) => {
     console.log(e)
-    setSearchQuery('aaa')
   }
 
   return (
