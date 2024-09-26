@@ -3,6 +3,7 @@ import { request } from '@/utils/service'
 enum URLs {
   CreateRoom = '/api/chat/room/createRoom',
   FetchRoomList = '/api/chat/room/getRooms',
+  SearchRooms = '/api/chat/room/searchRooms',
   FetchRoomMembers = '/api/chat/room/getMembers',
   FetchInviteCode = '/api/chat/room/getInviteCode',
   JoinRoomByInviteCode = '/api/chat/room/inviteMember',
@@ -20,6 +21,14 @@ export const CreateRoom = (data: Room.CreateRoomInput) => {
  */
 export const FetchRoomList = () => {
   return request.get<Room.RoomEntity[]>(URLs.FetchRoomList)
+}
+/**
+ * @description 根据关键字搜索房间
+ * @param keyword
+ * @returns
+ */
+export const FetchRoomByQuery = (query: string) => {
+  return request.post<Room.RoomEntity[]>(URLs.SearchRooms, { query })
 }
 /**
  * @description 查询房间的成员

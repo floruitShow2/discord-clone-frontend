@@ -2,4 +2,15 @@
     .arco-input-inner-wrapper {
         @apply border-transparent;
     }
+
+    .search-modal-find-item--intro {
+        /* 显示多行文本 */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3; 
+        
+        overflow: hidden;  
+        /* 溢出部分显示省略号 */
+        text-overflow: ellipsis;
+    }
 }
