@@ -3,9 +3,9 @@ import { Button, Tooltip } from '@arco-design/web-react'
 import { IconFolder, IconMessage, IconUserGroup } from '@arco-design/web-react/icon'
 import useLocale from '@/locale/useLocale'
 import type { GroupBtnEntity } from './index.interface'
+
 function NaviSiderbar() {
   const navigate = useNavigate()
-
   const $t = useLocale()
 
   const btnsConfig: GroupBtnEntity[] = [
@@ -49,7 +49,7 @@ function NaviSiderbar() {
   }
 
   return (
-    <div className="w-full h-full py-2 flex flex-col items-center gap-2 justify-start border-r border-primary-b">
+    <div className="w-full h-full py-2 gap-y-2 flex flex-col items-center justify-between border-r border-primary-b">
       {/* tools */}
       <div className="flex flex-col items-center gap-2 justify-start pb-3 mb-3 border-b border-primary-b">
         {genButtons()}

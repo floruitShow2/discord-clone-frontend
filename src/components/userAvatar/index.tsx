@@ -1,10 +1,13 @@
+import { forwardRef } from 'react'
+import type { ForwardedRef } from 'react'
 import { Avatar } from '@arco-design/web-react'
 import { cs } from '@/utils/property'
-import styles from './index.module.less'
-import type { UserAvatarProps } from './index.interface'
 import { isString } from '@/utils/is'
+import type { UserAvatarProps } from './index.interface'
+import styles from './index.module.less'
+import './index.less'
 
-function UserAvatar(props: UserAvatarProps) {
+const UserAvatar = forwardRef((props: UserAvatarProps, ref: ForwardedRef<HTMLDivElement>) => {
   const {
     className,
     avatarClassName,
@@ -13,8 +16,11 @@ function UserAvatar(props: UserAvatarProps) {
     avatar,
     triggerIcon,
     state,
+    size = 40,
+    shape = 'square',
     showDetails = false,
-    showState = true
+    showState = true,
+    onClick
   } = props
   const userStateColorMap: Record<number, string> = {
     0: 'red',
@@ -22,7 +28,11 @@ function UserAvatar(props: UserAvatarProps) {
   }
 
   return (
-    <div className={`${className} flex items-center justify-start`}>
+    <div
+      ref={ref}
+      className={cs(className, `flex items-center justify-start`, { 'user-avatar--circle': shape === 'circle' })}
+      onClick={onClick}
+    >
       <div
         className={cs(
           styles['user-avatar'],
@@ -33,15 +43,20 @@ function UserAvatar(props: UserAvatarProps) {
         )}
       >
         <Avatar
-          className={cs('bg-module rounded-md cursor-pointer transition-colors', avatarClassName)}
+          className={cs(
+            'bg-module transition-colors',
+            'pointer-events-auto cursor-pointer',
+            avatarClassName,
+            shape === 'square' ? 'rounded-md' : 'rounded-full'
+          )}
           shape="square"
-          size={40}
+          size={size}
           triggerIcon={triggerIcon}
           triggerIconStyle={{
             color: '#3B82F6'
           }}
         >
-          {isString(avatar) ? <img src={avatar} alt="" /> : avatar}
+          {isString(avatar) ? <img src={avatar} /> : avatar}
         </Avatar>
       </div>
       {showDetails && (
@@ -52,6 +67,6 @@ function UserAvatar(props: UserAvatarProps) {
       )}
     </div>
   )
-}
+})
 
 export default UserAvatar

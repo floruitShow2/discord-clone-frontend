@@ -1,8 +1,7 @@
 .search-modal-popup {
     .arco-input-inner-wrapper {
-        @apply border-transparent;
+        @apply !border-transparent;
     }
-
     .search-modal-find-item--intro {
         /* 显示多行文本 */
         display: -webkit-box;
@@ -12,5 +11,21 @@
         overflow: hidden;  
         /* 溢出部分显示省略号 */
         text-overflow: ellipsis;
+    }
+
+    &--content {
+        animation: scale-y-in 0.3s ease forwards;
+    }
+}
+@keyframes scale-y-in {
+    from {
+        transform-origin: top;
+        opacity: 0.5;
+        transform: scaleY(0);
+    }
+    to {
+        transform-origin: top;
+        opacity: 1;
+        transform: scaleY(1);
     }
 }

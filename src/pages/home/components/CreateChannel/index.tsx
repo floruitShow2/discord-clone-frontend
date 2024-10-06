@@ -8,11 +8,13 @@ import {
   Avatar,
   Spin,
   Form,
-  Input
+  Input,
+  Upload
 } from '@arco-design/web-react'
 import type { ColumnProps } from '@arco-design/web-react/es/Table'
 import type { LabeledValue } from '@arco-design/web-react/es/Select/interface'
-import { IconPlus } from '@arco-design/web-react/icon'
+import { IconEdit, IconPlus, IconShareExternal } from '@arco-design/web-react/icon'
+import { UploadFile } from '@/api/file'
 import { FetchUserByQuery } from '@/api/auth'
 import { CreateRoom } from '@/api/chat-room'
 import { ChatRoomTypeEnum } from '@/enum/chat-room.enum'
@@ -21,6 +23,7 @@ import { isUndefined } from '@/utils/is'
 import { CreateChannelStepEnum } from './index.interface'
 import type { CreateChannelProps, ChannelTemplate } from './index.interface'
 import './index.less'
+import { UploadItem } from '@arco-design/web-react/es/Upload'
 
 // 选择群聊模板
 function TemplateRenderer(props: { onChange: (code: ChatRoomTypeEnum) => void }) {
@@ -125,7 +128,7 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
       align: 'center',
       render: (_, record: any) => (
         <Button
-          onClick={() => removeFinalIds(record.userAccount)}
+          onClick={() => removeFinalIds(record.userId)}
           type="text"
           size="mini"
           status="danger"
@@ -167,6 +170,7 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
 
   const [selectIds, setSelectIds] = useState<Set<string>>(new Set())
   const handleSelect = (value: string | number | LabeledValue) => {
+    console.log(users)
     setSelectIds((prev) => new Set([...prev, value.toString()]))
   }
 
@@ -176,18 +180,18 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
 
     const result = [...new Set([...finalIds, ...selectIds])]
     setFinalIds(new Set(result))
-    onChange && onChange(result)
     setSelectIds(new Set())
+    onChange && onChange(result)
   }
-  const removeFinalIds = (account: string) => {
-    const result = [...finalIds].filter((id) => id !== account)
+  const removeFinalIds = (userId: string) => {
+    const result = [...finalIds].filter((id) => id !== userId)
     setFinalIds(new Set(result))
+    setUsers((prev) => prev.filter((user) => user.userId !== userId))
     onChange && onChange(result)
   }
 
   const [finalUsers, setFinalUsers] = useState<any[]>([])
   useEffect(() => {
-    console.log(users, finalIds)
     setFinalUsers(users.filter((user) => finalIds.has(user.userId)))
   }, [finalIds])
 
@@ -242,10 +246,24 @@ function MembersRenderer(props: { onChange: (ids: string[]) => void }) {
 }
 
 // 群聊信息填写
-function FormRenderer(props: { onChange: (value: Partial<Room.RoomEntity>) => void }) {
+function FormRenderer(props: {
+  room: Room.CreateRoomInput
+  onChange: (value: Partial<Room.RoomEntity>) => void
+}) {
   const FormItem = Form.Item
 
-  const { onChange } = props
+  const { room, onChange } = props
+
+  const handleAvatarUpload = async (_files: UploadItem[], currentFile: UploadItem) => {
+    if (!currentFile.originFile) return
+    const fd = new FormData()
+    fd.append('file', currentFile.originFile)
+
+    const res = await UploadFile(fd)
+    if (res && onChange) {
+      onChange({ roomCover: res.data?.fileSrc })
+    }
+  }
 
   return (
     <div
@@ -262,7 +280,38 @@ function FormRenderer(props: { onChange: (value: Partial<Room.RoomEntity>) => vo
           onChange && onChange(values)
         }}
       >
-        <FormItem className="w-full" label="群聊封面" field="roomCover"></FormItem>
+        <FormItem className="w-full" label="群聊封面">
+          {room.roomCover ? (
+            <Avatar
+              className="!w-20 !h-20"
+              size={72}
+              triggerType="mask"
+              triggerIcon={
+                <Upload
+                  accept=".jpg,.png,.jpeg"
+                  autoUpload={false}
+                  showUploadList={false}
+                  onChange={handleAvatarUpload}
+                >
+                  <IconEdit />
+                </Upload>
+              }
+            >
+              <img src={room.roomCover} alt="" />
+            </Avatar>
+          ) : (
+            <Upload
+              accept=".jpg,.png,.jpeg"
+              autoUpload={false}
+              showUploadList={false}
+              onChange={handleAvatarUpload}
+            >
+              <div className="w-20 h-20 flex items-center justify-center rounded-full text-primary-l bg-module transition-colors hover:text-heavy-l">
+                <IconShareExternal fontSize={18} />
+              </div>
+            </Upload>
+          )}
+        </FormItem>
         <FormItem className="w-full" label="群聊名称" field="roomName" rules={[{ required: true }]}>
           <Input placeholder="请输入" />
         </FormItem>
@@ -353,7 +402,7 @@ function CreateChannel(props: CreateChannelProps) {
       case CreateChannelStepEnum.MEMBERS:
         return <MembersRenderer onChange={(val) => updateCreateInput(val, 'members')} />
       case CreateChannelStepEnum.FORM:
-        return <FormRenderer onChange={(val) => updateCreateInput(val)} />
+        return <FormRenderer room={createInput} onChange={(val) => updateCreateInput(val)} />
       default:
         return <div>default</div>
     }

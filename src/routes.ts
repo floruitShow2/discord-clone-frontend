@@ -57,6 +57,11 @@ export const routes: IRoute[] = [
     ]
   },
   {
+    path: '/profile/:id',
+    key: 'profile.id',
+    component: lazy(() => import('@/pages/profile/user/index.tsx'))
+  },
+  {
     path: '/login',
     key: 'login',
     component: lazy(() => import('@/pages/login/index.tsx'))

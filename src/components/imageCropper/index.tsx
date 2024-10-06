@@ -12,7 +12,7 @@ import UserAvatar from '../userAvatar'
 import { ImageCropperProps } from './index.interface'
 
 export default function ImageCropper(props: ImageCropperProps) {
-  const { url, onChange } = props
+  const { className, url, size, shape, onChange } = props
 
   const [visible, setVisible] = useState(false)
 
@@ -67,8 +67,13 @@ export default function ImageCropper(props: ImageCropperProps) {
   }
 
   return (
-    <div>
-      <UserAvatar avatar={image} triggerIcon={<IconEdit onClick={handleEdit} />}></UserAvatar>
+    <div className={cs(className)}>
+      <UserAvatar
+        avatar={image}
+        size={size}
+        shape={shape}
+        triggerIcon={<IconEdit onClick={handleEdit} />}
+      ></UserAvatar>
       <Modal
         className={cs('w-[60vw]')}
         title="更换头像"
@@ -99,7 +104,7 @@ export default function ImageCropper(props: ImageCropperProps) {
             <div
               className={cs(
                 'img-preview',
-                '!w-[128px]',
+                '!w-[128px] min-h-[128px]',
                 'border border-solid border-gray-200',
                 'overflow-hidden rounded-md bg-module'
               )}

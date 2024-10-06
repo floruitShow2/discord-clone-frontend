@@ -3,11 +3,11 @@ import { Button, Modal, Drawer } from '@arco-design/web-react'
 import { IconPen, IconQrcode } from '@arco-design/web-react/icon'
 import Qrcode from 'qrcode'
 import { FetchInviteCode, FetchRoomMembers } from '@/api/chat-room'
+import { translateToDateTime } from '@/utils/time'
 import UserAvatar from '@/components/userAvatar'
 import CellGroup, { type CellConfig } from '@/components/cellGroup'
 import MemeberList from '../MembersList'
 import { RoomDetailsProps } from './index.interface'
-import { translateToDateTime } from '@/utils/time'
 import { RoomContext } from '../RoomWrapper'
 
 function QrcodeCardWrapper({ info }: { info: Room.RoomEntity }) {
