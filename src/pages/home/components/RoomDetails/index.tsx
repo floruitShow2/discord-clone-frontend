@@ -87,7 +87,7 @@ function RoomDetails(props: RoomDetailsProps) {
             label: '群名称',
             description: '您暂无编辑群名称的权限，请联系管理员获取',
             value: info?.roomName,
-            allowEdit: true,
+            allowEdit: false,
             onChange: (newVal: string) => {
               if (!newVal) return
               onConfigChange && onConfigChange('roomName', newVal)

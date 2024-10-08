@@ -17,22 +17,22 @@ function NaviSiderbar() {
         navigate('/dashboard/chat')
       }
     },
-    {
-      tip: 'sidebar.contact.tip',
-      code: 'contact',
-      icon: <IconUserGroup />,
-      callback() {
-        navigate('/dashboard/contact')
-      }
-    },
-    {
-      tip: 'sidebar.file.tip',
-      code: 'file',
-      icon: <IconFolder />,
-      callback() {
-        navigate('/dashboard/file')
-      }
-    }
+    // {
+    //   tip: 'sidebar.contact.tip',
+    //   code: 'contact',
+    //   icon: <IconUserGroup />,
+    //   callback() {
+    //     navigate('/dashboard/contact')
+    //   }
+    // },
+    // {
+    //   tip: 'sidebar.file.tip',
+    //   code: 'file',
+    //   icon: <IconFolder />,
+    //   callback() {
+    //     navigate('/dashboard/file')
+    //   }
+    // }
   ]
   const genButtons = () => {
     return btnsConfig.map((btn) => (

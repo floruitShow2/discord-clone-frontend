@@ -13,7 +13,7 @@ function LoginPanel() {
   const tokenKey = genKey(StorageIdEnum.USER_TOKEN)
 
   const formRef = useRef<FormInstance>(null)
-  const [loginInfo] = useState<User.LoginInput>({ username: '', password: '' })
+  const [loginInfo] = useState<User.LoginInput>({ username: 'meleon', password: 'cml232000' })
 
   const handleLogin = async (info: User.LoginInput) => {
     try {
