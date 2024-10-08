@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Button, Tooltip } from '@arco-design/web-react'
-import { IconFolder, IconMessage, IconUserGroup } from '@arco-design/web-react/icon'
+import { IconMessage } from '@arco-design/web-react/icon'
 import useLocale from '@/locale/useLocale'
 import type { GroupBtnEntity } from './index.interface'
 
