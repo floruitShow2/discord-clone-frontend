@@ -44,8 +44,8 @@ const serviceEnv: Record<ServiceEnv.ServiceEnvType, ServiceEnv.ServiceEnvConfig>
  * @params env 环境变量
  */
 export const getServiceEnvConfig = (env: ImportMetaEnv): ServiceEnv.ServiceEnvConfig => {
-  const { VITE_ENV_MODE = 'development' } = env
-  const config = serviceEnv[VITE_ENV_MODE]
+  const { MODE = 'development' } = env
+  const config = serviceEnv[MODE]
 
   return { ...config }
 }
