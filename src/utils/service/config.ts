@@ -45,7 +45,7 @@ const serviceEnv: Record<ServiceEnv.ServiceEnvType, ServiceEnv.ServiceEnvConfig>
  */
 export const getServiceEnvConfig = (env: ImportMetaEnv): ServiceEnv.ServiceEnvConfig => {
   const { MODE = 'development' } = env
-  const config = serviceEnv[MODE]
+  const config = serviceEnv[MODE as ServiceEnv.ServiceEnvType]
 
   return { ...config }
 }
