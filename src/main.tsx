@@ -8,7 +8,7 @@ import { store } from '@/store'
 import { setUserInfo } from '@/store/slices/user.slice'
 import { StorageIdEnum } from '@/constants/storage'
 import { FetchUserInfo } from '@/api/auth'
-import { useStorage } from '@/utils/storage'
+import { createStorage } from '@/utils/storage'
 import BaseLayout from '@/layouts/BaseLayout'
 import Login from '@/pages/login'
 import useRoute, { getFlattenRoutes } from './routes'
@@ -22,7 +22,7 @@ const ProtectRoute = ({ children }: { children: React.ReactNode }) => {
 
   const dispatch = useDispatch()
 
-  const { genKey, get } = useStorage()
+  const { genKey, get } = createStorage()
 
   const tokenKey = genKey(StorageIdEnum.USER_TOKEN)
   const userToken = get(tokenKey)

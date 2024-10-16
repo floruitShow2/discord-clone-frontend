@@ -11,7 +11,7 @@ const beforeBabelTransform = (filename: string, code: string) => {
   return _code
 }
 export const babelTransform = (filename: string, code: string, files: PlaygroundFile[]) => {
-  let _code = beforeBabelTransform(filename, code)
+  const _code = beforeBabelTransform(filename, code)
   let result = ''
   try {
     result = transform(_code, {

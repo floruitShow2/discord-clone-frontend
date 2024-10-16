@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "prepare": "husky",
     "format": "prettier --write \"src/**/*.{tsx,ts}\" \"config/**/*.ts\"",
-    "lint": "eslint src/ --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix --cache"
+    "lint": "eslint src/ --ext ts,tsx --max-warnings 0 --fix --cache"
   },
   "husky": {
     "hooks": {
@@ -19,13 +19,13 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js}": [
-      "eslint --config .eslintrc.cjs"
+      "eslint src/ --ext ts,tsx --max-warnings 0 --fix --cache"
     ],
     "*.{css,less,scss}": [
       "stylelint --config .stylelintrc.js"
     ],
     "*.{ts,tsx,js,json,html,yml}": [
-      "prettier --write"
+      "prettier --write \"src/**/*.{tsx,ts}\" \"config/**/*.ts\""
     ]
   },
   "dependencies": {

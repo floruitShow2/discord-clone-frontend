@@ -288,15 +288,13 @@ export const RenderMsg = memo((props: NormalMessageProps) => {
     const { content, messageId, profile } = props.msg
     const plugins = [highlight()]
 
-    const { room, updateMessage } = useContext(RoomContext)
-
-    if (!room) return <></>
+    const { updateMessage } = useContext(RoomContext)
 
     useEffect(() => {
       if (!isReading && content) {
         callCozeChat(profile.userId, content)
       }
-    }, [content])
+    }, [content, profile.userId])
 
     useEffect(() => {
       if (!isReading && answer?.length) {

@@ -15,7 +15,7 @@ export interface UseStorageEntity {
   clear: () => void
 }
 
-export function useStorage(): UseStorageEntity {
+export function createStorage(): UseStorageEntity {
   /** 默认缓存期限为7天 */
   const DEFAULT_CACHE_TIME = 60 * 60 * 24 * 7
 

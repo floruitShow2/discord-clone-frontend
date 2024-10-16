@@ -13,7 +13,8 @@ const CellGroup: FunctionComponent<BaseProps> = (props) => {
     'w-full p-3 flex flex-col items-start justify-start border-b border-primary-b cursor-pointer hover:bg-module'
   )
 
-  const genTextCell = (cell: CellConfig, index: number) => {
+  const TextCell = (props: { cell: CellConfig; index: number }) => {
+    const { cell, index } = props
     const { label = '', value = '', description = '', allowEdit = false, onChange } = cell
 
     const [isEditing, setIsEditing] = useState(false)
@@ -96,7 +97,7 @@ const CellGroup: FunctionComponent<BaseProps> = (props) => {
       {configs.map((cell, index) => {
         switch (cell.type) {
           case 'text':
-            return genTextCell(cell, index)
+            return <TextCell cell={cell} index={index} />
           case 'switch':
             return genSwitchCell(cell, index)
           case 'btn':

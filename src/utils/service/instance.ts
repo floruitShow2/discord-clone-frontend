@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import type { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios'
-import { useStorage, UseStorageEntity } from '@/utils/storage'
+import { createStorage, UseStorageEntity } from '@/utils/storage'
 import { handleAxiosError, handleBackendError, handleResponseError } from './error'
 import { handleServiceResult } from './handler'
 import { Message } from '@arco-design/web-react'
@@ -26,7 +26,7 @@ class CustomAxiosInstance {
       failCode: -1
     }
   ) {
-    this.storage = useStorage()
+    this.storage = createStorage()
     this.instance = axios.create(axiosConfig)
     this.backendConfig = backendConfig
     this.setInterceptor()

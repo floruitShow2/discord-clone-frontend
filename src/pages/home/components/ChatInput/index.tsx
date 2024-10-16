@@ -161,7 +161,10 @@ const ChatInput = forwardRef((props: ChatInputProps, ref: ForwardedRef<ChatInput
   const [members, setMembers] = useState<Message.Mention[]>([])
   const insertHtmlAtCaret = (btn: HTMLButtonElement, bSpaceNode: Text) => {
     if (!editorRange.current) return
-    let { selection, range } = editorRange.current
+
+    let range = editorRange.current.range
+    const selection = editorRange.current.selection
+
     if (selection.rangeCount) {
       if (selection.focusNode?.parentNode?.nodeName === 'BUTTON') return
       range.deleteContents()
@@ -191,7 +194,10 @@ const ChatInput = forwardRef((props: ChatInputProps, ref: ForwardedRef<ChatInput
     if (!editorRef.current) return
     const rangeInfo = getEditorRange()
     if (!rangeInfo) return
-    let { selection, range } = rangeInfo
+
+    let range = rangeInfo.range
+    const selection = rangeInfo.selection
+
     if (selection.rangeCount) {
       if (cachedPosition.current) {
         range.setStart(cachedPosition.current.startContainer, cachedPosition.current.startOffset)

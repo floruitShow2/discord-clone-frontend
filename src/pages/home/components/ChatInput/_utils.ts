@@ -59,7 +59,7 @@ export const getSelectionCoords = () => {
       range.collapse(true)
       const rects = range.getClientRects()
       rect = rects?.[0]
-      if (!!rect) {
+      if (rect) {
         const { left, top } = rects[0]
         x = left
         y = top

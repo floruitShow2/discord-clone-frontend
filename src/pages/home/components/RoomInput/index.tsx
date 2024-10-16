@@ -15,7 +15,7 @@ import { RootState } from '@/store'
 import { MessageTypeEnum, StorageIdEnum } from '@/constants'
 import { CreateFilesMessage, FetchMessageById } from '@/api/chat-message'
 import { cs } from '@/utils/property'
-import { useStorage } from '@/utils/storage'
+import { createStorage } from '@/utils/storage'
 import { RoomContext } from '../RoomWrapper'
 import ChatInput from '../ChatInput'
 import { ChatInputMethod } from '../ChatInput/index.interface'
@@ -26,7 +26,7 @@ import { CozeUsers } from '@/constants/coze.enum'
 const iconBtnCls = 'text-light-l cursor-pointer hover:text-blue-500'
 
 function EmojiTool(props: { onSelect: (url: string) => void }) {
-  const { genKey, get, set } = useStorage()
+  const { genKey, get, set } = createStorage()
   const tokenKey = genKey(StorageIdEnum.EMOJI)
   const [commonUsedEmoji, setCommonUsedEmoji] = useState<string[]>([])
 

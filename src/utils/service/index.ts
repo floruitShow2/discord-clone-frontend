@@ -1,9 +1,8 @@
-import { useRequest } from './request'
+import { createRequest } from './request'
 import { getServiceEnvConfig } from './config'
 
-console.log(import.meta.env)
 const { url } = getServiceEnvConfig(import.meta.env)
 
-export const request = useRequest({ baseURL: url })
+export const request = createRequest({ baseURL: url })
 
-export const mockRequest = useRequest({ baseURL: '/mock' })
+export const mockRequest = createRequest({ baseURL: '/mock' })

@@ -174,7 +174,7 @@ function RoomWrapper(props: RoomWrapperProps) {
     const { pageSize } = pageOptions
     const prevPage = locatedPage - 1
     const nextPage = locatedPage + 1
-    const { data: prevMessages } = !!prevPage
+    const { data: prevMessages } = prevPage
       ? await FetchMessageList({ roomId: roomId, page: prevPage, pageSize })
       : { data: [] }
     const { data: curMessages } = await FetchMessageList({
@@ -193,7 +193,7 @@ function RoomWrapper(props: RoomWrapperProps) {
     setRoomDrawerVisible(false)
     setMessages(totalMessages)
     setLoadedPages(new Set(prevPage ? [prevPage, locatedPage, nextPage] : [locatedPage, nextPage]))
-    pageRange.current = [!!prevPage ? prevPage : 1, nextPage]
+    pageRange.current = [prevPage ? prevPage : 1, nextPage]
     onPageChange(locatedPage)
     setLocatedId(messageId)
   }
@@ -240,7 +240,7 @@ function RoomWrapper(props: RoomWrapperProps) {
     setPageOptions((prevVal) => ({ ...prevVal, page: curPage }))
   }
 
-  const isNearBottom = useRef<Boolean>(true)
+  const isNearBottom = useRef<boolean>(true)
   const handleAllowScrollChange = (nearBottom: boolean) => {
     isNearBottom.current = nearBottom
   }

@@ -28,7 +28,7 @@ async function getRequestResponse(params: {
   return res
 }
 
-export const useRequest = (
+export const createRequest = (
   axiosConfig: AxiosRequestConfig,
   backendConfig?: Service.BackendResultConfig
 ) => {

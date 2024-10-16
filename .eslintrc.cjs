@@ -19,6 +19,11 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    "no-unused-vars": 2
+    'react-refresh/only-export-components': 'off',
+    "react-hooks/exhaustive-deps": "off",
+    // typescript
+    "@typescript-eslint/no-unused-vars": 2,
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/ban-ts-comment': 0
   }
 }

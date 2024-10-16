@@ -10,7 +10,7 @@ function FilenameItem(props: FilenameItemProps) {
   const { name, readonly, isActive, onSelect, onRemove, onRename } = props
 
   const [localName, setLocalName] = useState(name)
-  const [isEditing, setIsEditing] = useState(!!name ? false : true)
+  const [isEditing, setIsEditing] = useState(name ? false : true)
 
   const inputRef = useRef<RefInputType>(null)
   useEffect(() => {

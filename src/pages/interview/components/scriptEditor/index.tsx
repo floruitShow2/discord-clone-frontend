@@ -34,7 +34,7 @@ function ScriptEditor(props: ScriptEditorProps) {
       // Less 语法规则
       tokenizer: {
         root: [
-          [/[@#\$][\w-]+/, 'variable'],
+          [/[@#$][\w-]+/, 'variable'],
           [/[{}]/, 'delimiter.bracket'],
           [/\s*[:=]\s*/, 'delimiter'],
           [/\d+(%|px|em|rem|pt|pc|in|cm|mm|ex|ch|vw|vh|vmin|vmax)?/, 'number'],
@@ -48,9 +48,9 @@ function ScriptEditor(props: ScriptEditorProps) {
           [/'/, 'string', "@string.'"]
         ],
         comment: [
-          [/[^\/*]+/, 'comment'],
+          [/[^/*]+/, 'comment'],
           [/\*\//, 'comment', '@pop'],
-          [/[\/*]/, 'comment']
+          [/[/*]/, 'comment']
         ],
         string: [
           [/[^\\"']+/, 'string'],

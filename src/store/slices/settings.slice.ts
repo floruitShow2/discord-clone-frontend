@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { useStorage } from '@/utils/storage'
+import { createStorage } from '@/utils/storage'
 import { StorageIdEnum } from '@/constants/storage'
 
-const { genKey, get, set } = useStorage()
+const { genKey, get, set } = createStorage()
 
 const initialSettings: Global.Settings = {
   theme: get(genKey(StorageIdEnum.APP_THEME)) || 'light',

@@ -2,14 +2,14 @@ import { useRef, useState } from 'react'
 import { Form, Input, Button } from '@arco-design/web-react'
 import type { FormInstance } from '@arco-design/web-react'
 import { Login } from '@/api/auth'
-import { useStorage } from '@/utils/storage'
+import { createStorage } from '@/utils/storage'
 import { StorageIdEnum } from '@/constants/storage'
 import './index.less'
 
 const FormItem = Form.Item
 
 function LoginPanel() {
-  const { genKey, set } = useStorage()
+  const { genKey, set } = createStorage()
   const tokenKey = genKey(StorageIdEnum.USER_TOKEN)
 
   const formRef = useRef<FormInstance>(null)

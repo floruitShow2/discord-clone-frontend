@@ -113,7 +113,7 @@ const useRoute = (
     if (!routes.length) return []
 
     for (const route of routes) {
-      let visible: boolean = judge(route, userPermission)
+      const visible: boolean = judge(route, userPermission)
 
       if (!visible) continue
 
