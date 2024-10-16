@@ -7,8 +7,25 @@
     "dev": "vite --host --config ./config/vite.config.dev.ts",
     "build": "npx vue-tsc --noEmit && vite build --config ./config/vite.config.prod.ts",
     "preview": "vite preview",
+    "prepare": "husky install",
     "format": "prettier --write \"src/**/*.{tsx,ts}\" \"config/**/*.ts\"",
     "lint": "eslint src/ --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix --cache"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js}": [
+      "eslint --config .eslintrc.cjs"
+    ],
+    "*.{css,less,scss}": [
+      "stylelint --config .stylelintrc.js"
+    ],
+    "*.{ts,tsx,js,json,html,yml}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@apollo/client": "^3.10.1",
@@ -72,8 +89,12 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard": "^36.0.1",
     "tailwindcss": "^3.4.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",

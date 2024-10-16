@@ -30,7 +30,9 @@ const UserAvatar = forwardRef((props: UserAvatarProps, ref: ForwardedRef<HTMLDiv
   return (
     <div
       ref={ref}
-      className={cs(className, `flex items-center justify-start`, { 'user-avatar--circle': shape === 'circle' })}
+      className={cs(className, `flex items-center justify-start`, {
+        'user-avatar--circle': shape === 'circle'
+      })}
       onClick={onClick}
     >
       <div

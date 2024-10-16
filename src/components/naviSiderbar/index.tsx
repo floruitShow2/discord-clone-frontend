@@ -16,7 +16,7 @@ function NaviSiderbar() {
       callback() {
         navigate('/dashboard/chat')
       }
-    },
+    }
     // {
     //   tip: 'sidebar.contact.tip',
     //   code: 'contact',

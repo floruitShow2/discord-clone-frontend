@@ -28,7 +28,7 @@ function InfoPanel() {
                 >
                   {message.icon}
                 </div>
-                <span className='text-sm'>{message.label}</span>
+                <span className="text-sm">{message.label}</span>
               </div>
               <span className="font-bold">{userInfo[message.code] || '-'}</span>
             </li>
