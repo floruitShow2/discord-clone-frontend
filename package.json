@@ -7,7 +7,7 @@
     "dev": "vite --host --config ./config/vite.config.dev.ts",
     "build": "npx vue-tsc --noEmit && vite build --config ./config/vite.config.prod.ts",
     "preview": "vite preview",
-    "prepare": "husky install",
+    "prepare": "husky",
     "format": "prettier --write \"src/**/*.{tsx,ts}\" \"config/**/*.ts\"",
     "lint": "eslint src/ --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix --cache"
   },
