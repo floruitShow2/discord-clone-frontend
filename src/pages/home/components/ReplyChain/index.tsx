@@ -9,7 +9,7 @@ import { cs } from '@/utils/property'
 import UserAvatar from '@/components/userAvatar'
 import { RoomContext } from '../RoomWrapper'
 import MessageList from '../MessageList'
-import { RenderMsg } from '../MessageList/components/MessageEntity'
+import { RenderFullMsg } from '../MessageList/components/MessageEntity'
 import type { ReplyChainProps } from './index.interface'
 import styles from './index.module.less'
 
@@ -88,7 +88,7 @@ function ReplyChain(props: ReplyChainProps) {
                 showDetails
                 showState={false}
               />
-              <RenderMsg msg={replyChain[0]} />
+              <RenderFullMsg msg={replyChain[0]} />
               {/* {renderMsg({ msg: replyChain[0] })} */}
             </div>
             <div className="w-full">

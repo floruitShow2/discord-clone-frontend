@@ -4,6 +4,7 @@ import { FetchUserInfo } from '@/api/auth'
 import { cs } from '@/utils/property'
 import UserPanel from './components/userPanel'
 import InfoPanel from './components/introPanel'
+import AboutPanel from './components/aboutPanel'
 import { ProfileContextProps } from './index.interface'
 
 export const ProfileContext = createContext<ProfileContextProps>({
@@ -29,11 +30,18 @@ function ProfileCenter() {
 
   return (
     <ProfileContext.Provider value={{ userInfo }}>
-      <div className={cs('w-full h-full p-3', 'bg-module')}>
+      <div
+        className={cs(
+          'w-full h-full p-3',
+          'gap-y-3 flex flex-col items-start justify-start',
+          'bg-module'
+        )}
+      >
         <div className={cs('w-full', 'gap-x-3 flex items-start justify-between')}>
           <UserPanel />
           <InfoPanel />
         </div>
+        <AboutPanel />
       </div>
     </ProfileContext.Provider>
   )

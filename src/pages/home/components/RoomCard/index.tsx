@@ -1,9 +1,24 @@
 import UserAvatar from '@/components/userAvatar'
 import { translateToTimeAgo } from '@/utils/time'
 import type { BaseProps } from './index.interface'
+import { RenderTextMsg } from '../MessageList/components/MessageEntity'
+import { cs } from '@/utils/property'
 
 function RoomCard(props: BaseProps) {
   const { className, info, onClick } = props
+
+  const createUnreadCount = () => {
+    const count = info.unreadMessageCount
+    if (count === 0) {
+      return <></>
+    } else {
+      return (
+        <span className="w-[14px] h-[14px] rounded-full bg-red-400 text-xs text-white flex items-center justify-center">
+          {count > 99 ? '99+' : count || 1}
+        </span>
+      )
+    }
+  }
 
   return (
     <div
@@ -20,10 +35,16 @@ function RoomCard(props: BaseProps) {
             {translateToTimeAgo(info.createTime)}
           </span>
         </div>
-        <div className="text-xs text-light-l whitespace-nowrap overflow-hidden text-ellipsis">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vero sapiente sequi obcaecati,
-          debitis adipisci corporis doloremque voluptatem at, est a sit molestias, nisi dolores unde
-          eum delectus impedit quaerat velit?
+        <div
+          className={cs('w-full', 'flex items-center justify-between', 'text-xs whitespace-nowrap')}
+        >
+          <div
+            className="overflow-hidden"
+            style={{ width: info.unreadMessageCount > 0 ? 'calc(100% - 30px)' : '100%' }}
+          >
+            <RenderTextMsg msg={info.lastMessage}></RenderTextMsg>
+          </div>
+          {createUnreadCount()}
         </div>
       </div>
     </div>

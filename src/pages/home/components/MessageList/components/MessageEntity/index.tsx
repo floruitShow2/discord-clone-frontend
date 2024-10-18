@@ -17,6 +17,7 @@ import { RootState } from '@/store'
 import { MessageTypeEnum } from '@/constants'
 import { useCoze } from '@/hooks/actions/useCoze'
 import { cs } from '@/utils/property'
+import { formatMessage } from '@/utils/message'
 import { isFunction, isUndefined } from '@/utils/is'
 import UserAvatar from '@/components/userAvatar'
 import { RoomContext } from '../../../RoomWrapper'
@@ -107,7 +108,7 @@ export function MarkerMessage(props: { msg: Message.Entity }) {
   return <li className="w-full text-xs text-light-l text-center leading-10">{msg.content}</li>
 }
 
-export const RenderMsg = memo((props: NormalMessageProps) => {
+export const RenderFullMsg = memo((props: NormalMessageProps) => {
   const { msg, disabled = false, onPreview } = props
   const { answer, isReading, callCozeChat } = useCoze()
 
@@ -122,68 +123,7 @@ export const RenderMsg = memo((props: NormalMessageProps) => {
    * @returns
    */
   const genTextMsg = (msg: Message.Entity) => {
-    const { content, mentions, emojis } = msg
-
-    const formatMessage = (text: string) => {
-      type MentionEntity = Message.Mention & { type: 'mention' }
-      type EmojiEntity = Message.Emoji & { type: 'emoji' }
-
-      const entities = [
-        ...(mentions || []).map((mention) => ({ ...mention, type: 'mention' })),
-        ...(emojis || []).map((emoji) => ({ ...emoji, type: 'emoji' }))
-      ].sort((a, b) => a.offset - b.offset) as Array<MentionEntity | EmojiEntity>
-
-      const result: (string | JSX.Element)[] = []
-      let lastIndex = 0
-
-      entities.forEach((entity, index) => {
-        if (entity.offset > lastIndex) {
-          const label = text.slice(lastIndex, entity.offset)
-          result.push(
-            <span key={`label-${lastIndex}-${label}`} className="text-sm break-all text-primary-l">
-              {label}
-            </span>
-          )
-        }
-
-        if (entity.type === 'mention') {
-          result.push(
-            <div
-              key={`mention-${index}-${entity.userId}`}
-              className={cs('text-blue-500')}
-              onClick={() => {
-                console.log('mention', entity)
-              }}
-            >
-              @{entity.username}
-            </div>
-          )
-          lastIndex = entity.offset + entity.username.length + 1
-        } else if (entity.type === 'emoji') {
-          result.push(
-            <img
-              key={`emoji-${index}-${entity.url}`}
-              src={entity.url}
-              alt="emoji"
-              className="inline-block w-5 h-5 mx-[2px] align-text-bottom"
-            />
-          )
-          lastIndex = entity.offset + `<emoji src="${entity.url}">`.length
-        }
-      })
-
-      if (lastIndex < text.length) {
-        const label = text.slice(lastIndex)
-        result.push(
-          <span key={`label-${lastIndex}-${label}`} className="text-sm break-all text-primary-l">
-            {label}
-          </span>
-        )
-      }
-
-      return result
-    }
-    return <div className="flex items-center justify-start flex-wrap">{formatMessage(content)}</div>
+    return <div className="flex items-center justify-start flex-wrap">{formatMessage(msg)}</div>
   }
 
   /**
@@ -336,6 +276,24 @@ export const RenderMsg = memo((props: NormalMessageProps) => {
       return <></>
   }
 })
+export const RenderTextMsg = memo((props: NormalMessageProps) => {
+  const { msg } = props
+
+  const genTextMsg = (msg: Message.Entity) => {
+    return (
+      <div className={cs('w-full', 'flex items-center justify-start flex-nowrap', 'text-gray-500')}>
+        {formatMessage(msg)}
+      </div>
+    )
+  }
+
+  if (!msg) return <span className="text-gray-400">发送您的第一条消息</span>
+  if (msg.type === MessageTypeEnum.TEXT) {
+    return genTextMsg(msg)
+  } else {
+    return <span className="text-gray-500">{msg.content}</span>
+  }
+})
 
 export function NormalMessage(props: NormalMessageProps) {
   const {
@@ -420,11 +378,11 @@ export function NormalMessage(props: NormalMessageProps) {
                 onClick={() => handleClickReplyMessage(msg)}
               >
                 <span className="text-xs text-light-l">{msg.replyMessage.profile.username}: </span>
-                <RenderMsg msg={msg.replyMessage} disabled onPreview={onPreview} />
+                <RenderFullMsg msg={msg.replyMessage} disabled onPreview={onPreview} />
               </div>
             )}
             {/* 消息本身 */}
-            <RenderMsg msg={msg} disabled={disabled} onPreview={onPreview} />
+            <RenderFullMsg msg={msg} disabled={disabled} onPreview={onPreview} />
           </div>
         </Dropdown>
       </div>

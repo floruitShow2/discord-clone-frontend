@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { v4 as uuidv4 } from 'uuid'
 import { RootState } from '@/store'
 import { CozeConversationStatusEnum, CozeRobot2UserEnum, CozeRobots } from '@/constants/coze.enum'
 import { setAnswer, setCoze, setIsReading } from '@/store/slices/coze.slice'
@@ -21,6 +22,9 @@ export function useCoze() {
   const callCozeChat = async (robotUserId: string, question: string) => {
     if (!userInfo) return
     const { bot_id } = CozeRobots[robotUserId as CozeRobot2UserEnum]
+
+    const markId = uuidv4()
+
     const data = {
       bot_id: bot_id,
       user_id: robotUserId,
@@ -80,7 +84,7 @@ export function useCoze() {
                       default:
                         if (localReading.current) {
                           const message = parseDataString(item)
-                          dispatch(setAnswer(message?.content || ''))
+                          dispatch(setAnswer({ markId, content: message?.content || '' }))
                         }
                         break
                     }

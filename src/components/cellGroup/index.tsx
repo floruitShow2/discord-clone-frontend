@@ -97,7 +97,7 @@ const CellGroup: FunctionComponent<BaseProps> = (props) => {
       {configs.map((cell, index) => {
         switch (cell.type) {
           case 'text':
-            return <TextCell cell={cell} index={index} />
+            return <TextCell key={index} cell={cell} index={index} />
           case 'switch':
             return genSwitchCell(cell, index)
           case 'btn':

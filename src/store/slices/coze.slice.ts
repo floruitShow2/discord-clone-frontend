@@ -3,7 +3,8 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 const initialCozeState: Global.Coze = {
   conversationId: '',
   question: '',
-  answer: 'test',
+  markId: '',
+  answer: '',
   isReading: false
 }
 
@@ -14,13 +15,18 @@ const CozeSlice = createSlice({
     setIsReading(state, action: PayloadAction<boolean>) {
       state.isReading = action.payload
     },
-    setAnswer(state, action: PayloadAction<string>) {
-      state.answer += action.payload
-      // console.log(state.answer)
+    setAnswer(state, action: PayloadAction<{ markId: string; content: string }>) {
+      const { markId, content } = action.payload
+      if (state.markId === '' || state.markId === markId) {
+        state.markId = markId
+        console.log(state.markId)
+        state.answer += content
+      }
     },
     setCoze(state, action) {
       if (!action.payload) {
         state.answer = ''
+        state.markId = ''
         state.conversationId = ''
         state.question = ''
         state.isReading = false
@@ -31,6 +37,7 @@ const CozeSlice = createSlice({
 
       // 状态初始化
       state.answer = ''
+      state.markId = ''
       state.conversationId = conversationId
       state.question = question
     }

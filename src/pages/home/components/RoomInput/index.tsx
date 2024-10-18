@@ -13,15 +13,16 @@ import { TUICallKit, TUICallKitServer, TUIGlobal } from '@tencentcloud/call-uiki
 import * as GenerateTestUserSig from '@/debug/GenerateTestUserSig-es'
 import { RootState } from '@/store'
 import { MessageTypeEnum, StorageIdEnum } from '@/constants'
+import { CozeUsers } from '@/constants/coze.enum'
 import { CreateFilesMessage, FetchMessageById } from '@/api/chat-message'
 import { cs } from '@/utils/property'
 import { createStorage } from '@/utils/storage'
-import { RoomContext } from '../RoomWrapper'
 import ChatInput from '../ChatInput'
+import { RoomContext } from '../RoomWrapper'
 import { ChatInputMethod } from '../ChatInput/index.interface'
 import type { RoomInputProps } from './index.interface'
 import './index.less'
-import { CozeUsers } from '@/constants/coze.enum'
+import { formatMessage } from '@/utils/message'
 
 const iconBtnCls = 'text-light-l cursor-pointer hover:text-blue-500'
 
@@ -325,7 +326,9 @@ function RoomInput(props: RoomInputProps) {
                 )}
               >
                 <span>{replyMessage.profile.username}</span>
-                <span>{replyMessage.content}</span>
+                <div className="flex items-center justify-start flex-wrap">
+                  {formatMessage(replyMessage)}
+                </div>
               </div>
               <IconCloseCircle
                 className={cs(iconBtnCls, 'absolute top-0 right-0')}

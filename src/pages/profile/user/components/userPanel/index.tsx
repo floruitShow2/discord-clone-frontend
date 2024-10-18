@@ -1,4 +1,5 @@
-import { useContext } from 'react'
+import { useContext, useMemo } from 'react'
+import { useParams } from 'react-router-dom'
 import { Button } from '@arco-design/web-react'
 import { IconPlus } from '@arco-design/web-react/icon'
 import { UpdateUserInfo } from '@/api/auth'
@@ -9,7 +10,11 @@ import { ProfileContext } from '../../index'
 
 function UserPanel() {
   const { userInfo } = useContext(ProfileContext)
+  const { id } = useParams()
 
+  const isSelf = useMemo(() => {
+    return id === userInfo?.userId
+  }, [id, userInfo])
   const handleAvatarChange = async (url: string) => {
     try {
       await UpdateUserInfo({ avatar: url })
@@ -35,18 +40,23 @@ function UserPanel() {
             size={72}
             shape="circle"
             url={userInfo.avatar}
+            allowEdit={isSelf}
             onChange={handleAvatarChange}
           />
         )}
       </div>
       {/* 功能按钮行 */}
       <div className={cs('h-[44px] px-3', 'gap-x-2 flex items-center justify-end')}>
-        <Button type="primary" size="small" shape="round">
-          Message
-        </Button>
-        <Button type="outline" size="small" shape="round" icon={<IconPlus />}>
-          Follow
-        </Button>
+        {!isSelf && (
+          <>
+            <Button type="primary" size="mini" shape="round">
+              Message
+            </Button>
+            <Button type="outline" size="mini" shape="round" icon={<IconPlus />}>
+              Follow
+            </Button>
+          </>
+        )}
       </div>
       <div className={cs('p-3', 'flex flex-col items-start justify-center')}>
         <div className="flex items-center justify-start text-primary-l">

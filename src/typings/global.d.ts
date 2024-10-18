@@ -15,6 +15,8 @@ declare namespace Global {
     question: string
     // coze 返回的消息
     answer: string
+    // 唯一标识，避免多次调用覆盖旧数据
+    markId: string
     // 是否正在读取消息
     isReading: boolean
   }

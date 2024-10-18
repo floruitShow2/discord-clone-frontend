@@ -21,6 +21,9 @@ declare namespace Room {
     createTime: string
     // 成员 id 列表
     members: User.UserEntity[]
+
+    lastMessage: Message.Entity
+    unreadMessageCount: number
   }
 
   interface RoomContextMethod {
